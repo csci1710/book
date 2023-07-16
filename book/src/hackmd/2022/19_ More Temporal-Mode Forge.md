@@ -1,0 +1,119 @@
+# 19: More Temporal-Mode Forge
+
+###### tags: `Tag(sp22)`
+
+* TA applications are open for the Fall. I can't say "apply to TA 1710" but consider TAing in general! You don't need an "A" in a course to TA it, usually. .
+* We have no assignment due over break.
+* The second case study will start a bit after we return from break;
+* It sounds like Brown is relaxing its masking policies, and leaving it to individual instructors (and meeting hosts) to decide. I'd like us all to continue wearing masks in class---I certainly will, since I still have my persistent leftover cough. 
+
+## Linear Temporal Logic
+
+Formally, the temporal operators Forge provides correspond to a language called Linear Temporal Logic (or LTL). It's _temporal_ because it has temporal operators like `always` and `eventually`, and it's _linear_ because it's interpreted over (infinite) linear traces. 
+
+LTL is commonly used in industry. And even where it isn't used directly, many other temporal specification languages are either related to LTL (e.g., branching-time logics like CTL) or inspired by it (e.g., TLA+ and other more recent languages). There are a _lot_ of industrial model-checking tools out there, using a lot of different languages, but learning LTL will help you build intuition for nearly all of them.
+
+(And on the research side of things, there's been work right here at Brown to use LTL for specifying robot behaviors! For example, [this paper](https://nakulgopalan.github.io/docs/sequence-sequence-language.pdf).)
+
+## How To Read A Temporal Formula
+
+Recall that time is _implicit_ in temporal mode, and that temporal mode only ever finds lasso traces. When you write a constraint in temporal mode, it's true with respect to an instance (which is always a lasso traces) _and a time index_ into that trace. Thus the `init` predicate may be true, or not true, depending on which state you're looking at.
+
+Evaluation always _starts_ at the first state. This corresponds to the top-level `run` command or `test`. I didn't say "the initial state", because if we've got a predicate that encodes "initial state", it  won't be enforced unless we've told Forge to do so. This is why, usually, you'll start by putting:
+
+```
+init
+```
+
+(or whatever your initial-state predicate is) in your top-level `run`. 
+
+As soon as temporal operators become involved, however, the "evaluate in the first state" rule starts to fail.
+
+## Moving Forward In Time
+
+You can refer to the _next_ state (relative to the current one, whatever it is) by using the `next_state` operator. If I wanted to say that the _second_ and _third_ states would also be acceptable as initial states, I'd write:
+
+```
+init
+next_state init
+next_state next_state init
+```
+
+in the top-level `run` block. It's rare you'd do something like this in practice, but it's a good first demonstration of the operator.
+
+### Why `next_state`? 
+
+The keyword is, admittedly, a little verbose. But it was the best of the various candidates at hand:
+* In LTL, the operator is usually called `X`, which is not very descriptive. 
+* In Alloy and Electrum, the operator is called `after`, but this can lead to some misconceptions since `A after B` might be misinterpreted as a binary operator, and Forge and Alloy both have implicit `and` via newlines.
+* I've heard `afterward` suggested, but that risks confusion with `always` or `eventually`.
+
+## Quantifying Over Time
+
+What does it mean for something to `always` be true, or to `eventually` hold? These terms effectively quantify over time: if something is `always` true, it's true at all time indexes (starting now). If something is `eventually` true, it's true at _some_ time index (possibly now). 
+
+So if we wanted to say that every state in the trace transitions to its successor in accordance with our `move` predicate, we'd say:
+
+```
+always move
+```
+
+### Nesting Operators
+
+Just like you can nest `all` and `some`, you can nest `always` and `eventually`. We'll need to do this to express properties like non-starvation. In fact, let's think about how to express non-starvation now! 
+
+We had informally case non-starvation as something like "once a process becomes interested, it eventually gets access". How would you write this using temporal operators, assuming that `interested` and `access` were predicates describing the process becoming interested and getting access respectively?
+
+<details>
+<summary>Think, then click!</summary>
+We might start with: `interested => eventually access`. That would be a reasonable start: if the process is interested, it eventually gets access. The problem is that the interest is measured _now_---that is, at whatever time index Forge is currently looking. 
+</details>
+</br>
+
+Clearly we need to add some sort of temporal operator that prevents the above issue. Here's a possible candidate: `(eventually interested) => (eventually access)`. 
+
+<details>
+<summary>Think, then click!</summary>
+The problem here is that there's no connection between the time at which the left-hand side holds, and the time at which the right-hand side holds. To force that relationship (access _after_ interest) we need to nest the two temporal quantifiers.
+</details>
+
+How about `eventually (interested => (eventually access))`? 
+
+<details>
+<summary>Think, then click!</summary>
+This constraint isn't strong enough. Imagine a trace where the process never gets access, but is interested only (say) half the time. Then any of those disinterested states will satisfy the subformula `interested => (eventually access)`. 
+    
+Why? Think about how an implication is satisfied. It can be satisfied if the right-hand side is true, but also if the left-hand side is false---in the case where no obligation needs to be incurred! So the implication above evaluates to _true_ in any state where the process isn't interested. And using `eventually` means any single such state works...
+</details>
+
+It seems like we need a different temporal operator...
+
+<details>
+<summary>Think, then click!</summary>
+
+We'll say: `always {interested => eventually access}`. Now, no matter what time it is, if the process is interested, it has to eventually get access. 
+    
+This sort of `always`-`eventually` pattern is good for (contingent) "infinitely often" properties, which is exactly what non-starvation is.
+
+</details>
+
+## Let's Try It Out!
+
+I'm going to ask you to play the role of Forge. I've listed some temporal constraints below, and would like you to come up with some instances (lasso traces) that satisfy them. Don't use Forge unless you've already tried, and are stumped. 
+
+For all examples, you may come up with your own shape of the world. That is, you might pick a University (where a state is a semester, with courses offered and taken) or your experience waiting for an elevator in the CIT, or anything else from your life! I'll use `X`, `Y` and `Z` to denote arbitrary facts that might be true, or not true---your job is to plug in specifics, and then find a satisfying trace!
+
+I'll use a lot of parentheses, to avoid confusion about operator precedence...
+
+* `eventually (always (X or Y))`
+
+<details>
+<summary>Think, then click!</summary>
+Suppose `X` stands for weekday, and `Y` for weekend. Then the normal progression of time satisfies the constraint: at some point (today, even!) it will always be either a weekday or a weekend in the future.     
+
+I am probably abstracting out some important details here, like the heat-death of the universe. But that's not really the point. The point is that alternation between `X` and `Y` is allowed---it's always _either_ one or the other, or possibly even both.
+</details>
+
+## Looking Ahead...
+
+On Monday, we'll talk more about temporal modeling in Forge.
