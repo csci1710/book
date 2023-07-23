@@ -5,7 +5,6 @@ multilingual = false
 src = "src"
 title = "Logic for Systems"
 
-
 [preprocessor]
 
 [preprocessor.admonish]
@@ -21,4 +20,6 @@ renderers = ["html"]
 site-url = "/book/"
 additional-css = ["././mdbook-admonish.css"]
 
-
+[output.html.playground]
+editable = true
+runnable = true
