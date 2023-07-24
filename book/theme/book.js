@@ -186,14 +186,13 @@ function playground_text(playground, hidden = true) {
                 result_block.classList.add("result-no-output");
             }
             const id = response.run_ids[0]
-            fetch_with_timeout(`http://localhost:17100/next`, {
+            fetch_with_timeout(`http://localhost:17100/next?id=${id}`, {
                 headers: {
                     'Content-Type': 'text/plain',
                     'Accept': "application/json"
                 },
-                method: 'POST',
+                method: 'GET',
                 mode: 'cors',
-                body: JSON.stringify({id: id})
             })
             .then(response => response.json())
             .then(response => {
