@@ -1,3 +1,10 @@
+/*
+  This pull request seems to be stalled: 
+  https://github.com/rust-lang/mdBook/pull/1759
+
+  So for now, we'll label Forge code as "rust" to enable the play button. 
+*/
+
 "use strict";
 
 // Fix back button cache problem
@@ -18,7 +25,8 @@ function playground_text(playground, hidden = true) {
 }
 
 (function codeSnippets() {
-    function fetch_with_timeout(url, options, timeout = 6000) {
+    // Default to 10 seconds wait
+    function fetch_with_timeout(url, options, timeout = 10000) {
         return Promise.race([
             fetch(url, options),
             new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), timeout))
