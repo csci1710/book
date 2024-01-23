@@ -41,10 +41,12 @@ Suppose we're thinking about the workings of a small company. We're given some f
 **Question:** Does someone who graduated from Brown directly supervise someone who graduated from another University?
 
 <details>
-    <summary>Think, then click.</summary>
+<summary>Think, then click.</summary>
+
 Yes! Regardless of whether Bob graduated from Brown, _some_ Brown graduate supervises _some_ non-Brown graduate. Reasoning by hypotheticals, there is one fact we don't know: where Bob graduated. In case he graduated Brown, he supervises Charlie, a non-Brown graduate. In case he graduated from another school, he's supervised by Alice, a Brown graduate.
     
 Humans tend to be very bad at reasoning by hypotheticals. There's a temptation to think that this puzzle isn't solvable because we don't know where Bob graduated from. Even Tim thought this at first after seeing the puzzle---in grad school! For logic!    
+
 </details>
 
 Now imagine a puzzle with a thousand of these unknowns. A thousand boolean variables means $2^{1000}$ cases to reason through. Want to use a computer yet?
@@ -67,7 +69,8 @@ In this configuration, can the gnomes escape? If so, why?
 
 <details>
     <summary>Think, then click.</summary>
-    Yes! The gnomes can escape, because they're able to use the knowledge of other gnomes _without explicit communication. When the wizard asks Gnome #2 what color their hat is, Gnome #2 can conclude nothing, and is silent. Gnome #3 can then reason that his hat, and the hat of Gnome #4, must be different colors. Only two colors are possible. And so the wizard is thwarted.
+
+Yes! The gnomes can escape, because they're able to use the knowledge of other gnomes _without explicit communication_. When the wizard asks Gnome #2 what color their hat is, Gnome #2 can conclude nothing, and is silent. Gnome #3 can then reason that his hat, and the hat of Gnome #4, must be different colors. Only two colors are possible. And so the wizard is thwarted.
 </details>
 
 To solve this puzzle, you need to reason about what the other agents know, and what we expect them to do with that knowledge. These sorts of epistemic statements can be useful in practice.
@@ -110,7 +113,7 @@ In short: software engineering is more than just code. Even setting aside the cu
 
 See the syllabus for a timeline. In short, you'll have weekly homeworks, with occasional interruption for a project. Project topics are proposed by _you_; our definition of "system" is pretty broad: in the past, groups have modeled and reasoned about puzzles, games, laws, chemical reactions, etc. in addition to obviously "computer-science" systems. We have one case study, and labs most weeks. Some class meetings will have exercises, which are graded for participation. 
 
-~~~admonish note "Brown CS: LfS as Capstone"~~~
+~~~admonish note title="Brown CS: LfS as Capstone"
 If you're using the old Sc.B. requirements: using this course as your capstone involves doing a bit more work for your final project; I like to make sure the topic you propose lets you integrate some other ideas from other courses.
 ~~~
 
@@ -128,7 +131,7 @@ Note that *you shouldn't use the 2023 syllabus to gauge how we'll use AI in 2024
 
 ### Tools we'll use 
 
-The main tool we'll use in this course in [Forge](forge-fm.org). Forge is a tool for _relational modeling_; we'll talk about what that means later on. For now, be aware that we'll be progressing through three _language levels_ in Forge:
+The main tool we'll use in this course in [Forge](http://forge-fm.org). Forge is a tool for _relational modeling_; we'll talk about what that means later on. For now, be aware that we'll be progressing through three _language levels_ in Forge:
 * Froglet, which restricts the set of operations available so that we can jump right in more easily. If you have intuitions about object-oriented programming, those intuitions will be useful in Froglet, although there are a few important differences that we'll talk about. (See also our [error gallery](./appendix/errors.md).)
 * Relational Forge, which expands the set of operations available to include sets, relations, and relational operators. Again, we'll cover these in detail later. They are useful for reasoning about complex relationships between objects and for representing certain domains, like databases or graphs.
 * Temporal Forge, which lets us easily model how a system's state evolves over time. 

@@ -9,16 +9,35 @@ title = "Logic for Systems"
 
 [preprocessor.admonish]
 command = "mdbook-admonish"
-assets_version = "2.0.0" # do not edit: managed by `mdbook-admonish install`
-on_failure = "bail" # remove for warn and to allow build to continue
+assets_version = "3.0.2" # do not edit: managed by `mdbook-admonish install`
+# on_failure = "bail" # remove for warn and to allow build to continue
 
 [preprocessor.katex]
-after = ["links"]
 renderers = ["html"]
+after = ["links"]
+# KaTeX options.
+output = "html"
+leqno = false
+fleqn = false
+throw-on-error = true
+error-color = "#cc0000"
+min-rule-thickness = -1.0
+max-size = "Infinity"
+max-expand = 1000
+trust = false
+# Extra options.
+no-css = false
+include-src = false
+block-delimiter = { left = "$$", right = "$$" }
+inline-delimiter = { left = "$", right = "$" }
+
 
 [output.html]
 site-url = "/book/"
-additional-css = ["././mdbook-admonish.css"]
+additional-css = ["././mdbook-admonish.css", "./mdbook-admonish.css"]
+
+[output.html.fold]
+enable = true
 
 [output.html.playground]
 editable = true
