@@ -2,7 +2,7 @@
 
 ## Setting the Stage
 
-If you're taking this course or reading this book, you've probably had to complete a class with programming assignments -- or at least written some small program. Take a moment to list a handful of such assignments: what did you have to build? 
+If you're taking this course or reading this book, you've probably had to complete a class with programming assignments---or at least written some small program. Take a moment to list a handful of such assignments: what did you have to build? 
 
 Now ask yourself:
 * How did you know what was the "right" behavior to implement?
@@ -17,7 +17,7 @@ Some time from now, you might be a professional software engineer. You might be 
 * are you trying to do the correct thing?
 * is what you're doing correct?  -->
 
-Instead, we need to think about what "correctness" means in our setting, and what level of confidence we need. Maybe we can't get to 100% confidence in correctness, but the perfect should never be the enemy of the good.
+We need to think about what "correctness" means for us, and what level of confidence we need. We can't ever get to 100% confidence in correctness, but the perfect should never be the enemy of the good. 
 
 Let's start with unit-testing (as practiced in intro, 0320, and many other courses) and deconstruct it. What does it do well? What does it do poorly?
 
@@ -109,7 +109,20 @@ There are two questions that will never go out of style, and won't be answered b
 
 In short: software engineering is more than just code. Even setting aside the customer-facing aspects, we'll still need to think critically about what it is we want and how to evaluate whether we're getting it. So I'm not just vaguely optimistic about the future; I'm confident that the importance of formal methods, modeling, and other skills that you'll learn here will continue to be useful -- or even become more so -- as engineering evolves.
 
-## Overview of the Semester
+## Tools 
+
+The main tool we'll use in this course in [Forge](http://forge-fm.org). Forge is a tool for _relational modeling_; we'll talk about what that means later on. For now, be aware that we'll be progressing through three _language levels_ in Forge:
+* Froglet, which restricts the set of operations available so that we can jump right in more easily. If you have intuitions about object-oriented programming, those intuitions will be useful in Froglet, although there are a few important differences that we'll talk about. (See also our [error gallery](./appendix/errors.md).)
+* Relational Forge, which expands the set of operations available to include sets, relations, and relational operators. Again, we'll cover these in detail later. They are useful for reasoning about complex relationships between objects and for representing certain domains, like databases or graphs.
+* Temporal Forge, which lets us easily model how a system's state evolves over time. 
+
+Forge is under active development. In fact, most of the codebase was written by undergraduate researchers over the past few years. 
+
+We'll also use:
+* [Hypothesis](https://hypothesis.readthedocs.io/en/latest/), a testing library for Python; and
+* [Z3](https://github.com/Z3Prover/z3), an SMT solver library. 
+
+## (Brown CSCI 1710) Overview of the Semester
 
 See the syllabus for a timeline. In short, you'll have weekly homeworks, with occasional interruption for a project. Project topics are proposed by _you_; our definition of "system" is pretty broad: in the past, groups have modeled and reasoned about puzzles, games, laws, chemical reactions, etc. in addition to obviously "computer-science" systems. We have one case study, and labs most weeks. Some class meetings will have exercises, which are graded for participation. 
 
@@ -119,24 +132,12 @@ If you're using the old Sc.B. requirements: using this course as your capstone i
 
 ### Textbook
 
-This free, online textbook grew out of Tim's lecture notes for 1710 and is our primary resource for readings. From time to time, we may provide supplementary reading. This isn't a course you'll want to passively consume; we expect that you'll do the readings, engage with exercises, and ask questions as appropriate. 
+We don't have a required text. Instead, we'll use this free, online text that is being adapted from Tim's lecture notes this semester. From time to time, we may provide supplementary reading. This isn't a course you'll want to passively consume; we expect that you'll do the readings, engage with exercises, and ask questions as appropriate. 
 
-Often, the book will contain more than can be covered in class. It will still be useful to read.
+Often, these notes will contain more than can be covered in class. It will still be useful to read.
 
 ### How can you use generative AI in this course?
 
 You are allowed to "collaborate" with generative AI **using the specific method(s) we provide and within the limits we set**. You may not otherwise employ such tools in 1710; doing so would be a violation of the academic code. 
 
 Note that *you shouldn't use the 2023 syllabus to gauge how we'll use AI in 2024*. AI has a much larger role in some of our assignments this year. (E.g., you'll now be using techniques from this course to work with LLM-generated code.)
-
-### Tools we'll use 
-
-The main tool we'll use in this course in [Forge](http://forge-fm.org). Forge is a tool for _relational modeling_; we'll talk about what that means later on. For now, be aware that we'll be progressing through three _language levels_ in Forge:
-* Froglet, which restricts the set of operations available so that we can jump right in more easily. If you have intuitions about object-oriented programming, those intuitions will be useful in Froglet, although there are a few important differences that we'll talk about. (See also our [error gallery](./appendix/errors.md).)
-* Relational Forge, which expands the set of operations available to include sets, relations, and relational operators. Again, we'll cover these in detail later. They are useful for reasoning about complex relationships between objects and for representing certain domains, like databases or graphs.
-* Temporal Forge, which lets us easily model how a system's state evolves over time. 
-
-We'll also use:
-* [Hypothesis](https://hypothesis.readthedocs.io/en/latest/), a testing library for Python; and
-* [Z3](https://github.com/Z3Prover/z3), an SMT solver library. 
-
