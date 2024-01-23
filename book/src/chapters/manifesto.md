@@ -109,6 +109,34 @@ There are two questions that will never go out of style, and won't be answered b
 
 In short: software engineering is more than just code. Even setting aside the customer-facing aspects, we'll still need to think critically about what it is we want and how to evaluate whether we're getting it. So I'm not just vaguely optimistic about the future; I'm confident that the importance of formal methods, modeling, and other skills that you'll learn here will continue to be useful -- or even become more so -- as engineering evolves.
 
+But the tools we'll learn in this course apply to more than just code, too.
+
+## "Formal Methods"
+
+_Formal methods_ (FM) are a broad collection of techniques for modeling, reasoning about, verifying, and understanding software, hardware, and other kinds of systems. In this course, We'll focus on something called _lightweight formal methods_, which are characterized by tradeoffs that favor ease of use over strong guarantees (although we'll sometimes achieve those as well).
+
+This course will teach you some concrete formal methods. It will also prepare you to engage with others, if you're interested in doing so. Some industrial examples I'm fond of include:
+* [Amazon Web Services' Zelkova](https://aws.amazon.com/blogs/security/protect-sensitive-data-in-the-cloud-with-automated-reasoning-zelkova/), which helps administrators author better security policies for their services;
+* [Microsoft's static driver verifier](https://www.microsoft.com/en-us/research/publication/thorough-static-analysis-of-device-drivers/), which helps increase the reliability of low-level device drivers in Windows;
+* [MongoDB's work on modeling replication](https://github.com/visualzhou/mongo-repl-tla), which found a real bug in their code. Quoting the linked page: "We've never encountered this issue in testing or in the field and only found it by reasoning about the edge cases. This shows writing and model checking ... specs is an excellent alternative way to find and verify edge cases." (Ellipsis mine.)
+
+We can find real applications for FM outside Computer Science too---even the law. [Here's an article](https://roundtablelaw.medium.com/utterly-unpersuasive-formal-methods-and-law-bb8ecf048374) about the value of modeling _legal concepts_ to find loopholes in the law. This is the sort of FM we'll be learning how to do in 1710.
+
+[This Github repository](https://github.com/ligurio/practical-fm) keeps a (reasonably up to date, but not exhaustive!) list of other industrial applications of formal methods. Check it out!
+
+~~~admonish info title="Further Reading" 
+Jeanette Wing and Daniel Jackson wrote a short article on lightweight FM in the 90's, which you can find [online](http://www.cs.cmu.edu/~wing/publications/JacksonWing96.pdf).
+~~~
+
+~~~admonish warning title="What is a system?"
+When we say "systems" in this book we don't necessarily mean the kind of "systems" you see in CSCI 0300 and 0330. Sure, you can apply the techniques of 1710 to material from those classes, but you can also apply it to user interfaces, type systems in programming, hardware, version control systems like Git, web security, cryptographic protocols, robotics, puzzles, sports and games, and much more. 
+~~~
+
+### (Exercise) For Next Time
+
+Can you find one or two of these applications that especially interest you? Alternatively, think about other kinds of "system" you interact with regularly, or have learned about. What would you like to understand better about those systems? (A prior-year final project modeled the rules of baseball, and we all learned something about the game in the process.)
+
+
 ## Tools 
 
 The main tool we'll use in this course in [Forge](http://forge-fm.org). Forge is a tool for _relational modeling_; we'll talk about what that means later on. For now, be aware that we'll be progressing through three _language levels_ in Forge:
@@ -128,6 +156,12 @@ See the syllabus for a timeline. In short, you'll have weekly homeworks, with oc
 
 ~~~admonish note title="Brown CS: LfS as Capstone"
 If you're using the old Sc.B. requirements: using this course as your capstone involves doing a bit more work for your final project; I like to make sure the topic you propose lets you integrate some other ideas from other courses.
+~~~
+
+~~~admonish warning title="Common Misconceptions" 
+**This is not a "systems" course, and there's no more than minor overlap with any other course at Brown.**
+
+**We will use terms that (for example) discrete math courses use, like "relation" and "quantifier". However, we'll learn everything we need as part of this course.**
 ~~~
 
 ### Textbook
