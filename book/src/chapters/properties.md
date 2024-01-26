@@ -12,9 +12,12 @@ Implementation of a linked list.
 
  -->
 
-## (Brown CSCI 1710) Logistics
+~~~admonish note title="(Brown CSCI 1710) Logistics"
 
 The first assignment goes out today: it's a homework, in Python. If you're not familiar with Python, you should check out our optional Python lab. The homework uses a library called Hypothesis, which we'll see some of in lecture today. You'll also be asked to use ChatGPT to generate code. Next Wednesday's lab will also use ChatGPT. 
+
+**Please fill out the [lab preference form](https://forms.gle/w8TN6Qg8RV4pps6U9)!**
+~~~
 
 ## Where are we going?
 
