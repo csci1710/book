@@ -1,27 +1,14 @@
 # From Tests to Properties 
 
-<!-- (Working in code, not modeling yet)
+<!-- Other examples we could include
 
 Implementation of a linked list. 
 * What should `add` guarantee?
-* 
-
-
-tests as specification: a partial, point-wise one, not great for fully describing what you want. But cheap, non-trivially useful, and better than nothing.
-
-relational problems: how do you test them?
 
 * change-making 
   * simple greedy algorithm (largest coins first)
   * apply PBT (correct total, in drawer)
   * let's try this on LLM-generated code
-
-* cheapest path in a graph 
-  * dijkstra
-  * apply PBT... can get most, but "is shortest" seems...expensive.
-  * apply MBT (alone): different algos different results, potentially
-  * combine PBT + MBT (MBT for only the _length_)
-
 
  -->
 
@@ -31,17 +18,24 @@ The first assignment goes out today: it's a homework, in Python. If you're not f
 
 ## Where are we going?
 
-We'll talk about more than just software soon. For now, let's go back to testing.
+We'll talk about more than just software soon. For now, let's go back to testing. Most of us have learned how to write test cases. Given an input, here's the output to expect. Tests are a kind of pointwise \emph{specification}; a partial one, and not great for fully describing what you want, but a kind of specification nonetheless. They're cheap, non-trivially useful, and better than nothing.
 
-Most of us have learned how to write test cases. Given an input, here's the output to expect. We talked a bit [last time](./manifesto.md) about how tests aren't always good enough: they carry our biases, they can't cover an infinite input space, etc. But even more, they're not always adequate carriers of intent: if I write `assert median([1,2,3]) == 2`, what exactly is the behavior of the system I'm trying to confirm? Surely I'm not writing the test because I care specifically about `[1,2,3]` only, and not about `[3,4,5]` in the same way? Maybe there was some broader aspect, some _property_ of median I cared about when I wrote that test. What do you think it was? What makes an implementation of `median` correct?
+We talked a bit [last time](./manifesto.md) about how tests aren't always good enough: they carry our biases, they can't cover an infinite input space, etc. But even more, they're not always adequate carriers of intent: if I write `assert median([1,2,3]) == 2`, what exactly is the behavior of the system I'm trying to confirm? Surely I'm not writing the test because I care specifically about `[1,2,3]` only, and not about `[3,4,5]` in the same way? Maybe there was some broader aspect, some _property_ of median I cared about when I wrote that test. What do you think it was? What makes an implementation of `median` correct?
 
 <details>
 <summary>Think, then click!</summary>
+
 There might be many things! One particular idea is that, if the input list has odd length, the median needs to be an element of the list. 
+
 </details>
-</br>
 
 There isn't always an easy-to-extract property for every unit test. But this idea---of encoding _goals_ instead of specific behaviors---forces us to start thinking critically about _what we want_ from a system and helps us to express it in a way that others (including, perhaps, LLMs) can use. It's only a short hop from there to some of the real applications we talked about last time, like verifying firewalls or modeling the Java type system.
+
+~~~admonish note title="Sometimes, you can test exhaustively!"
+Sometimes the input space is small enough that exhaustive testing works well. This blog post, entitled ["There are only four billion floats"](https://news.ycombinator.com/item?id=34726919) is an example.
+
+Notice that this, too, is a different kind from testing from what you're used to.
+~~~
 
 ## A New Kind of Testing
 
@@ -126,10 +120,10 @@ Here's a sketch of an `is_valid` function for cheapest path:
 ```
 isValid : input: (graph, vertex, vertex), output: list(vertex) -> bool
   returns true IFF:
-    (1) cost(output) is cost(trustedImplementation(output))
+    (1) output.cost == trustedImplementation(input).cost
     (2) every vertex in output is in input's graph
     (3) every step in output is an edge in input
-    ...
+    ... and so on ...
 ```
 
 </details>
@@ -165,7 +159,7 @@ Random inputs are used for many purposes in software engineering: "fuzz testing"
 
 Concretely:
 
-![](https://i.imgur.com/gCGDK6m.jpg)
+![A diagram of property-based testing. A random input generator, plus some manually-chosen inputs, are sent to the implementation under test. The outputs are then run through the validator function.](https://i.imgur.com/gCGDK6m.jpg)
 
 It's important to note that some creativity is still involved here: you need to come up with an `is_valid` function (the "property"), and you'll almost always want to create some hand-crafted inputs (don't trust a random generator to find the subtle corner cases you already know about!) The strength of this approach lies in its resilience against problems with multiple correct answers, and in its ability to _mine for bugs while you sleep_. Did your random testing find a bug? Fix it, and then add that input to your list of regression tests. Rinse, repeat.
 
@@ -173,7 +167,15 @@ If we were still thinking in terms of traditional test cases, this would make no
 
 ## Hypothesis
 
-There are PBT libraries for most every popular language. For your homework, you'll be using a library for Python called Hypothesis. I want to spend the rest of class stepping you through using the library. Let's test a function in Python itself: the `median` function in the `statistics` library, which we began this chapter with. What are some important properties of `median`?
+There are PBT libraries for most every popular language. For your homework, you'll be using a library for Python called [Hypothesis](https://hypothesis.readthedocs.io/en/latest/index.html). Hypothesis has many helper functions to make generating random inputs relatively easy.  I want to spend the rest of class stepping you through using the library. Let's test a function in Python itself: the `median` function in the `statistics` library, which we began this chapter with. What are some important properties of `median`?
+
+~~~admonish note title="CSCI 1710: LLMs and Testing"
+We're all going to be using LLMs to generate code in the future. But (like humans) LLMs aren't infallable. Knowing how to test will be even more important than ever. That's why your first homework in 1710 starts by asking you to generate code using an LLM of your choice, such as ChatGPT. Then, you'll use property-based testing to assess its correctness. 
+
+To be clear, **you will not be graded on the correctness of the code you prompt an LLM to generate**. Rather, you will be graded on how good your property-based testing is. 
+
+Later in the semester, you'll be using PBT again to test more complex software.
+~~~
 
 Now let's use Hypothesis to test at least one of those properties. We'll start with this template:
 
@@ -182,12 +184,17 @@ from hypothesis import given, settings
 from hypothesis.strategies import integers, lists
 from statistics import median
 
-@given(lists(integers()))
+# Tell Hypothesis: inputs for the following function are non-empty lists of integers
+@given(lists(integers(), min_size=1)) 
+# Tell Hypothesis: run up to 500 random inputs
 @settings(max_examples=500)
-def test_python_median(l):    
+def test_python_median(input_list):    
     pass
 
-if __name__ == "__main__":
+# Because of how Python's imports work, this if statement is needed to prevent 
+# the test function from running whenever a module imports this one. This is a 
+# common feature in Python modules that are meant to be run as scripts. 
+if __name__ == "__main__": # ...if this is the main module, then...
     test_python_median()
 
 ```
@@ -195,12 +202,13 @@ if __name__ == "__main__":
 Let's start by filling in the _shape_ of the property-based test case:
 
 ```python
-def test_python_median(l):    
+def test_python_median(input_list):    
     output_median = median(input_list) # call the implementation under test
     print(f'{input_list} -> {output_median}') # for debugging our property function
     if len(input_list) % 2 == 1:
         assert output_median in input_list 
     # The above checks a conditional property. But what if the list length isn't even?
+    #   (and can we write a stronger property, regardless?)
     # ...
 ```
 
