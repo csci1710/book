@@ -1,4 +1,9 @@
-# Introduction to Modeling 
+# Introduction to Modeling (Part 1)
+
+<!-- FLOW:
+  - Monday: get to boards, wellformed, winning
+  - Wednesday: get to at least one possible move predicate, initial state
+  - Friday: steps -- do we want to do finite traces yet or not? -->
 
 <!-- **TODO: preamble on modeling from docs; there's a lot of overlap with the docs actually** --> 
 
