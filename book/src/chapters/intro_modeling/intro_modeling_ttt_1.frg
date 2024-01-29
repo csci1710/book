@@ -18,6 +18,28 @@ pred wellformed[b: Board] {
 -- Uncomment to run
 -- run { some b: Board | wellformed[b]} 
 
+-- Let's write two _tests_ for this predicate
+pred all_wellformed { all b: Board | wellformed[b]}
+test suite for wellformed { 
+  example firstRowX_wellformed is {all_wellformed} for {
+    Board = `Board0 
+    X = `X      O = `O 
+    Player = X + O
+    `Board0.board = (0, 0) -> `X +
+                    (0, 1) -> `X + 
+                    (0, 2) -> `X 
+  }
+
+  example off_board_not_wellformed is {not all_wellformed} for {
+    Board = `Board0 
+    X = `X      O = `O 
+    Player = X + O
+    `Board0.board = (-1, 0) -> `X +
+                    (0, 1) -> `X + 
+                    (0, 2) -> `X 
+  }
+}
+
 
 pred starting[s: Board] {
   all row, col: Int | 

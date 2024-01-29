@@ -5,9 +5,32 @@
   - Wednesday: get to at least one possible move predicate, initial state
   - Friday: steps -- do we want to do finite traces yet or not? -->
 
-<!-- **TODO: preamble on modeling from docs; there's a lot of overlap with the docs actually** --> 
-
 Today's livecode is [here](./intro_modeling_ttt_1.frg).
+
+## What's a Model? 
+
+## Models
+
+A **model** is a _representation_ of a system that faithfully includes some but not all of the system's complexity. There are many different ways to model a system, all of which have different advantages and disadvantages. Think about what a car company does before it produces a new car design. Among other things, it creates multiple models. E.g.,
+* it models the car in some computer-aided design tool; and then
+* creates a physical model of the car, perhaps with clay, for testing in wind tunnels etc.
+
+There may be many different models of a system, all of them focused on something different. As the statisticians say, "all models are wrong, but some models are useful". Learning how to model a system is a key skill for engineers, not just within "formal methods". Abstraction is one of the key tools in Computer Science, and modeling lies at the heart of abstraction.
+
+In this course, **the models we build aren't inert**; we have tools that we can use the explore and analyze them!
+
+### Don't Be Afraid of Imperfect Representations
+
+_We don't need to fully model a system to be able to make useful inferences_. We can simplify, omit, and abstract concepts/attributes to make models that approximate the system while preserving the fundamentals that we're interested in. 
+
+**EXERCISE:** If you've studied physics, there's a great example of this in statics and dynamics. Suppose I drop a coin from the top of the science library, and ask you what its velocity will be when it hits the ground. Using the methods you learn in beginning physics, what's something you usefully _disregard_?
+
+<details>
+<summary>Think, then click!</summary>
+
+Air resistance! Friction! We can still get a reasonable approximation for many problems without needing to include that. (And advanced physics adds even more factors that aren't worth considering at this scale.) The model without friction is often enough.
+
+</details>
 
 ## Tools, Documentation, and Supplemental Reading
 
@@ -18,6 +41,8 @@ This week will be a sort of "whirlwind tour" of Forge. We'll cover more in futur
 ### Forge Updates
 
 We'll be updating Forge regularly; **expect an update roughly every week**. Sometimes we may update more often to resolve issues, etc. or less often if no changes are needed. Updates will be announced on EdStem, and each update will have a new version number. **Please keep Forge updated** and include your version number in questions or bug reports.
+
+There will be a Forge update coming this week by Wednesday morning, before class; you'll use Forge for the first time in this week's lab. 
 
 ## Systems vs. Models (and Implementations)
 
@@ -41,11 +66,13 @@ What are the essential concepts in a game of tic-tac-toe?
 
 <details>
 <summary>Think, then click!</summary>
+
 We might list:
 - the players `X` and `O`;
 - the 3-by-3 game board, where players can put their marks;
 - the idea of whose turn it is at any given time; and
 - the idea of who has won the game at any given time.    
+
 </details>
 
 Let's start writing our model in Forge! We certainly need a way to talk about the noughts and crosses themselves:
@@ -146,6 +173,46 @@ For now, we'll use the "Table" visualization---which isn't ideal either, but we'
 This instance contains a single board, and it has 9 entries. Player `O` has moved in all of them (the `0` suffix of `O0` in the display is an artifact of how Forge's engine works; ignore it for now). It's worth noticing two things:
 * This board doesn't look quite right: player `O` occupies all the squares. We might ask: has player `O` been cheating? But the fact is that this board _satisfies the constraints we have written so far_. Forge produces it simply because our model isn't yet restrictive enough, and for no other reason. "Cheating" doesn't exist yet. 
 * We didn't say _how_ to find that instance. We just said what we wanted, and the tool performed some kind of search to find it. So far the objects are simple, and the constraints basic, but hopefully the power of the idea is coming into focus. 
+
+### Testing Our Predicate
+
+The predicate we just wrote is essentially a function that returns true or false for whichever instance we're in. Thus, we can write tests for it the same way we would for any other boolean-valued function, by writing _examples_:
+
+```forge,editable
+-- Helper to make examples about a single predicate
+pred all_wellformed { all b: Board | wellformed[b]}
+
+-- suite to help group tests
+test suite for wellformed { 
+  -- all_wellformed should be _true_ for the following instance
+  example firstRowX_wellformed is {all_wellformed} for {
+    Board = `Board0 
+    X = `X      O = `O 
+    Player = X + O
+    `Board0.board = (0, 0) -> `X +
+                    (0, 1) -> `X + 
+                    (0, 2) -> `X 
+  }
+
+  -- all_wellformed should be _false_ for the following instance
+  example off_board_not_wellformed is {not all_wellformed} for {
+    Board = `Board0 
+    X = `X      O = `O 
+    Player = X + O
+    `Board0.board = (-1, 0) -> `X +
+                    (0, 1) -> `X + 
+                    (0, 2) -> `X 
+  }
+}
+```
+
+Notice that we've got a test thats a _positive_ example and another test that's a _negative_ example. We want to make sure to exercise both cases, or else "always true" or "always" false could pass our suite. 
+
+We'll talk more about testing soon, but for now be aware that writing some examples for your predicates can help you avoid bugs later on. 
+
+~~~admonish note title="Reducing example verbosity" 
+Forge has some syntax that can help reduce the verbosity of examples like this, but we'll cover it later on.
+~~~
 
 ### Modeling More Concepts: Starting Boards, Turns, and Winning
 
