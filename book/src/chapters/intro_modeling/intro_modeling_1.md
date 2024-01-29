@@ -183,7 +183,6 @@ The predicate we just wrote is essentially a function that returns true or false
 pred all_wellformed { all b: Board | wellformed[b]}
 
 -- suite to help group tests
-test suite for wellformed { 
   -- all_wellformed should be _true_ for the following instance
   example firstRowX_wellformed is {all_wellformed} for {
     Board = `Board0 
@@ -203,7 +202,6 @@ test suite for wellformed {
                     (0, 1) -> `X + 
                     (0, 2) -> `X 
   }
-}
 ```
 
 Notice that we've got a test thats a _positive_ example and another test that's a _negative_ example. We want to make sure to exercise both cases, or else "always true" or "always" false could pass our suite. 
