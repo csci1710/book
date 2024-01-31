@@ -127,7 +127,7 @@ run {
 
 You might notice that because of this, some traces are excluded. That's because `next is linear` forces exact bounds on `Board`. More on this next time.
 
-## Testing Models: Examples
+<!-- ## Testing Models: Examples
 
 Forge has a number of features that make it easier to _test_ your models. Here's one: `example`. We'll make a new file for our tests called `feb03_ttt.tests.frg` and open the model there. 
 
@@ -163,7 +163,7 @@ example middleRowWellformed is {allWellformed} for {
 
 This is a bit verbose, but it completely defines an instance with 1 board and 3 moves placed. You can read the `board =` line as saying, for `Board0`, there's a dictionary with these 3 entries.
 
-More on testing next time!
+More on testing next time! -->
 
 ## Running And The Evaluator
 

@@ -1,8 +1,8 @@
 # Introduction to Modeling (Part 1)
 
 <!-- FLOW:
-  - Monday: get to boards, wellformed, winning
-  - Wednesday: get to at least one possible move predicate, initial state
+  - Monday: get to boards, wellformed, example
+  - Wednesday: winning, at least one possible move predicate, initial state
   - Friday: steps -- do we want to do finite traces yet or not? -->
 
 Today's livecode is [here](./intro_modeling_ttt_1.frg).
@@ -211,129 +211,6 @@ We'll talk more about testing soon, but for now be aware that writing some examp
 ~~~admonish note title="Reducing example verbosity" 
 Forge has some syntax that can help reduce the verbosity of examples like this, but we'll cover it later on.
 ~~~
-
-### Modeling More Concepts: Starting Boards, Turns, and Winning
-
-#### Starting Boards
-
-What would it mean to be a _starting state_ in a game? The board is empty:
-
-```forge,editable
-pred starting[s: Board] {
-  all row, col: Int | 
-    no s.board[row][col]
-}
-```
-
-#### Turns
-
-How do we tell when it's a given player's turn? It's `X`'s turn when there are the same number of each mark on the board:
-
-```forge,editable
-pred XTurn[s: Board] {
-  #{row, col: Int | s.board[row][col] = X} =
-  #{row, col: Int | s.board[row][col] = O}
-}
-```
-
-The `{row, col: Int | ...}` syntax means a set comprehension, and describes the set of row-column pairs where the board contains `X` (or `O`). The `#` operator gives the size of these sets, which we then compare.
-
-**Question**: Is it enough to say that `OTurn` is the negation of `XTurn`? 
-
-No! At least not in the model as currently written. If you're curious to see why, run the model and look at the instances produced. Instead, we need to say something like this:
-
-```forge,editable
-pred OTurn[s: Board] {
-  #{row, col: Int | s.board[row][col] = X} =
-  add[#{row, col: Int | s.board[row][col] = O}, 1]
-}
-```
-
-Forge supports arithmetic operations on integers like `add`. While it doesn't matter for this model yet, addition (and other operations) can overflow according to 2's complement arithmetic. For example, if we're working with 4-bit integers, then `add[7,1]` will be `-8`. You can experiment with this in the visualizer's _evaluator_, which we'll be using a lot after the initial modeling tour is done.
-
-(Warning: don't try to use `+` for addition in Forge! Use `add`; we'll explain why later.)
-
-#### Winning the Game
-
-What does it mean to _win_? A player has won on a given board if:
-* they have placed their mark in all 3 columns of a row; 
-* they have placed their mark in all 3 rows of a column; or
-* they have placed their mark in all 3 squares of a diagonal.
-
-We'll express this in a `winner` predicate that takes the current board and a player name. Let's also define a couple helper predicates along the way:
-
-```forge,editable
-pred winRow[s: Board, p: Player] {
-  -- note we cannot use `all` here because there are more Ints  
-  some row: Int | {
-    s.board[row][0] = p
-    s.board[row][1] = p
-    s.board[row][2] = p
-  }
-}
-
-pred winCol[s: Board, p: Player] {
-  some column: Int | {
-    s.board[0][column] = p
-    s.board[1][column] = p
-    s.board[2][column] = p
-  }      
-}
-
-pred winner[s: Board, p: Player] {
-  winRow[s, p]
-  or
-  winCol[s, p]
-  or 
-  {
-    s.board[0][0] = p
-    s.board[1][1] = p
-    s.board[2][2] = p
-  }
-  or
-  {
-    s.board[0][2] = p
-    s.board[1][1] = p
-    s.board[2][0] = p
-  }  
-}
-```
-
-We now have a fairly complete model for a single tic-tac-toe board. Before we progress to games, let's decide how to fix the issue we saw above, where our model allowed for boards where a player has moved too often.
-
-Should we add something like `OTurn[s] or XTurn[s]` to our wellformedness predicate? If we then enforced wellformedness for all boards, that would indeed exclude such instances---but at some risk, depending on how we intend to use the `wellformed` predicate. There are a few answers...
-* If we were generating _valid boards_, a cheating state might well be spurious, or at least undesirable. In that case, we might prevent such states in `wellformed` and rule it out. 
-* If we were generating (not necessarily valid) boards, being able to see a cheating state might be useful. In that case, we'd leave it out of `wellformed`.
-* If we're interested in _verification_, e.g., we are asking whether the game of Tic-Tac-Toe enables ever reaching a cheating board, we shouldn't add `not cheating` to `wellformed`---at least, not so long as we're enforcing `wellformed`, or else Forge will never find us a counterexample! 
-
-**IMPORTANT:** In that last setting, notice the similarity between this issue and what we do in property-based testing. Here, we're forced to distinguish between what a reasonable _board_ is (analogous to the generator's output in PBT) and what a reasonable _behavior_ is (analogous to the validity predicate in PBT). One narrows the scope of possible worlds to avoid true "garbage"; the other checks whether the system behaves as expected in one of those worlds.
-
-We'll come back to this later, when we've modeled full games. For now, let's separate our goal into a new predicate called `balanced`, and add it to our `run` command above:
-
-```forge,editable
-pred balanced[s: Board] {
-  XTurn[s] or OTurn[s]
-}
-run { some b: Board | wellformed[b] and balanced[b]} 
-```
-
-To view instances for this new `run` command, select the Execute menu and then `Run run$2`.
-
-
-If we click the "Next" button a few times, we see that not all is well: we're getting boards where `wellformed` is violated (e.g., entries at negative rows, or multiple moves in one square). 
-
-We're getting this because of how the `run` was phrased. We said to find an instance where _some board_ was well-formed and valid, not one where _all boards_ were. By default, Forge will find instances with up to 4 `Boards`. So we can fix the problem either by telling Forge to find instances with only 1 Board:
-
-```forge,editable
-run { some b: Board | wellformed[b] and balanced[b]} 
-for exactly 1 Board
-```
-
-or by saying that all boards must be well-formed and balanced:
-
-```forge,editable
-run { all b: Board | wellformed[b] and balanced[b]} 
-```
 
 ## Reflection: Implementation vs. Model
 
