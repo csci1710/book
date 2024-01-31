@@ -1,5 +1,7 @@
 # Introduction to Modeling (Part 2)
 
+The livecode is [here](./intro_modeling_ttt_2_inclass.frg).
+
 ## Logistics
 
 The first lab starts today! The starter model is a _variant_ of the livecode that we produced in class. It also contains a possible version of the `move` predicate we started writing. 
