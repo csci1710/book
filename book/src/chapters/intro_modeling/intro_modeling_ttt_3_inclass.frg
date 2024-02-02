@@ -17,17 +17,21 @@ Concepts we might want to include in the model:
 abstract sig Player {} 
 one sig X, O extends Player {} 
 
-one sig Board {
+sig Board {
     -- partial function from pairs of Int to Player
     -- read the inner -> as , 
     board: pfunc Int -> Int -> Player
 }
 
+-- AFTER CLASS QUESTION: yes you can define global constants like this:
+fun MIN: one Int { 0 }
+fun MAX: one Int { 2 }
+
 -- predicate: rule out "garbage"
 pred wellformed {
     all b: Board | { 
         all row, col: Int | {
-            (row < 0 or row > 2 or 
+            (row < MIN or row > 2 or 
             col < 0 or col > 2) implies
                 no b.board[row][col]
     } }
@@ -121,6 +125,12 @@ pred move[pre: Board,
     turn = X implies xturn[pre]
     turn = O implies oturn[pre]
 
+    -- enforce valid move index
+    row >= 0 
+    row <= 2 
+    col >= 0
+    col <= 2
+
     -- balanced game
     -- game hasn't been won yet
     -- if it's a tie can't move 
@@ -141,12 +151,6 @@ pred move[pre: Board,
 -- Friday, Feb 02
 -------------------------------------
 
-
-
-
-
-
-
 -- What can we do with "move"?
 -- Preservation: 
 pred winningPreservedCounterexample {
@@ -155,14 +159,46 @@ pred winningPreservedCounterexample {
       move[pre, row, col, p, post]
     winning[pre, X]
     not winning[post, X]
+    //not winning[pre, O]
+    //(not winning[post, X] or winning[post, O])
   }
 }
-// run {
-//   wellformed -- assume all boards well-formed
-//   winningPreservedCounterexample
-// }
--- "unsatisfiable?"
+test expect {
+  winningPreserved: { 
+    wellformed
+    winningPreservedCounterexample } is unsat
+}
 
 -- This gives Forge a visualizer script to automatically run, without requiring you
 -- to copy-paste it into the script editor. CHANGES WILL NOT BE REFLECTED IN THE FILE!
---option run_sterling "ttt_viz.js"
+option run_sterling "ttt_viz.js"
+
+
+// run {
+//     wellformed 
+//     some pre, post: Board | {
+//         some row, col: Int, p: Player | 
+//             move[pre, row, col, p, post]
+//     }
+// }
+
+one sig Game {
+    first: one Board, 
+    next: pfunc Board -> Board
+}
+pred game_trace {
+    initial[Game.first]
+    all b: Board | { some Game.next[b] implies {
+        some row, col: Int, p: Player | 
+            move[b, row, col, p, Game.next[b]]
+        -- TODO: ensure X moves first
+    }}
+}
+run { game_trace } for 10 Board for {next is linear}
+// ^ the annotation is faster than the constraint
+
+
+
+
+
+
