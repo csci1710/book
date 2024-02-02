@@ -33,10 +33,7 @@ pred wellformed {
     } }
 }
 
-run {some b: Board | wellformed[b]}
-
 -- show me a world in which...
--- run {some b: Board | wellformed[b]}
 -- run {wellformed}
 
 example firstRowX_wellformed is {wellformed} for {
@@ -59,7 +56,7 @@ example offBoardX_not_wellformed is {not wellformed} for {
 }
 
 -------------------------------------
--- Wednesday, Jan 21
+-- Wednesday, Jan 31
 -------------------------------------
 
 /* An initial board */
@@ -138,6 +135,34 @@ pred move[pre: Board,
     all row2: Int, col2: Int | (row!=row2 or col!=col2) implies {
         post.board[row2][col2] = pre.board[row2][col2]
     }
-
-
 }
+
+-------------------------------------
+-- Friday, Feb 02
+-------------------------------------
+
+
+
+
+
+
+
+-- What can we do with "move"?
+-- Preservation: 
+pred winningPreservedCounterexample {
+  some pre, post: Board | {
+    some row, col: Int, p: Player | 
+      move[pre, row, col, p, post]
+    winning[pre, X]
+    not winning[post, X]
+  }
+}
+// run {
+//   wellformed -- assume all boards well-formed
+//   winningPreservedCounterexample
+// }
+-- "unsatisfiable?"
+
+-- This gives Forge a visualizer script to automatically run, without requiring you
+-- to copy-paste it into the script editor. CHANGES WILL NOT BE REFLECTED IN THE FILE!
+--option run_sterling "ttt_viz.js"

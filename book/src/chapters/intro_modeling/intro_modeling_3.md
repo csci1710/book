@@ -1,10 +1,8 @@
 # 2023.5 Introduction to Modeling (Part 3)
 
-**THESE NOTES ARE IN DRAFT FORM, AND MAY CHANGE BEFORE THE CORRESPONDING CLASS MEETING.**
+Today's livecode is [here](./intro_modeling_ttt_3_inclass.frg).
 
 <!-- this is post-lab, so move is written, they have some experience with the model** -->
-
-<!-- NEED TO MAKE ROOM FOR A TEST OR TWO; USE EXAMPLE AND ASSERT -->
 
 Let's continue where we left off. In your lab this week, you probably saw a finished `move` predicate that was _very_ similar to the one we started writing. 
 
@@ -181,6 +179,22 @@ We'll talk more about visualization scripts later. For now, here's an example fr
 const d3 = require('d3')
 d3.selectAll("svg > *").remove();
 
+/*
+  Visualizer for the in-class tic-tac-toe model. This is written in "raw" 
+  D3, rather than using our helper libraries. If you're familiar with 
+  visualization in JavaScript using this popular library, this is how you 
+  would use it with Forge.
+
+  Note that if you _aren't_ familiar, that's OK; we'll show more examples 
+  and give more guidance in the near future. The helper library also makes 
+  things rather easier. 
+
+  TN 2024
+
+  Note: if you're using this style, the require for d3 needs to come before anything 
+  else, even comments.
+*/
+
 function printValue(row, col, yoffset, value) {
   d3.select(svg)
     .append("text")
@@ -230,7 +244,7 @@ Type in something like `some s: State | winner[s, X]`. Forge should give you eit
 
 ### Optimizing
 
-You might notice that this model takes a while to run (30 seconds on my laptop). Why might that be? Let's re-examine our bounds and see if there's anything we can adjust. In particular, here's what the evaluator says we've got for integers:
+You might notice that this model takes a while to run, after we start reasoning about full games. Why might that be? Let's re-examine our bounds and see if there's anything we can adjust. In particular, here's what the evaluator says we've got for integers:
 
 ![](https://i.imgur.com/UJJUqdB.png)
 
