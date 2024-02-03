@@ -1,4 +1,4 @@
-# Introduction to Modeling (Part 1)
+# Introduction to Modeling (Part 1, Basics)
 
 <!-- FLOW:
   - Monday: get to boards, wellformed, example

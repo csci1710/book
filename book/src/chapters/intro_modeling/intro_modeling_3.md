@@ -1,4 +1,4 @@
-# 2023.5 Introduction to Modeling (Part 3)
+# 2023.5 Introduction to Modeling (Part 3, Transitions)
 
 Today's livecode is [here](./intro_modeling_ttt_3_inclass.frg).
 

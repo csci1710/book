@@ -1,4 +1,4 @@
-# Introduction to Modeling (Part 2)
+# Introduction to Modeling (Part 2, Transitions)
 
 The livecode is [here](./intro_modeling_ttt_2_inclass.frg).
 

@@ -1,17 +1,12 @@
-# 2023.7: Modeling Tips, Answering Questions
+# 2023.5: Intro to Modeling (Part 4, FAQ)
 
-###### tags: `Tag(sp23)`
+**These notes are under construction. Expect edits up until after class.**
 
 Today we're going to answer some of the most pertinent questions from Monday's notes (which we didn't have time to get to). Then we'll move on to more modeling in tic-tac-toe. 
 
-The next homework will contain some classical river-crossing puzzles (think: there's a farmer, who needs to get some animals across a river...) You'll use the same state idiom there that we're learning in the tic-tac-toe context. 
-
-
-Today's exercise form is [here](https://forms.gle/uFoUXvm47ztd2Hpo8). You can also find the exercises in this pinned [EdStem thread](https://edstem.org/us/courses/31922/discussion/2543864).
-
-## Logistics
-
-Reminder to fill out the GPT-3 form!
+~~~admonish note title="(Brown CSCI 1710) Logistics"
+We'll be starting in-class exercises soon. These are graded for participation, but are a significant part of your grade. 
+~~~
 
 ## A Visual Model of Instances 
 
@@ -23,7 +18,9 @@ Once the bounded search space has been established, Forge uses the constraints y
 
 This is one reason why the compiler is a bit less smart than we'd like. The engine uses bounds and constraints very differently, and inferring constraints is often less efficient than inferring bounds.
 
-## Nulls in Forge
+## "Nulls" in Forge
+
+In Forge, there is a special value called `none`. It's analogous (but not exactly the same) as a `null` in languages like Java. 
 
 Suppose I added this predicate to our `run` command in the tic-tac-toe model:
 
@@ -31,17 +28,17 @@ Suppose I added this predicate to our `run` command in the tic-tac-toe model:
 pred myIdea {
     all row1, col1, row2, col2: Int | 
         (row1 != row2 or col1 != col2) implies
-            Trace.initialState.board[row1][col1] != 
-            Trace.initialState.board[row2][col2]
+            Game.initialState.board[row1][col1] != 
+            Game.initialState.board[row2][col2]
 }
 ```
 
 I'm trying to express that every entry in the board is different. This should easily be true about the initial board, as there are no pieces there.
 
-For context, recall that we had defined a `Trace` sig earlier:
+For context, recall that we had defined a `Game` sig earlier:
 
 ```alloy
-one sig Trace {
+one sig Game {
   initialState: one State,
   nextState: pfunc State -> State
 }
@@ -51,28 +48,30 @@ What do you think would happen?
 
 <details>
 <summary>Think (or try it in Forge) then click!</summary>
+
 It's very likely this predicate would be unsatisfiable, given the constraints on the initial state. Why? 
     
-Because null equals itself. In Forge, null is called `none`. We can check this:
+Because `none` equals itself! We can check this:
     
 ```alloy
-    test expect {
-        nullity: {none != none} is unsat
-    } 
+test expect {
+    nullity: {none != none} is unsat
+} 
 ```    
     
-Thus, when you're writing constraints like the above, you need to watch out for `none`: _every_ cell in the initial board is equal to _every_ other cell!
+Thus, when you're writing constraints like the above, you need to watch out for `none`: the value for _every_ cell in the initial board is equal to the value for _every_ other cell!
 </details>
 
-The `none` value in Forge has at least one more subtlety: `none` is "reachable" from everything. That has an impact even if we don't use `none` explicitly. If I write something like: `reachable[p.spouse, Nim, parent1, parent2]` I'm asking whether, for some person `p`, their spouse is an ancestor of `Nim`. If `p` doesn't have a spouse, then `p.spouse` is `none`, and so this predicate would yield true for `p`.
 
-## Some Versus Some
+~~~admonish tip title="Reachability and none"
+The `none` value in Forge has at least one more subtlety: `none` is "reachable" from everything if you're using the built-in `reachable` helper predicate. That has an impact even if we don't use `none` explicitly. If I write something like: `reachable[p.spouse, Nim, parent1, parent2]` I'm asking whether, for some person `p`, their spouse is an ancestor of `Nim`. If `p` doesn't have a spouse, then `p.spouse` is `none`, and so this predicate would yield true for `p`.
+~~~
+
+## Some as a Quantifier Versus Some as a Multiplicity
 
 The keyword `some` is used in 2 different ways in Forge:
 * it's a _quantifier_, as in `some s: State, some p: Player | winner[s, p]`, which says that somebody has won in some state; and
-* it's a _multiplicity operator_, as in `some Traces.initialState.board[1][1]`, which says that that cell of the initial board is populated. 
-
-We kept the same syntax as Alloy on this for backward compatability. The two variants are similar enough that I wanted to call the difference out, however. 
+* it's a _multiplicity operator_, as in `some Game.initialState.board[1][1]`, which says that that cell of the initial board is populated. 
 
 ## Implies vs. Such That
 
@@ -84,15 +83,15 @@ If you want to _further restrict_ the values used in an `all`, you'd use `implie
 
 **Technical aside:** The type designation on the variable can be interpreted as having a character similar to these add-ons: `and` (for `some`) and `implies` (for `all`). E.g., "there exists some `row` such that `row` is an integer and ...", or "In all `row`s, if `row` is an integer, it holds that...".
 
-## There Exists `some` Object vs. Some Instance
+## There Exists `some` *Atom* vs. Some *Instance*
 
 Forge searches for instances that satisfy the constraints you give it. Every `run` in Forge is about _satisfiability_; answering the question "Does there exist an instance, such that...". 
 
-Crucially, you cannot write a Forge constraint that quantifies over _instances_ themselves. You can ask Forge "does there exist an instance such that...", which is pretty flexible on its own. E.g., if you want to check that something holds of _all_ instances, you can ask Forge to find counterexamples. This is how `assert ... is necessary for ...` is implemented, and how the examples from last week worked.
+Crucially, **you cannot write a Forge constraint that quantifies over _instances_ themselves**. You can ask Forge "does there exist an instance such that...", which is pretty flexible on its own. E.g., if you want to check that something holds of _all_ instances, you can ask Forge to find counterexamples. This is how `assert ... is necessary for ...` is implemented, and how the examples from last week worked.
 
 ## One Versus Some
 
-The `one` quantifier is for saying "there exists a UNIQUE ...". As a result, there are hidden constraints embedded into its use. `one x: A | myPred[x]` really means, roughly, `some x: A | myPred[x] and all x2: A | not myPred[x]`. This means that interleaving `one` with other quantifiers can be subtle; I try not to use it for that reason.
+The `one` quantifier is for saying "there exists a UNIQUE ...". As a result, there are hidden constraints embedded into its use. `one x: A | myPred[x]` really means, roughly, `some x: A | myPred[x] and all x2: A | not myPred[x]`. This means that interleaving `one` with other quantifiers can be subtle; for that reason, we won't use it except for very simple constraints.
 
 If you use quantifiers other than `some` and `all`, beware. They're convenient, but various issues can arise.
 
