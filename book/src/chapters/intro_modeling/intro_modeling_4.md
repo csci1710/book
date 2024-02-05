@@ -6,6 +6,12 @@ We'll be starting in-class exercises soon. These are graded for participation, b
 
 Today we're going to answer some anticipated questions Then we'll move on to more modeling in tic-tac-toe. 
 
+~~~admonish note title="For Brown CSCI 1710"
+You might have seen on your homework that we're asking you to generate a family tree demonstrating how someone can be their own "grandparent", without also being their own "ancestor". This might, quite reasonably, sound contradictory.
+
+One of the tricky things about modeling is that often you're trying to formalize something informal. Is it possible that one of those statements is about biology, and one is a social definition, which might be a bit more broad? 
+~~~
+
 ## A Visual Sketch of How Forge Searches
 
 There are infinitely many potential family tree instances based on the model you're working on in this week's homework. But Forge needs to work with a finite search space, which is where the bounds of a `run` come in; they limit the set of instances Forge will even consider. Constraints you write are _not yet involved_ at this point.
