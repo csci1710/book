@@ -6,9 +6,9 @@ We'll be starting in-class exercises soon. These are graded for participation, b
 
 Today we're going to answer some anticipated questions Then we'll move on to more modeling in tic-tac-toe. 
 
-## A Visual Model of Instances 
+## A Visual Sketch of How Forge Searches
 
-There are infinitely many potential family trees based on the model you're working on in this week's homework. But Forge needs to work with a finite search space, which is where the bounds of a `run` come in; they limit the set of instances Forge will even consider. Constraints you write are _not yet involved_ at this point.
+There are infinitely many potential family tree instances based on the model you're working on in this week's homework. But Forge needs to work with a finite search space, which is where the bounds of a `run` come in; they limit the set of instances Forge will even consider. Constraints you write are _not yet involved_ at this point.
 
 Once the bounded search space has been established, Forge uses the constraints you write to find satisfying instances within the bounded search space.
 
