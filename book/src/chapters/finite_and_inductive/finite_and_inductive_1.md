@@ -1,6 +1,6 @@
 # 2023.7: Finite Traces: Doing Nothing (Productively)
 
-**These notes are under construction. Expect edits up until after class.**
+**THESE NOTES ARE BEING MODIFIED UP UNTIL CLASS; EXPECT CHANGES**
 
 ~~~admonish note title="How to contextualize homeworks"
 The Forge homeworks have at least three learning goals, each of which represents a different _layer_ of the course content:
@@ -10,6 +10,8 @@ The Forge homeworks have at least three learning goals, each of which represents
 
 All of these will be vital when we get to the self-directed projects (and the first is coming fairly soon).
 ~~~
+
+Today we'll return to tic-tac-toe to do more advanced modeling with traces. We'll also use asserts more generally. 
 
 <!-- ### What is the role of a wheat?
 
@@ -174,7 +176,35 @@ run {
     
 </details>
 
-We could also write this using an assertion, but since we knew in advance it was probably an incorrect belief, I chose to write it directly as a counter-example search.
+We could also write this using an assertion (which would fail):
+
+```
+pred moveInMiddle { 
+  wellformed
+  traces
+  let second = Trace.next[Trace.initialState] |
+    second.board[1][1] = X
+}
+pred xWins {
+  all s: State | not winner[s, X]
+}
+assert moveInMiddle is sufficient for xWins 
+  for exactly 10 State for {next is linear}
+```
+
+---
+
+You might wonder how `assert` can be used for predicates that take arguments. For example, suppose we had defined `wellformed` to take a board, rather than quantifying over `all` boards in its body. The `assert` syntax can take (one layer of) quantification. Would `move` preserve `wellformed`-ness?
+
+Here's how we'd write that. Notice we don't even need to use the `Game` here (and thus don't need to give the `is linear` annotation)! We're just asking Forge about 2 boards at a time:
+
+```
+pred someMoveFromWF[pre, post: Board] { 
+  wellformed[pre]
+  some r, c: Int, p: Player | move[pre, r, c, p, post]
+}
+assert all pre,post: Board | move[pre,post] is sufficient for wellformed[post] 
+```
 
 ### Reminder: The Evaluator
 

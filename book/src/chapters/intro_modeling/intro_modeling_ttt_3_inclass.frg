@@ -194,11 +194,14 @@ pred game_trace {
         -- TODO: ensure X moves first
     }}
 }
-run { game_trace } for 10 Board for {next is linear}
+-- run { game_trace } for 10 Board for {next is linear}
 // ^ the annotation is faster than the constraint
 
+-----------------------------------
+-- Added 2/5/24, from EdStem thread
 
-
-
+-- Note I lowered the number of boards. We'll talk about why on Wednesday
+--assert game_trace is sufficient for wellformed
+--  for 5 Board for {next is linear}
 
 
