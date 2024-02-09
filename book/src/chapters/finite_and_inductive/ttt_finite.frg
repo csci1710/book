@@ -223,7 +223,72 @@ assert all b: Board |
   moved[b] is sufficient for didntDoNothing[b]
 // sufficient ~= implies
 // necessary ~= implies-in-reverse
-assert all b: Board | 
-  moved[b] is necessary for didntDoNothing[b]
--- ^ This fails, perhaps because the _final_ board won't 
---   be able to take either transition (perhaps)...
+
+// assert all b: Board | 
+//   moved[b] is necessary for didntDoNothing[b]
+// -- ^ This fails, perhaps because the _final_ board won't 
+// --   be able to take either transition (perhaps, but we didn't invoke traces)...
+//  ... Why DOES this fail?
+
+
+---------------------------------------------------------------
+-- Feb 9 -- more validation, assertions, inductive preservation
+---------------------------------------------------------------
+
+
+-- assertions (in many ways) generalize examples. the 3 tests below
+-- check for the same shape of behavior:
+
+-- Example (make sure to define *ALL SIGS AND FIELDS*):
+/*
+pred someOTurn {some b: Board | oturn[b]}
+example xMiddleOturn is {someOTurn} for {
+  Board = `Board0
+  Player = `X0 + `O0
+  X = `X0
+  O = `O0
+  `Board0.board =  (1, 1) -> `X0
+}
+
+-- Assertion (without variables):
+pred someXTurn {some b:Board | xturn[b]}
+pred emptySingleBoard {
+  one b: Board | true
+  all b: Board, r,c: Int | no b.board[r][c]
+}
+assert emptySingleBoard is sufficient for someXTurn 
+
+-- Assertion (with variables):
+pred emptyBoard[b: Board] { all r, c: Int | no b.board[r][c] }
+assert all b: Board | emptyBoard[b] is sufficient for xturn[b]
+
+-- This last assertion is nice and concise, but *ALSO* doesn't implicitly only 
+-- check situations where there is only one Board in the world... Another advantage
+-- of quantification!
+*/
+---------------
+
+
+
+
+
+-- Example: is it ever possible to reach an unbalanced state?
+/*
+-- Step 1: any initial states unbalanced? 
+assert all b: Board | initial[b] is sufficient for balanced[b]
+  for 1 Board, 3 Int
+
+-- Step 2: any legal transitions from a balanced board to an unbalanced board?
+pred moveFromBalanced[pre: Board, row, col: Int, p: Player, post: board] {
+  balanced[pre]
+  move[pre, row, col, p, post]
+}
+assert all pre, post: Board, row, col: Int, p: Player | 
+  moveFromBalanced[pre, row, col, p, post] is sufficient for balanced[post]
+    for 2 Board, 3 Int
+
+-- Note: we are able to get away with MUCH lower bounds using this technique. We don't need 
+-- Forge to generate whole game traces; rather, we are reasoning abstractly about whether 
+-- a single transition preserves balance. 
+
+*/
