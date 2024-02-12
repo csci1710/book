@@ -112,7 +112,7 @@ Because that would just be asking Forge to find us instances full of good states
 This simple example illustrates a **central challenge in software and hardware verification**. Given a discrete-event model of a system, how can we check whether all reachable states satisfy some property? In your other courses, you might have heard properties like this called _invariants_.
 
 One way to solve the problem _without_ the limitation of bounded-length traces goes something like this:
-* Step 1: sk Forge whether any starting states are bad states. If not, then at least we know that executions with no moves obey our invariant. (It's not much, but it's a start---and it's easy for Forge to check.)
+* Step 1: Ask Forge whether any starting states are bad states. If not, then at least we know that executions with no moves obey our invariant. (It's not much, but it's a start---and it's easy for Forge to check.)
 * Step 2: Ask Forge whether it's possible, in any good state, to transition to a bad state. 
  
 Consider what it means if both checks pass. We'd know that runs of length $0$ cannot involve a bad state. And since we know that good states can't transition to bad states, runs of length $1$ can't involve bad states either. And for the same reason, runs of length $2$ can't involve bad states, nor games of length $3$, and so on.

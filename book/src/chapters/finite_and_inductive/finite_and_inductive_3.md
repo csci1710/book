@@ -3,8 +3,9 @@
 **These notes are under construction. Expect edits up until after class.**
 
 **TODO: REVISE BELOW**
+**TODO: post CM idea thread** 
 
-You'll need [this exercise template](https://csci1710.github.io/2023/livecode/feb15_feb17_binarysearch.frg) for today and Friday.
+You'll need [this exercise template](./binarysearch_template.frg) for today and Friday.
 
 * Curiosity modeling signups are going out soon. [Read over others' ideas! Post your own!](https://edstem.org/us/courses/31922/discussion/2595510) I'm trying to reply as I can, but apologies if I don't get to you. Look for answers to similar ideas. 
 * There's a Forge update coming soon.
@@ -12,14 +13,47 @@ You'll need [this exercise template](https://csci1710.github.io/2023/livecode/fe
 
 ## Endorsed Ed Posts
 
-I endorse public posts where there's an answer I think could be broadly useful. E.g.,
+I endorse public posts where there's an answer I think could be broadly useful.
+
+
+
 * [What's a "vacuity check" test?](https://edstem.org/us/courses/31922/discussion/2594844)
 * [Bounds inconsistency detected](https://edstem.org/us/courses/31922/discussion/2590447)
 
-## Forge Reminders
 
-* Beware `one`. It's very convenient but dangerous. If you write `one a1, a2: Animal | ...` but the `...` is symmetric (that is, it doesn't care about which is `a1` and which is `a2`), then the entire constraint can't be satisfied except under very limited conditions---the assignment to the variables is _not_ unique!
-* Remember that instance blocks exactly define the value of every field and the objects in every sig. Only define a field once, use only a sig or field name on the left-hand side, and if you use sig names on the right-hand side, remember to define those sigs _beforehand_. 
+## Forge Performance
+
+Some of you encountered bad Forge performance in the n-queens lab. I think it's useful to discuss the problem briefly. Forge works by converting your model into a boolean satisfiability problem. That is, it builds a boolean circuit where inputs making the circuit true satisfy your model. But boolean circuits don't understand quantifiers, and so it needs to compile them out. 
+
+The compiler has a lot of clever tricks to make this fast, and we'll talk about some of them around mid-semester. But if it can't apply those tricks, it uses a basic idea: an `all` is just a big `and`, and a `some` is just a big `or`. And this very simply conversion process increases the size of the circuit exponentially in the depth of quantification. 
+
+Here is a perfectly reasonable and correct way to approach part of this week's lab:
+
+```alloy
+pred notAttacking {
+  all disj q1, q2 : Queen | {
+    some r1, c1, r2, c2: Int | {
+      // ...
+    } } }
+```
+
+The problem is: there are 8 queens, and 16 integers. It turns out this is a pathological case for the compiler, and it runs for a really long time. In fact, it runs for a long time even if we reduce the scope to 4 queens. The default `verbosity` option shows the blowup here, in "translation":
+
+```
+:stats ((size-variables 410425) (size-clauses 617523) (size-primary 1028) (time-translation 18770) (time-solving 184) (time-building 40)) :metadata ())
+#vars: (size-variables 410425); #primary: (size-primary 1028); #clauses: (size-clauses 617523)        
+Transl (ms): (time-translation 18770); Solving (ms): (time-solving 184)
+```
+
+The `time-translation` figure is the number of milliseconds used to convert the model to a boolean circuit. Ouch!
+
+Instead, we might try a different approach that uses fewer quantifiers. In fact, *we can write the constraint without referring to specific queens at all -- just 4 integers*. 
+
+```admonish hint title="How?"
+Does the identity of the queens matter at all, if they are in different squares?
+```
+
+If you encounter bad performance from Forge, this sort of branching blowup is a common cause, and can often be fixed by reducing quantifier nesting, or by narrowing the scope of what's being quantified over.
 
 ## Induction
 
@@ -89,6 +123,7 @@ What if Forge _does_ find a transition that fails to preserve our property $P$? 
 No! It just means that $P$ isn't _inductively invariant_.  **The pre-state that Forge finds might not _itself_ be reachable!**
     
 This technique is a great way to quickly show that $P$ is invariant, but if it fails, we need to do more work.
+
 </details>
 
 We see this happen when we try to run the above checks for our binary-search model! The `inductiveStep` test fails, and we get a counterexample. 
@@ -104,7 +139,7 @@ We're not trying to _fix_ this problem in the algorithm. This is a real bug, and
 <details>
 <summary>Think, then click!</summary>
     
-The core challenge here is that we'll never have enough integers to actually count `#Int`. However, we _can_ ask for the maximum integer---`max[Int]`. So we could say that `arr.lastIndex` &lt; `div[max[Int], 2]`. This might be a little conservative, but it guarantees that the array is never larger than half of the maximum integer. 
+The core challenge here is that we'll never have enough integers to actually count `#Int`. However, we _can_ ask for the maximum integer---`max[Int]`. So we could say that `arr.lastIndex` is less than `div[max[Int], 2]`. This might be a little conservative, but it guarantees that the array is never larger than half of the maximum integer. 
     
 </details>
 </br>
