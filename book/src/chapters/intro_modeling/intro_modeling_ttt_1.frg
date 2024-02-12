@@ -101,4 +101,4 @@ pred balanced[s: Board] {
 -- run { some b: Board | wellformed[b] and balanced[b]} for exactly 1 Board
 
 -- Uncomment to run
--- run { all b: Board | wellformed[b] and balanced[b]} 
+run { all b: Board | wellformed[b] and balanced[b]} 

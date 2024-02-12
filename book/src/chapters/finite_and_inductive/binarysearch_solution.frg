@@ -3,6 +3,8 @@
 /*
   Rough model of binary search on an array of integers.  
 
+  ONE POSSIBLE SOLUTION
+
   Demonstrates:
    -- need for global assumptions (in this case, to prevent overflow bug)
    -- need to enrich the invariant when using inductive verification (in this case, limits on low/high in prestate)
@@ -146,7 +148,11 @@ pred safeArraySize[arr: IntArray] {
     -- This echoes the _real problem_ of overflow! We need to prevent that.
     -- (See: https://ai.googleblog.com/2006/06/extra-extra-read-all-about-it-nearly.html)
     
-    // FILL (Exercise 2--3)
+    -- A bit conservative, but it works for the model
+    arr.lastIndex < divide[max[Int], 2]
+
+    -- Let's also assume the array is non-empty (the empty case should be easy to write a unit test for...)
+    arr.lastIndex >= 0
 }
 
 -- Some "is satisfiable" tests. These test for consistency, possibility, non-vacuity.
@@ -187,12 +193,28 @@ pred bsearchInvariant[s: SearchState] {
    
     all i: Int | {    
         s.arr.elements[i] = s.target => {
+            -- this has the side effect of saying: if the target is there, we never see low>high
             s.low <= i
             s.high >= i
 
-            // FILL (exercise 2--3)
+            -- Exercise 3: Must have reasonable low and high, always 
+            s.low >= firstIndex[s.arr]
+            s.low <= s.arr.lastIndex
+            s.high >= firstIndex[s.arr]
+            s.high <= s.arr.lastIndex
+            -- Note: these _technically_ should apply if the item is missing, but then we'd need to 
+            --  be more careful, because a 1-element array (low=0; high=1) would end up with low>high 
+            --  and depending on how we model that, high could become -1. (high := mid-1)
+
         }        
     }    
+
+    -- Exercise 2: add safe array size to the invariant (could also add as precondition
+    --   since the array doesn't change, but this works here too)
+    safeArraySize[s.arr]
+    -- We'll likely also need this; validArray should be preserved (could also be added as precondition)
+    validArray[s.arr]
+
 }
 
 //////////////////////
@@ -200,12 +222,18 @@ pred bsearchInvariant[s: SearchState] {
 //////////////////////
 
 -- FILL: what describes the check that init states must satisfy the invariant?
-// assert all s: SearchState | init[s] is sufficient for [FILL] 
-//   for exactly 1 IntArray, exactly 1 SearchState
+--   NOTE: beware safeArraySize[s]
+pred safeSizeInit[s: SearchState] {  init[s] and safeArraySize[s.arr] }
+assert all s: SearchState | safeSizeInit[s] is sufficient for bsearchInvariant[s]
+  for exactly 1 IntArray, exactly 1 SearchState
 
 // -- FILL: what describes the check that transitions always satisfy the invariant?
-// assert all s1, s2: SearchState | [FILL] is sufficient for [FILL]
-//   for exactly 1 IntArray, exactly 2 SearchState
+pred stepFromGoodState[s1, s2: SearchState] {
+    bsearchInvariant[s1]
+    anyTransition[s1,s2]
+}
+assert all s1, s2: SearchState | stepFromGoodState[s1,s2] is sufficient for bsearchInvariant[s2]
+  for exactly 1 IntArray, exactly 2 SearchState
 
 
 -- Visual check: show a first transition of any type

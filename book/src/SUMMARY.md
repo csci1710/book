@@ -12,8 +12,7 @@
 
 - [Traces (Part 1)](./chapters/finite_and_inductive/finite_and_inductive_1.md)
 - [Traces (Part 2)](./chapters/finite_and_inductive/finite_and_inductive_2.md)
-
-<!-- - [Traces (Parts 3 and 4)](./chapters/finite_and_inductive/finite_and_inductive_3.md) -->
+- [Traces (Parts 3 and 4)](./chapters/finite_and_inductive/finite_and_inductive_3.md)
 
 <!--
 

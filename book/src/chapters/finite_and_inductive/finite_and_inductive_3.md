@@ -1,25 +1,18 @@
 # 2023.10,11: Counterexamples To Induction
 
-**These notes are under construction. Expect edits up until after class.**
+You'll need [this exercise template](./binarysearch_template.frg) for these notes, which cover 2 class sessions.
 
-**TODO: REVISE BELOW**
-**TODO: post CM idea thread** 
+~~~admonish warning title="CSCI 1710: curiosity modeling ideas"
+Curiosity modeling signups are going out soon. [Read over others' ideas! Post your own!](https://edstem.org/us/courses/54376/discussion/4325962) 
+~~~
 
-You'll need [this exercise template](./binarysearch_template.frg) for today and Friday.
+~~~admonish warning title="CSCI 1710: endorsed Ed posts"
 
-* Curiosity modeling signups are going out soon. [Read over others' ideas! Post your own!](https://edstem.org/us/courses/31922/discussion/2595510) I'm trying to reply as I can, but apologies if I don't get to you. Look for answers to similar ideas. 
-* There's a Forge update coming soon.
-* Friday will contain a longer in-class exercise. Please be prepared. 
+I endorse public posts where there's an answer I think could be broadly useful. For example, these (as of today) are useful for physical keys:
 
-## Endorsed Ed Posts
-
-I endorse public posts where there's an answer I think could be broadly useful.
-
-
-
-* [What's a "vacuity check" test?](https://edstem.org/us/courses/31922/discussion/2594844)
-* [Bounds inconsistency detected](https://edstem.org/us/courses/31922/discussion/2590447)
-
+* [Physical Keys Testing with Booleans](https://edstem.org/us/courses/54376/discussion/4318621)
+* [How should I interpret the diagram](https://edstem.org/us/courses/54376/discussion/4318146)
+~~~
 
 ## Forge Performance
 
@@ -139,7 +132,7 @@ We're not trying to _fix_ this problem in the algorithm. This is a real bug, and
 <details>
 <summary>Think, then click!</summary>
     
-The core challenge here is that we'll never have enough integers to actually count `#Int`. However, we _can_ ask for the maximum integer---`max[Int]`. So we could say that `arr.lastIndex` is less than `div[max[Int], 2]`. This might be a little conservative, but it guarantees that the array is never larger than half of the maximum integer. 
+The core challenge here is that we'll never have enough integers to actually count `#Int`. However, we _can_ ask for the maximum integer---`max[Int]`. So we could say that `arr.lastIndex` is less than `divide[max[Int], 2]`. This might be a little conservative, but it guarantees that the array is never larger than half of the maximum integer. 
     
 </details>
 </br>
@@ -168,6 +161,6 @@ Look again at the two checks we wrote. If `initial` were unsatisfiable by any st
 
 This problem is called _vacuity_, and I'll give you another example. Suppose I told you: "All my billionaire friends love Logic for Systems". I have, as far as I know anyway, no billionaire friends. So is the sentence true or false? If you asked Forge, it would say that the sentence was true---after all, there's no billionaire friend of mine who _doesn't_ love Logic for Systems...
 
-This is a problem you might hear about in other courses like 0220, or in the philosophy department. And so there's a risk you'll think vacuity is silly, or possibly a topic for debate among people who like drawing their As upside down and their Es backwards, and love writing formulas with lots of Greek letters in. **Don't be fooled!** Vacuity is a major problem even in industrial settings like Intel, because verification tools are literal-minded. (Still doubtful? Ask Tim to send you links, and check out the EdStem post at the top of these notes.)
+This is a problem you might first hear about in other courses like 0220, or in the philosophy department. There's a risk you'll think vacuity is silly, or possibly a topic for debate among people who like drawing their As upside down and their Es backwards, and love writing formulas with lots of Greek letters in. **Don't be fooled!** Vacuity is a major problem even in industrial settings like Intel, because verification tools are literal-minded. (Still doubtful? Ask Tim to send you links, and check out the EdStem post at the top of these notes.)
 
 At the very least, we'd better test that the left-hand-side of the implication can be satisfied. This isn't a guarantee of trustworthiness, but it's a start. And it's easy to check with Forge. 

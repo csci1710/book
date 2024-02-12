@@ -219,16 +219,21 @@ pred moved[b: Board] {
         move[b, r, c, p, post] }
 pred didntDoNothing[b: Board] {
     not { some post: Board | doNothing[b, post]} }
-assert all b: Board | 
-  moved[b] is sufficient for didntDoNothing[b]
+// assert all b: Board | 
+//   moved[b] is sufficient for didntDoNothing[b]
 // sufficient ~= implies
 // necessary ~= implies-in-reverse
+
 
 // assert all b: Board | 
 //   moved[b] is necessary for didntDoNothing[b]
 // -- ^ This fails, perhaps because the _final_ board won't 
 // --   be able to take either transition (perhaps, but we didn't invoke traces)...
 //  ... Why DOES this fail?
+
+
+
+
 
 
 ---------------------------------------------------------------
@@ -240,14 +245,15 @@ assert all b: Board |
 -- check for the same shape of behavior:
 
 -- Example (make sure to define *ALL SIGS AND FIELDS*):
-/*
+
 pred someOTurn {some b: Board | oturn[b]}
 example xMiddleOturn is {someOTurn} for {
   Board = `Board0
-  Player = `X0 + `O0
   X = `X0
   O = `O0
-  `Board0.board =  (1, 1) -> `X0
+  Player = X + O --`X0 + `O0
+  `Board0.board =  (1, 1) -> `X0 
+  -- no `Board0.board -- this works to say the field is empty
 }
 
 -- Assertion (without variables):
@@ -256,16 +262,21 @@ pred emptySingleBoard {
   one b: Board | true
   all b: Board, r,c: Int | no b.board[r][c]
 }
+--  emptySingleBoard => someXTurn 
 assert emptySingleBoard is sufficient for someXTurn 
+-- same thing
+assert someXturn is necessary for emptySingleBoard
 
 -- Assertion (with variables):
 pred emptyBoard[b: Board] { all r, c: Int | no b.board[r][c] }
 assert all b: Board | emptyBoard[b] is sufficient for xturn[b]
 
+-- a is sufficient for b    implies
+-- a is necessary for b     <===
 -- This last assertion is nice and concise, but *ALSO* doesn't implicitly only 
 -- check situations where there is only one Board in the world... Another advantage
 -- of quantification!
-*/
+
 ---------------
 
 
@@ -273,19 +284,20 @@ assert all b: Board | emptyBoard[b] is sufficient for xturn[b]
 
 
 -- Example: is it ever possible to reach an unbalanced state?
-/*
+
 -- Step 1: any initial states unbalanced? 
 assert all b: Board | initial[b] is sufficient for balanced[b]
   for 1 Board, 3 Int
 
 -- Step 2: any legal transitions from a balanced board to an unbalanced board?
-pred moveFromBalanced[pre: Board, row, col: Int, p: Player, post: board] {
+pred moveFromBalanced[pre: Board, row, col: Int, 
+       p: Player, post: board] {
   balanced[pre]
   move[pre, row, col, p, post]
 }
 assert all pre, post: Board, row, col: Int, p: Player | 
   moveFromBalanced[pre, row, col, p, post] is sufficient for balanced[post]
-    for 2 Board, 3 Int
+    for 2 Board, 4 Int
 
 -- Note: we are able to get away with MUCH lower bounds using this technique. We don't need 
 -- Forge to generate whole game traces; rather, we are reasoning abstractly about whether 
