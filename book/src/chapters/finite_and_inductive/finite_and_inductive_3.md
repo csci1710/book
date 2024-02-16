@@ -1,6 +1,6 @@
 # 2023.10,11: Counterexamples To Induction
 
-You'll need [this exercise template](./binarysearch_template.frg) for these notes, which cover 2 class sessions.
+You'll need [this exercise template](./binarysearch_template.frg) for these notes, which cover 3 class sessions. The completed version, complete with in-class comments, is [here](./binarysearch_inclass.frg).
 
 We prototyped some confidence tests about the `reachable` predicate ([livecode file](./testing_reachable.frg)).
 
