@@ -286,7 +286,8 @@ assert all b: Board | emptyBoard[b] is sufficient for xturn[b]
 -- Example: is it ever possible to reach an unbalanced state?
 
 -- Step 1: any initial states unbalanced? 
-assert all b: Board | initial[b] is sufficient for balanced[b]
+assert all b: Board | 
+  initial[b] is sufficient for balanced[b]
   for 1 Board, 3 Int
 
 -- Step 2: any legal transitions from a balanced board to an unbalanced board?

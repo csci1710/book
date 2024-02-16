@@ -2,6 +2,8 @@
 
 You'll need [this exercise template](./binarysearch_template.frg) for these notes, which cover 2 class sessions.
 
+We prototyped some confidence tests about the `reachable` predicate ([livecode file](./testing_reachable.frg)).
+
 ~~~admonish warning title="CSCI 1710: curiosity modeling ideas"
 Curiosity modeling signups are going out soon. [Read over others' ideas! Post your own!](https://edstem.org/us/courses/54376/discussion/4325962) 
 ~~~
