@@ -8,6 +8,8 @@ Welcome back from long weekend!
 
 ~~~
 
+Livecode is [here](./booleanLogic.frg).
+
 Today, we'll be writing a new model from scratch. Across today and Friday, we'll have 3 goals:
 * distinguishing _syntax_ versus _semantics_ (and what that even means);
 * introducing sets to Forge; and
