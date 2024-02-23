@@ -34,9 +34,24 @@ pred subFormulaOf[anc: Formula, des: Formula] {
                         child]
 }
 
+
+pred semantics { 
+  -- set of valuations in which v is true?
+  all v: Var | { -- set containment
+    v.satisfiedBy = {i: Valuation | v in i.trueVars} } 
+  all n: Not | { -- set subtraction
+    n.satisfiedBy = Valuation - n.child.satisfiedBy} 
+  all a: And | { -- intersection ("and")
+    a.satisfiedBy = a.a_left.satisfiedBy & a.a_right.satisfiedBy} 
+  all o: Or | { -- union ("or")
+    o.satisfiedBy = o.o_left.satisfiedBy + o.o_right.satisfiedBy} 
+
+}
+
 -- This must hold, or else it's not good syntax!
 pred wellformed {
     all f: Formula | not subFormulaOf[f, f]
+    semantics
 }
 pred notWellformed { not wellformed }
 
@@ -59,18 +74,6 @@ inst onlyOneAnd {
 
 ---------------------------------------------
 
-pred semantics { 
-  -- set of valuations in which v is true?
-  all v: Var | { -- set containment
-    v.satisfiedBy = {i: Valuation | v in i.trueVars} } 
-  all n: Not | { -- set subtraction
-    n.satisfiedBy = Valuation - n.child.satisfiedBy} 
-  all a: And | { -- intersection ("and")
-    a.satisfiedBy = a.a_left.satisfiedBy & a.a_right.satisfiedBy} 
-  all o: Or | { -- union ("or")
-    o.satisfiedBy = o.o_left.satisfiedBy + o.o_right.satisfiedBy} 
-
-}
 
 run {
   wellformed 
@@ -95,10 +98,10 @@ pred equivalent[f1, f2: Formula] {
   f1.satisfiedBy = f2.satisfiedBy
 }
 pred isDoubleNegationWF[f: Formula] {
-  wellformed
+  wellformed -- added semantics here
   f in Not 
   f.child in Not 
 }
 assert all f: Formula | 
-  isDoubleNegation[f] is sufficient for equivalent[f, f.child.child]
+  isDoubleNegationWF[f] is sufficient for equivalent[f, f.child.child]
 
