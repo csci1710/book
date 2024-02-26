@@ -2,6 +2,8 @@
 
 Today we'll work with a fairly simple model, and use it to demonstrate how reachability works in Forge. That is, You'll see how the `reachable` predicate is defined (via _transitive closure_), and get some more practice with sets in Forge. 
 
+Livecode is [here](reach.frg).
+
 ~~~admonish note title="Brown CSCI 1710"
 
 * Hopefully everyone has been making good progress with Curiosity Modeling! I'm seeing a lot of awesome questions on Ed and at hours. 
