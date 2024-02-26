@@ -22,6 +22,8 @@
 <!-- Week 5 (right after long weekend -->
 - [Modeling Syntax, Semantics, and Sets](./chapters/sets-and-boolean-logic/modeling-booleans-1.md)
 
+<!-- Week 6 -->
+- [Relations and Reachability](./chapters/sets-and-boolean-logic/modeling-booleans-1.md)
 
 
 <!--
