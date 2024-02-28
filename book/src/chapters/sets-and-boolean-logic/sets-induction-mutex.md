@@ -1,5 +1,7 @@
 # More Sets and Induction (Mutual Exclusion)
 
+Livecode: [here](./mutex.frg).
+
 ## Modeling A Mutual-Exclusion Protocol
 
 If you have two independent threads of execution running concurrently, many subtle bugs can manifest. For instance, if both threads can write to the same region of memory, they might overlap their writes. A great example of this is simply incrementing a counter. In most computer systems, an operation like:
