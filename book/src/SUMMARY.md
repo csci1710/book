@@ -24,6 +24,7 @@
 
 <!-- Week 6 -->
 - [Relations and Reachability](./chapters/sets-and-boolean-logic/reachability.md)
+- [More Induction: Modeling a Mutex](./chapters/sets-and-boolean-logic/sets-induction-mutex.md)
 
 
 <!--

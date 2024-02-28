@@ -1,16 +1,14 @@
-# 2023.15: More Sets and Induction (Mutual Exclusion)
-
-###### tags: `Tag(sp23)`
+# More Sets and Induction (Mutual Exclusion)
 
 ## Modeling A Mutual-Exclusion Protocol
 
-If you have two independent threads running concurrently, many subtle bugs can manifest. For instance, if both threads can write to the same region of memory, they might overlap their writes. A great example of this is simply incrementing a counter. If both threads have:
+If you have two independent threads of execution running concurrently, many subtle bugs can manifest. For instance, if both threads can write to the same region of memory, they might overlap their writes. A great example of this is simply incrementing a counter. In most computer systems, an operation like:
 
 ```java
   counter = counter + 1;
 ```
 
-in their code, then the following sequence of operations would be problematic:
+is not atomic by itself. Thus, the following sequence of operations would be problematic:
 * Thread 1: read the current value of `counter`
 * Thread 2: read the current value of `counter`
 * Thread 1: add `1` to that value
@@ -19,9 +17,7 @@ in their code, then the following sequence of operations would be problematic:
 * Thread 2: write the new value to `counter`
 because then the counter's value is only `1` higher than its original value.
 
-We often call the property that such traces can't exist _mutual exclusion_, and the piece of code that shouldn't ever be run by 2 threads at once the _critical section_.
-
-Today we'll model a very simple approach to mutual-exclusion. (It turns out not to work, but it's one of the first "bad" solutions you'd see in a course like 1760.)
+We often call the property that such traces can't exist _mutual exclusion_, and the piece of code that shouldn't ever be run by 2 threads at once the _critical section_.  Today we'll model a very simple approach to mutual-exclusion. (It turns out *not* to work, but it's one of the first "bad" solutions you'd see in a course like CSCI 1760.)
 
 The idea comes from how we as humans negotiate access to a shared resource like the spoken-communication channel in a meeting. If we want to talk, we raise our hand. 
 
@@ -31,11 +27,12 @@ Consider the pseudocode below, and imagine it running on two separate threads of
 
 ```java
 while(true) { 
-    [state: disinterested]
+    // [state: disinterested]
     this.flag = true;
-    [state: waiting]
+    // [state: waiting]
     while(other.flag == true);    
-    [state: in-cs]    
+    // [state: in-cs]    
+    run_critical_section_code(); // we don't care about details
     this.flag = false;    
 }
 ```
@@ -46,11 +43,11 @@ Notice we aren't modeling the critical section itself. The exact nature of that 
 
 ### Modeling
 
-We'll start with sigs:
+Let's start with a simple model. We'll critique this model as the semester progresses, but this will be useful enough to get us started. 
 
 ```alloy
 abstract sig Location {}
-one sig Disinterested, Waiting, InCS extends Location {}
+one sig Uninterested, Waiting, InCS extends Location {}
 
 abstract sig Process {}
 one sig ProcessA, ProcessB extends Process {}
@@ -61,11 +58,11 @@ sig State {
 }
 ```
 
-An initial state is one where all processes are disinterested, and no process has raised its flag:
+An initial state is one where all processes are uninterested, and no process has raised its flag:
 
 ```alloy
 pred init[s: State] {
-    all p: Process | s.loc[p] = Disinterested
+    all p: Process | s.loc[p] = Uninterested
     no s.flags 
 }
 ```
@@ -75,7 +72,7 @@ We then have three different transition predicates, each corresponding to one of
 ```alloy
 
 pred raise[pre: State, p: Process, post: State] {
-    pre.loc[p] = Disinterested
+    pre.loc[p] = Uninterested
     post.loc[p] = Waiting
     post.flags = pre.flags + p
     all p2: Process - p | post.loc[p2] = pre.loc[p2]
@@ -91,7 +88,7 @@ pred enter[pre: State, p: Process, post: State] {
 
 pred leave[pre: State, p: Process, post: State] {
     pre.loc[p] = InCS    
-    post.loc[p] = Disinterested    
+    post.loc[p] = Uninterested    
     post.flags = pre.flags - p
     all p2: Process - p | post.loc[p2] = pre.loc[p2]
 }
@@ -105,7 +102,7 @@ pred delta[pre: State, post: State] {
 }
 ```
 
-We won't create a `Trace` sig or `traces` predicate at all. We're going to do everything with induction today.
+We won't create a `Trace` sig or `traces` predicate at all. We're going to do everything with induction today!
 
 ### Model Validation
 
@@ -125,7 +122,7 @@ test expect {
 }
 ```
 
-In a real modeling situation, we'd probably add more checks, but this is enough for our purposes today.
+In a real modeling situation, we would _absolutely_ add more checks. In fact, we might regret not testing more...
 
 ### Does Mutual Exclusion Hold?
 
@@ -138,16 +135,13 @@ pred good[s: State] {
     #{p: Process | s.loc[p] = InCS} <= 1
 }
 
-test expect {
-    baseCase: {not {all s: State | init[s] implies good[s]}} for exactly 1 State is unsat
-    inductiveCase: {
-        not {
-            all pre, post: State | 
-                delta[pre, post] and good[pre] implies good[post]
-        }
-    } for exactly 2 State is unsat
-```
-
+pred startGoodTransition[s1, s2: State] {    
+    good[s1]
+    delta[s1,s2]
+}
+assert all s: State | init[s] is sufficient for good[s] for exactly 1 State
+assert all pre, post: State | startGoodTransition[pre, post] is sufficient for good[post] for exactly 2 State
+    
 The inductive case _fails_. Let's see what the counterexample is:
 
 ```alloy
@@ -171,7 +165,7 @@ Notice that neither process has raised its flag in either state. This seems susp
 
 ### Refresher: Enriching The Invariant
 
-This counterexample shows that the property we wrote _isn't inductive_. But it might still an invariant of the system---it's just that Forge has found an unreachable prestate. To prevent that, we'll add more conditions to the `good` predicate (we call this _enriching the invariant_ or _proving something stronger_). Let's say that, in order for a process to be in the critical section, its flag needs to be true:
+This counterexample shows that the property we wrote _isn't inductive_. But it might still an invariant of the system---it's just that Forge has found an unreachable prestate. To prevent that, we'll add more conditions to the `good` predicate (recall: we call this _enriching the invariant_; it's a great demo of something apparently paradoxical: _proving something stronger can be easier_). Let's say that, in order for a process to be in the critical section, its flag needs to be true:
 
 ```alloy
 pred good2[s: State] {
@@ -189,8 +183,9 @@ pred good3[s: State] {
 }
 ```
 
+~~~admonish tip title="What are changing?"
 Notice again that we're only strengthening the thing we're trying to prove---_not_ altering the model itself in any way. 
-
+~~~
 
 At this point, the inductive check passes. We've just shown that this algorithm satisfies mutual exclusion.
 
@@ -214,6 +209,6 @@ test expect {
 
 Fortunately, these both pass.
 
-<!-- ## In-Class Exercise
+## In-Class Exercise
 
-The link is [here](https://forms.gle/k8eVkKohvZavkD6w9). -->
+The link is [here](https://forms.gle/mXYkYvjGZqhMP6KF9). 
