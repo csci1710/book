@@ -1,10 +1,14 @@
-# 2023.16: Beyond Assertions
+# Going Beyond Assertions
 
-###### tags: `Tag(sp23)`
-
+~~~admonish tip title="CSCI 1710: Homeworks"
 I'm super happy with the curiosity-modeling work I've seen overall! 
 
 Forge 3 goes out today. Forge 3 is a continuation of the garbage-collection lab; we ask you to model more advanced kinds of garbage collection that are actually able to collect unreachable memory, rather than just memory with a `0` reference count. Many of you won't have seen these algorithms yet. That's OK---whether or not you've seen them, you can learn useful things about them via modeling.
+~~~
+
+~~~admonish tip title="CSCI 1710: Toadus Ponens"
+We'll start class today with a presentation on Toadus Ponens on the upcoming homework. Please see the lecture capture for the details; Siddhartha Prasad will be showing the tool in more detail.
+~~~
 
 ## Setting The Stage: States and Reachability
 
@@ -12,7 +16,7 @@ Last time we were modeling this simplified (and perhaps buggy) mutual-exclusion 
 
 ```
 while(true) { 
-     // [location: disinterested]
+     // [location: uninterested]
     this.flag = true;  // visible to other threads!
     //  [location: waiting]
     while(other.flag == true);    
@@ -109,21 +113,19 @@ Not by looking for a single "bad state". That won't suffice. There's something i
 
 </details>
 
-### Safety Versus Liveness
+### Safety Versus Liveness: Intuition
 
 Notice the differences between these 3 properties. In particular, consider what a _full counterexample trace_ to each must look like, if we were inclined to produce one. 
-* For mutual-exclusion and deadlock-freedom, a counterexample trace could be finite. After some number of transitions, we'd reach a state where a deadlock or failure of mutual-exclusion has occurred. At that point, it's impossible for the system to recover; we've found an issue and the trace has served its purpose.
+* For mutual-exclusion and (in this formulation) deadlock-freedom, a counterexample trace could be finite. After some number of transitions, we'd reach a state where a deadlock or failure of mutual-exclusion has occurred. At that point, it's impossible for the system to recover; we've found an issue and the trace has served its purpose.
 * For a failure of non-starvation, on the other hand, no finite trace can suffice. It's always possible that just ahead, the system will suddenly recover and prevent a thread from being starved. So here, we need some notion of an _infinite counterexample trace_ such that some thread never, ever, gets access.
 
 The difference here is a fundamental distinction in verification. We call properties that have finite counterexamples _safety properties_, and properties with only infinite counterexamples _liveness properties_. 
 
 #### Formal Definitions
 
-There is a more formal definition that we'll discuss next week, but it's built on the above intuition.
-
 People often describe safety properties as "something bad never happens" and liveness properties as "something good must happen". I don't like this wording by itself, because it assumes an understanding of "goodness" and "badness". Instead, think about what the solver needs to do if it's seeking a counterexample trace. Then, one really is fundamentally different from the other.
 
-Almost always, you'll find that a liveness property is more computationally complex to check. This doesn't mean that verifying liveness properties is always slower---just that one usually has to bring some additional tricks to bear on the algorithm.
+You'll usually find that a liveness property is more computationally complex to check. This doesn't mean that verifying liveness properties is always slower---just that one usually has to bring some additional tricks to bear on the algorithm.
 
 In the context of a _finite_ state system, searching for an infinite counterexample amounts to looking for a reachable _cycle_ in the graph---not a single bad state.
 

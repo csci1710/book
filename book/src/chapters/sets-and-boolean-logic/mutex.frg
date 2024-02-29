@@ -122,3 +122,5 @@ pred startGoodTransition[s1, s2: State] {
 assert all s1, s2: State | startGoodTransition[s1, s2]
   is sufficient for good[s2]
   for exactly 2 State
+
+run {}
