@@ -67,7 +67,7 @@ If, at some point, _nobody_ can make progress, then surely the protocol isn't wo
 
 A state where _no_ process can transition is called a _deadlock state_. Verifying that a system is free of deadlocks is a common verification goal.
 
-Does the system above satify deadlock-freedom? Can we check it using only the diagram we produced and our eyes?
+Does the system above satisfy deadlock-freedom? Can we check it using only the diagram we produced and our eyes?
 
 <details>
 No. The state $(W, W, 1, 1)$ is reachable, but has no exit transitions: neither thread can make progress. 
@@ -137,5 +137,3 @@ The [join documentation](https://csci1710.github.io/forge-documentation/building
 
 > returns the **relational join** of the two expressions. It combines two relations by seeking out rows with common values in their rightmost and leftmost columns. Concretely, if `A` is an $n$-ary relation, and `B` is $m$-ary, then `A.B` equals the $n+m-2$-ary relation:
 > $$\{a_1, ..., a_{n-1}, b_2, ..., b_m \;| \;\exists x \;|\; (a_1, ..., a_{n-1}, x) \in A \text{ and } (x, b_2, ..., b_m) \in B\}$$
-
-Time permitting, we'll run a few exercises with relational join, taken from the documentation.

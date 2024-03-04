@@ -28,6 +28,11 @@
 - [Beyond Assertions: Mutex Continued](./chapters/sets-and-boolean-logic/sets-beyond-assertions.md)
 
 
+<!-- Week 7 -->
+- [Liveness and Lassos](./chapters/temporal/liveness_and_lassos.md)
+- [Temporal Forge (Part 1)](./chapters/temporal/temporal_operators.md)
+- [Temporal Forge (Part 2)](./chapters/temporal/temporal_operators_2.md)
+
 <!--
 
 - [Domain-Specific Modeling](./chapters/dom_spec.md)
