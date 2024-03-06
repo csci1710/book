@@ -8,11 +8,11 @@ I want to remind everyone that if you got a check-minus, it doesn't mean "not pa
 
 I wonder if we could add notions of "always" and "eventually" and so on to Forge. That would help us avoid some of the errors that occur when we try to represent lasso traces manually.
 
-<!-- TODO: UPDATE -->
+~~~admonish note title="CSCI 1710"
+Your class exercise today is to try out [this survey](https://docs.google.com/forms/d/e/1FAIpQLSf4nNtzjVhEv3daqZeySbsApoX9L2cwVts23qIzOlX6Ug8nug/viewform?usp=sf_link).  
 
-Your class exercise today is to try out [this survey (FILL)]().  <!-- (https://forms.gle/RZceEEjNshAtyhKE8).-->
-
-In contrast to the last survey, we're not asking you whether some set of constraints should be satisfiable or unsatisfiable. Rather, we're asking whether a _specific trace_ satisfies a constraint that uses the new operators.
+We're asking whether a _specific trace_ satisfies a constraint that uses the new operators.
+~~~
 
 ## Temporal Forge
 
