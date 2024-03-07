@@ -4,6 +4,8 @@
 I want to remind everyone that if you got a check-minus, it doesn't mean "not passing"; it doesn't even mean "can't get an A". It means "not A quality work on **this** assignment". You do not need any check-plusses to get an A. Check-plusses are rare.
 ~~~
 
+Livecode is [here](./mutex_temporal.frg).
+
 ## Temporal Operators: Survey
 
 I wonder if we could add notions of "always" and "eventually" and so on to Forge. That would help us avoid some of the errors that occur when we try to represent lasso traces manually.
