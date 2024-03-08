@@ -65,7 +65,9 @@ We had informally written non-starvation in our mutex model as something like "o
 
 <details>
 <summary>Think, then click!</summary>
+
 We might start with: `interested => eventually access`. That would be a reasonable start: if the process is interested, it eventually gets access. The problem is that the interest is measured _now_---that is, at whatever time index Forge is currently looking. 
+
 </details>
 </br>
 
@@ -104,12 +106,28 @@ For all examples, you may come up with your own shape of the world. That is, you
 
 I'll use a lot of parentheses, to avoid confusion about operator precedence...
 
-* `eventually (always (X or Y))`
+### `eventually (always (X or Y))`
 
 <details>
 <summary>Think, then click!</summary>
-Suppose `X` stands for weekday, and `Y` for weekend. Then the normal progression of time satisfies the constraint: at some point (today, even!) it will always be either a weekday or a weekend in the future.     
+Suppose `X` stands for weekday, and `Y` for weekend. Then the normal progression of time satisfies the constraint: after some point (perhaps right now) it will always be either a weekday or a weekend.
 
 I am probably abstracting out some important details here, like the heat-death of the universe. But that's not really the point. The point is that alternation between `X` and `Y` is allowed---it's always _either_ one or the other, or possibly even both.
+</details>
+
+### `always (eventually (X and (next_state Y)))`
+
+<details>
+<summary>Think, then click!</summary>
+Suppose `X` stands for "Saturday", and `Y` for "Sunday". Then it's always true that, at _any point_ in time, there is a Saturday-Sunday pair of days in the future. 
+</details>
+
+### `always ((eventually X) or (always Y)))`
+
+<details>
+<summary>Think, then click!</summary>
+Suppose `X` stands for "final exam or demo", and `Y` for "graduated". Then, at _any point_ in time, either there's a final in your future _or_ you've graduated (and stay graduated forever). 
+
+Note that this doesn't mean you can't take a final exam after graduating if you want to. Both sides of the `or` can be true. It just means that, at any point, if you haven't graduated permanently, you must eventually take an exam.
 </details>
 
