@@ -2,6 +2,8 @@
 
 Looking ahead, we'll spend a couple more days on Temporal Forge and Linear Temporal Logic (LTL). After that, we'll start talking technically about how Forge works. Many of you have been curious, and it will set you up well for the upcoming homework where you'll be building your own solver.
 
+Livecode for today is [here](./mutex_temporal.frg).
+
 ## Linear Temporal Logic (LTL)
 
 Formally, the temporal operators Forge provides correspond to a language called Linear Temporal Logic (or LTL). It's _temporal_ because it has temporal operators like `always` and `eventually`, and it's _linear_ because it's interpreted over (infinite) linear traces. 
