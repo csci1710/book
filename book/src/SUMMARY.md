@@ -33,6 +33,25 @@
 - [Temporal Forge (Part 1)](./chapters/temporal/temporal_operators.md)
 - [Temporal Forge (Part 2)](./chapters/temporal/temporal_operators_2.md)
 
+
+<!-- Week 8 -->
+
+<!-- 
+./chapters/temporal/fixing_lock_temporal.md
+./chapters/solvers/bounds_booleans_how_forge_works.md
+-->
+- [Obligations and the Past](./chapters/temporal/obligations_past.md)
+- [Temporal Forge Q&A]()
+- [Fixing Lock 1]()
+
+
+<!-- Week 9 -->
+- [Fixing Lock 2]()
+- [Bounds and Booleans; How Forge Works]()
+- [TBD]()
+
+<!-- SPRING BREAK -->
+
 <!--
 
 - [Domain-Specific Modeling](./chapters/dom_spec.md)
