@@ -5,6 +5,8 @@
 * _Do not_ try to use `example` in temporal mode. For reasons we'll get to soon (when we talk about how Forge works) `example` and `inst` constrain _all states_ in temporal mode, and so an example will prevent anything it binds from ever changing in the trace.
 ~~~
 
+The in-class exercise is [here](https://docs.google.com/forms/d/e/1FAIpQLSemtfAG44sxqkRSS4imTcGC1LVwcHgJWOrgrHp3wXyLbuMAZw/viewform?usp=sf_link). The livecode is the same model we've been working on: the [locking algorithm](./mutex_temporal.frg).
+
 ## Reminder: Priming for "next state" expressions
 
 You can talk about the value of an expression _in the next state_ by appending `'` to the expression. So writing `flags'` means the value of the flags relation in the state after the current one.
@@ -50,88 +52,47 @@ This means that the _previous_ state satisfied the initial-state predicate. **Bu
 
 There are also analogues to `always` and `eventually` in the past: `historically` and `once`. For more information, see the [documentation](https://csci1710.github.io/forge-documentation/electrum/electrum-overview.html).
 
-## Modeling Deadlock
+## Interlude on Testing and Properties 
 
-A deadlock state is one where _no_ outgoing transitions are possible. How can we write a test in temporal mode that tries to find a reachable deadlock state? There are two challenges:
+As we start modeling more complex systems, models become more complex. The more complex the model is, the more important it is to test the model carefully. Just like in software testing, however, you can never be 100% sure that you have tested everything. Instead, you proceed using your experience and following some methodology. 
 
-* How do we phrase the constraint, in terms of the transition predicates we have to work with? 
-* How do we even allow Forge to find a deadlock, given that temporal mode *only* ever finds lasso traces? (A deadlock in a lasso trace is impossible, since a deadlock prevents progress!)
+Let's get some practice with this. Before we start modifying our locking algorithm model, we should think carefully---both about testing, but also about how the model reflects the real world. 
 
-Let's solve the second challenge first, since it's more foundational.
+### Principle 1: What's the Domain? What's the System? 
 
-### Finding Deadlocks Via Lassos
+When we're writing a model, it's useful to know when we're talking about the _system_, and when we're talking about the _domain_ that the system is operating on. 
+* The domain has a set of behaviors it can perform on its own. In this example, the threads represent the domain: programs running concurrently. 
+* The system affects that set of behaviors in a specific way. In this example, the locking algorithm is the system. Usually the system functions by putting limits and structure on otherwise unfettered behavior. (E.g., without a locking algorithm in place, in reality threads would still run and violate mutual exclusion.)
+* Because we usually have goals about how, exactly, the system constrains the domain, we state _requirements_ about how the domain behaves in the system's presence. Think of these as the top-level goals that we might be modeling in order to prove (or disprove) about the system or otherwise explore.  
+* Because the domain cannot "see" inside the system, we'll try to avoid stating requirements in terms of internal system variables. However, models are imperfect! We will also have some _validation tests_ that are separate from the requirements. These may or may not involve internal system state.
 
-We could prevent this issue by allowing a `doNothing` transition from every state. Then from Forge's perspective there's no "deadlock", and a lasso trace can be found. 
+We'll develop these ideas more over the next few weeks. For now, keep in mind that when you add something to a model, it's good to have a sense of where it comes from. Does it represent an internal system state, which should probably not be involved in a requirement, but perhaps should be checked in model validation?
 
-But this fix causes new problems. If we allow a `doNothing` transition to happen _anywhere_, our liveness property is definitely destroyed, even if we were modeling a smarter algorithm. So we need to reduce the power of `doNothing` somehow.
+### Principle 2: What Can Be Observed?
 
-Put another way: we started with an _overconstraint_ bug: if only lassos can be found, then we can't find a trace exhibiting deadlock. Adding `doNothing` fixes the overconstraint but adds a new _underconstraint_, because we'll get a lot of garbage traces where the system can just pause arbitrarily (while the trace continues).
+Ask what behaviors might be important in the domain, but not necessarily always observed. These are sometimes referred to as _optional predicates_, because they may or may not hold. In real life, here are some optional predicates:
+* we have class today;
+* it's raining today; 
+* homework is due today; etc. 
 
-We saw this phenomenon earlier when we were modeling tic-tac-toe, and wanted to work around the fact that the `is linear` annotation forces exact bounds. We can use the same ideas in the fix here.
+**Exercise:** What are some optional predicates about the domain in our locking algorithm model? 
 
-## Finding Deadlock
+<details>
+<summary>Think, then click!</summary>
 
-Let's look at one of our transitions:
+We might see, but won't necessarily always see:
+* combinations of different transitions; 
+* threads that are both simultaneously interested;
+* threads that are uninterested; 
+* etc.
 
-```alloy
-pred raise[p: Process] {
-    World.loc[p] = Disinterested
-    World.loc'[p] = Waiting
-    World.flags' = World.flags + p
-    all p2: Process - p | World.loc'[p2] = World.loc[p2]
-}
-```
+As the model includes more domain complexity, the set of optional predicates grows. 
 
-Notice it's split (implictly) into a "guard" and an "action". If all the constraints in the guard are true, the transition _can_ occur. Formally, we say that if all the guard constraints hold, then the transition is _enabled_. When should `doNothing` be enabled? When no other transition is.
+</details>
 
-```alloy
-pred doNothing {
-    -- GUARD (nothing else can happen)
-    not (some p: Process | enabledRaise[p]) 
-    not (some p: Process | enabledEnter[p]) 
-    not (some p: Process | enabledLeave[p]) 
-    -- ACTION
-    flags' = flags
-    loc' = loc
-}
-```
+Let's write some actual tests to confirm that these behaviors can happen (or not), and check whether that matches our modeling intuition. 
 
-We won't create a separate `enabledDoNothing` predicate. But we will add `doNothing` to the set of possible moves:
-
-```alloy
-pred trans {
-    some p: Process | 
-        raise[p] or
-        enter[p] or 
-        leave[p] or 
-        doNothing 
-}
-```
-
-And we'd also better create those 3 `enabled` predicates, too.
-
-Finally, we can write a check looking for deadlocks:
-
-```alloy
-test expect {
-    noDeadlocks_counterexample: {
-        init
-        always delta
-        not always {
-            some p: Process |
-                enabledRaise[p] or
-                enabledEnter[p] or
-                enabledLeave[p] 
-        }
-    } is sat
-}
-```
-
-which fails. But why?
-
-The counterexample (at least, the one I got) is 3 states long. And in the final state, both processes are `Waiting`. Success! Or, at least, success in **finding the deadlock**.
-
-But how should we fix the algorithm? And how can we avoid confusion like this in the future?
-
-
+~~~admonish note title="For Next Time"
+We'll consider questions of atomicity (how granular should transitions be?), and model a different variation of this lock.
+~~~
 

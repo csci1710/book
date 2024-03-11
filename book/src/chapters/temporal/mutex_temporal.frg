@@ -179,8 +179,23 @@ pred req_non_starvation {
     }
 }
 
-assert lasso is sufficient for req_non_starvation 
+-- This fails, as expected
+-- assert lasso is sufficient for req_non_starvation 
 
 test expect {
+    -- "vacuity test"
     lassoSat: {lasso} is sat
+}
+
+----------------------------------
+-- Monday, March 11
+----------------------------------
+
+-- Check optional domain predicates for consistency
+test expect {
+    canRaiseInLasso: {
+        lasso
+        -- Note: you need to wrap quantifiers in parens or braces when used like this:
+        eventually { some t: Thread | raise[t]}} is sat
+    -- etc.
 }

@@ -133,3 +133,86 @@ Suppose `X` stands for "final exam or demo", and `Y` for "graduated". Then, at _
 Note that this doesn't mean you can't take a final exam after graduating if you want to. Both sides of the `or` can be true. It just means that, at any point, if you haven't graduated permanently, you must eventually take an exam.
 </details>
 
+
+## Fixing Our Lock Model
+
+A deadlock state is one where _no_ outgoing transitions are possible. How can we write a test in temporal mode that tries to find a reachable deadlock state? There are two challenges:
+
+* How do we phrase the constraint, in terms of the transition predicates we have to work with? 
+* How do we even allow Forge to find a deadlock, given that temporal mode *only* ever finds lasso traces? (A deadlock in a lasso trace is impossible, since a deadlock prevents progress!)
+
+Let's solve the second challenge first, since it's more foundational.
+
+### Finding Deadlocks Via Lassos
+
+We could prevent this issue by allowing a `doNothing` transition from every state. Then from Forge's perspective there's no "deadlock", and a lasso trace can be found. 
+
+But this fix causes new problems. If we allow a `doNothing` transition to happen _anywhere_, our liveness property is definitely destroyed, even if we were modeling a smarter algorithm. So we need to reduce the power of `doNothing` somehow.
+
+Put another way: we started with an _overconstraint_ bug: if only lassos can be found, then we can't find a trace exhibiting deadlock. Adding `doNothing` fixes the overconstraint but adds a new _underconstraint_, because we'll get a lot of garbage traces where the system can just pause arbitrarily (while the trace continues).
+
+We saw this phenomenon earlier when we were modeling tic-tac-toe, and wanted to work around the fact that the `is linear` annotation forces exact bounds. We can use the same ideas in the fix here.
+
+## Finding Deadlock
+
+Let's look at one of our transitions:
+
+```alloy
+pred raise[p: Process] {
+    World.loc[p] = Disinterested
+    World.loc'[p] = Waiting
+    World.flags' = World.flags + p
+    all p2: Process - p | World.loc'[p2] = World.loc[p2]
+}
+```
+
+Notice it's split (implictly) into a "guard" and an "action". If all the constraints in the guard are true, the transition _can_ occur. Formally, we say that if all the guard constraints hold, then the transition is _enabled_. When should `doNothing` be enabled? When no other transition is.
+
+```alloy
+pred doNothing {
+    -- GUARD (nothing else can happen)
+    not (some p: Process | enabledRaise[p]) 
+    not (some p: Process | enabledEnter[p]) 
+    not (some p: Process | enabledLeave[p]) 
+    -- ACTION
+    flags' = flags
+    loc' = loc
+}
+```
+
+We won't create a separate `enabledDoNothing` predicate. But we will add `doNothing` to the set of possible moves:
+
+```alloy
+pred trans {
+    some p: Process | 
+        raise[p] or
+        enter[p] or 
+        leave[p] or 
+        doNothing 
+}
+```
+
+And we'd also better create those 3 `enabled` predicates, too.
+
+Finally, we can write a check looking for deadlocks:
+
+```alloy
+test expect {
+    noDeadlocks_counterexample: {
+        init
+        always delta
+        not always {
+            some p: Process |
+                enabledRaise[p] or
+                enabledEnter[p] or
+                enabledLeave[p] 
+        }
+    } is sat
+}
+```
+
+which fails. But why?
+
+The counterexample (at least, the one I got) is 3 states long. And in the final state, both processes are `Waiting`. Success! Or, at least, success in **finding the deadlock**.
+
+But how should we fix the algorithm? And how can we avoid confusion like this in the future?

@@ -40,7 +40,7 @@
 ./chapters/temporal/fixing_lock_temporal.md
 ./chapters/solvers/bounds_booleans_how_forge_works.md
 -->
-- [Obligations and the Past](./chapters/temporal/obligations_past.md)
+- [Obligations and the Past, Deadlock](./chapters/temporal/obligations_past.md)
 - [Temporal Forge Q&A]()
 - [Fixing Lock 1]()
 
