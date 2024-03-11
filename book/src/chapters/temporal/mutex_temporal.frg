@@ -118,7 +118,7 @@ pred lasso {
     always { delta } -- always in the next state, we evolve using transitions
 }
 
--- run {lasso}
+--run {lasso}
 
 ///////////////////////////////////////////////////////////////////
 // Temporal Practice, Mar 8
@@ -183,7 +183,7 @@ pred req_non_starvation {
 -- assert lasso is sufficient for req_non_starvation 
 
 test expect {
-    -- "vacuity test"
+    -- "vacuity test": if no lassos are possible, there's a huge problem.
     lassoSat: {lasso} is sat
 }
 
@@ -193,9 +193,10 @@ test expect {
 
 -- Check optional domain predicates for consistency
 test expect {
-    canRaiseInLasso: {
+    canRaiseSomewhereInLasso: {
         lasso
         -- Note: you need to wrap quantifiers in parens or braces when used like this:
         eventually { some t: Thread | raise[t]}} is sat
     -- etc.
+
 }

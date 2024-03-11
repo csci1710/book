@@ -5,7 +5,7 @@
 * _Do not_ try to use `example` in temporal mode. For reasons we'll get to soon (when we talk about how Forge works) `example` and `inst` constrain _all states_ in temporal mode, and so an example will prevent anything it binds from ever changing in the trace.
 ~~~
 
-The in-class exercise is [here](https://docs.google.com/forms/d/e/1FAIpQLSemtfAG44sxqkRSS4imTcGC1LVwcHgJWOrgrHp3wXyLbuMAZw/viewform?usp=sf_link). The livecode is the same model we've been working on: the [locking algorithm](./mutex_temporal.frg).
+The in-class exercise is [here](https://docs.google.com/forms/d/e/1FAIpQLSemtfAG44sxqkRSS4imTcGC1LVwcHgJWOrgrHp3wXyLbuMAZw/viewform?usp=sf_link). The livecode is the same model we've been working on: the [locking algorithm](./mutex_temporal.frg), and the (new) [traffic lights example](./traffic.frg).
 
 ## Reminder: Priming for "next state" expressions
 
@@ -67,6 +67,10 @@ When we're writing a model, it's useful to know when we're talking about the _sy
 * Because the domain cannot "see" inside the system, we'll try to avoid stating requirements in terms of internal system variables. However, models are imperfect! We will also have some _validation tests_ that are separate from the requirements. These may or may not involve internal system state.
 
 We'll develop these ideas more over the next few weeks. For now, keep in mind that when you add something to a model, it's good to have a sense of where it comes from. Does it represent an internal system state, which should probably not be involved in a requirement, but perhaps should be checked in model validation?
+
+~~~admonish note title="Have we been disciplined about this so far?"
+No we have not! And we may be about to encounter some problems because of that.
+~~~
 
 ### Principle 2: What Can Be Observed?
 
