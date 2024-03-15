@@ -6,15 +6,18 @@ option max_tracelength 10
 
 
 /*
+  Assumptions: Peterson Lock only works on 2 threads, so we model only
+    2 threads. (We need a different algorithm if we want 3+.)
+
   Abstract algorithm: both threads running this code 
 
   while(true) {
     // location: uninterested 
     this.flag = true
     // location: halfway
-    polite = me
+    polite = me // global
     // location: waiting 
-    while(other.flag == true || polite == me) {} // hold until their flag is lowered _or_ the other is being polite
+    while(other.flag == true || polite != me) {} // hold until their flag is lowered _or_ the other is being polite
     // location: in CS 
     run_critical_section_code(); // don't care details
     this.flag = false
@@ -22,7 +25,7 @@ option max_tracelength 10
 */
 
 abstract sig Location {}
-one sig Uninterested, Waiting, InCS extends Location {}
+one sig Uninterested, Halfway, Waiting, InCS extends Location {}
 
 -- We might also call this "Process" in the notes; in the 
 -- _abstract_ these are the same. 
@@ -32,14 +35,16 @@ one sig ThreadA, ThreadB extends Thread {}
 -- State of the locking algorithm (AND the threads' locations)
 -- "quick" conversion to temporal mode
 one sig World {
-  var loc: func Thread -> Location,
-  var flags: set Thread
+  var loc: func Thread -> Location, -- about the domain
+  var flags: set Thread,            -- about the system
+  var polite: lone Thread           -- about the system
 }
 
 -- are we in an initial state RIGHT NOW?
 pred init {
     all t: Thread | { World.loc[t] = Uninterested }
     no World.flags
+    no World.polite
 }
 
 pred raiseEnabled[t: Thread] {
@@ -49,15 +54,33 @@ pred raise[t: Thread] {
     -- GUARD
     raiseEnabled[t]
     -- ACTION
-    World.loc'[t] = Waiting
+    World.loc'[t] = Halfway
     World.flags' = World.flags + t -- also a bit of framing, because =
     -- FRAME
     all t2: Thread - t | World.loc'[t2] = World.loc[t2]
+    World.polite' = World.polite
+}
+
+pred noYouEnabled[t: Thread] {
+    World.loc[t] = Halfway 
+}
+pred noYou[t: Thread] {
+    -- GUARD
+    noYouEnabled[t]
+    -- ACTION
+    World.loc'[t] = Waiting
+    World.polite' = t
+    -- FRAME
+    all t2: Thread - t | World.loc'[t2] = World.loc[t2]
+    World.flags' = World.flags
 }
 
 pred enterEnabled[t: Thread] {
     World.loc[t] = Waiting
-    World.flags in t -- no other processes
+    {World.flags in t  -- no other processes with flag raised
+     or 
+     World.polite != t -- OR someone else is being polite now
+    }
 }
 pred enter[t: Thread] {
     -- GUARD
@@ -66,6 +89,7 @@ pred enter[t: Thread] {
     World.loc'[t] = InCS
     -- FRAME
     World.flags' = World.flags
+    World.polite' = World.polite
     all t2: Thread - t | World.loc'[t2] = World.loc[t2]
 }
 
@@ -78,6 +102,7 @@ pred leave[t: Thread] {
     -- ACTION
     World.loc'[t] = Uninterested
     World.flags' = World.flags - t
+    World.polite' = World.polite
     -- FRAME
     all t2: Thread - t | World.loc'[t2] = World.loc[t2]
 }
@@ -88,6 +113,7 @@ pred doNothing {
     -- GUARD
     all t: Thread | {
         not raiseEnabled[t]
+        not noYouEnabled[t]
         not enterEnabled[t]
         not leaveEnabled[t]
     }
@@ -96,6 +122,7 @@ pred doNothing {
     -- ACTION, FRAME: changing nothing
     World.loc = World.loc' 
     World.flags = World.flags'
+    World.polite = World.polite'
 }
 
 -- Combine all transitions. In the past, we'd call this anyTransition 
@@ -103,6 +130,7 @@ pred doNothing {
 pred delta { 
     some t: Thread | {
         raise[t] or 
+        noYou[t] or
         enter[t] or 
         leave[t] 
     } or 
@@ -114,85 +142,36 @@ pred lasso {
     always { delta } -- always in the next state, we evolve using transitions
 }
 
---run {lasso}
-
-///////////////////////////////////////////////////////////////////
-// Temporal Practice, Mar 8
-///////////////////////////////////////////////////////////////////
-
-// next_state
-pred almostThere[t: Thread] {
-    next_state { World.loc[t] = InCS }
-}
-
-// always 
-pred beingVeryRude[t: Thread] {
-    -- starting now, and forever in the trace...
-    always { World.loc[t] = InCS }
-}
-
-// eventually always 
-pred willBecomeVeryRude[t: Thread] {
-    -- at some point in future (or right now)...
-    eventually { beingVeryRude[t] }
-}
-
-pred startsBeingRudeIn4Steps[t: Thread] {
-    -- starts in AT MOST 4 steps (because "always")
-    -- (If we wanted "not rude until then" we need more than this)
-    next_state next_state next_state next_state
-        { beingVeryRude[t] }
-}
+-- run {lasso}
 
 -- mutual exclusion property in temporal forge 
 -- (not trying to be efficient -- so not inductive approach)
 pred req_mutual_exclusion {
-    -- right now, this only applies to the first state
-    -- (assuming this predicate isn't called within a temporal op :-))
-    --#{t: Thread | World.loc[t] = inCS} <= 1
-    -- so we spread the obligation across _all_ states in future (including
-    -- this one...)
     always {#{t: Thread | World.loc[t] = InCS} <= 1}
 }
-
 assert lasso is sufficient for req_mutual_exclusion
 
--- nobody has to wait forever
+// -- nobody has to wait forever
 pred req_non_starvation { 
-    // World.loc[t] = InCS
-
-    -- if <that> is waiting, that implies.... 
-    -- better also be true for all threads
-    -- not eventually always (thread is waiting)
     all t: Thread {
-        -- not enough: want access to be required repeatedly!
-        -- eventually { World.loc[t] = InCS }    
-        -- better: enforces repetition, but a little too heavy-handed
-        -- obligation is not contingent, so not robust in "real" model
-        -- always eventually { World.loc[t] = InCS }
         always { World.loc[t] = Waiting implies 
                    eventually { World.loc[t] = InCS } }
     }
 }
-
--- This fails, as expected
--- assert lasso is sufficient for req_non_starvation 
+assert lasso is sufficient for req_non_starvation 
 
 test expect {
     -- "vacuity test": if no lassos are possible, there's a huge problem.
     lassoSat: {lasso} is sat
 }
 
-----------------------------------
--- Monday, March 11
-----------------------------------
-
--- Check optional domain predicates for consistency
+// -- Check optional domain predicates for consistency
 test expect {
     canRaiseSomewhereInLasso: {
         lasso
         -- Note: you need to wrap quantifiers in parens or braces when used like this:
         eventually { some t: Thread | raise[t]}} is sat
-    -- etc.
+
+
 
 }
