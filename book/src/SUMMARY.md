@@ -41,12 +41,12 @@
 ./chapters/solvers/bounds_booleans_how_forge_works.md
 -->
 - [Obligations and the Past, Deadlock](./chapters/temporal/obligations_past.md)
-- [Temporal Forge Q&A]()
-- [Fixing Lock 1]()
+<!-- Wednesday was going over the Prim's model example -->
+- [The Peterson Lock (Part 1)](./chapters/temporal/fixing_lock_temporal.md)
 
 
 <!-- Week 9 -->
-- [Fixing Lock 2]()
+- [The Peterson Lock (Part 2)](./chapters/temporal/fixing_lock_temporal.md)
 - [Bounds and Booleans; How Forge Works]()
 - [TBD]()
 

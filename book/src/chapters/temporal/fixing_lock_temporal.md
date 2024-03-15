@@ -1,22 +1,26 @@
 # Peterson Lock and Fairness
 
+Let's fix the broken locking algorithm we modeled before. We'll also talk about improving testing, modeling pitfalls, etc. as we go along. The livecode will be in [peterson.frg](./peterson.frg).
+
 ## Fixing Deadlock
 
-Our little algorithm is 90% of the way to the the [Peterson lock](https://en.wikipedia.org/wiki/Peterson%27s_algorithm).  The Peterson lock just adds one extra bit of state, and one transition to set that bit. In short, if our current algorithm is analogous to raising hands for access, the other bit added is like a "no, you first" when two people are trying to get through the door at the same time. (Conveniently, that's exactly the sort of situation our both-flags-raised deadlock represented!)
-
-You can find a complete and updated version of the code changes below in the livecode for today, available via the course website.
+Our little algorithm is 90% of the way to the the [Peterson lock](https://en.wikipedia.org/wiki/Peterson%27s_algorithm).  The Peterson lock just adds one extra bit of state, and one transition to set that bit. In short, if our current algorithm is analogous to raising hands for access, the other bit added is like a "no, you first" when two people are trying to get through the door at the same time; that's exactly the sort of situation our both-flags-raised deadlock represented.
 
 We'll add a `polite: lone Process` field to each `Process`, to represent which process (if any) has just said "no, you go first". The algorithm now needs a step to set this value. It goes something like this (in pseudocode) after the process becomes interested:
 
 ```
-    my flag = true
-    polite = me
-    while (other flag == true && polite == me);
-    // enter critical section                      
-    my flag = false
+// location: uninterested 
+this.flag = true
+// location: halfway
+polite = me
+// location: waiting 
+while(other.flag == true || polite == me) {} // hold until their flag is lowered _or_ the other is being polite
+// location: in CS 
+run_critical_section_code(); // don't care details
+this.flag = false
 ```         
-         
-So we just need one more location, which I'll call `Halfway`, and corresponding edits. One new transition:
+
+Because we're modeling (as best as we can) individual operations executing, we'll need to add a new location to the state, which I'll call `Halfway`. We'll also need a new transition (and to change existing transitions):
 
 ```alloy
 pred enabledNoYou[p: Process] {
@@ -55,11 +59,9 @@ Then we add the new transition to the overall transition predicate, to `doNothin
 
 We also need to expand the frame conditions of all other transitions to keep `polite` constant.
 
-**Advice:** Beware of forgetting (or accidentally including) primes. This can lead to unsatisfiable results, since the constraints won't do what you expect between states.
-
-#### Trace Length
-
-Traces are getting pretty long; lets make sure to increase the maximum trace length with ```option max_tracelength 10``` (the default is 5).
+~~~admonish warning title="Watch out!" 
+Beware of forgetting (or accidentally including) primes. This can lead to unsatisfiable results, since the constraints won't do what you expect between states.
+~~~
 
 ### Let's Check Non-Starvation
 
@@ -78,6 +80,17 @@ noStarvation: {
 ```
 
 This passes. Yay!
+
+~~~admonish tip title="Should we be suspicious?"
+That was really easy. Everything seems to be working perfectly. Maybe we can stop early and go get ice cream. 
+
+But we should probably do some validation to make sure we haven't missed something. Here's a question: *is our domain model realistic enough to trust these results?*
+~~~
+
+
+
+**After this point is part 2, depending on in-class time.**
+
 
 ## Abstraction Choices We Made
 
@@ -99,7 +112,7 @@ In your next homework, you'll be _critiquing_ a set of properties and algorithms
 
 ## Fairness
 
-In a real system, it's not really up to the process itself whether it gets to run forever; it's up to the operating system's scheduler. Thus, "fairness" in this context isn't so much a property to guarantee as a **precondition to require**. Without the scheduler being at least _somewhat_ fair, the algorithm can guarantee very little.
+In a real system, it's not really up to the process itself whether it gets to run forever; it's also up to the operating system's scheduler or the system's hardware. Thus, "fairness" in this context isn't so much a property to guarantee as a **precondition to require**. Without the scheduler being at least _somewhat_ fair, the algorithm can guarantee very little.
 
 Think of a precondition as an environmental assumption that we rely on when checking the algorithm. This is a common sort of thing in verification and, for that matter, in computer science. (If you take a cryptography course, you might encounter the phrase "...is correct, subject to standard cryptographic assumptions".) 
 
