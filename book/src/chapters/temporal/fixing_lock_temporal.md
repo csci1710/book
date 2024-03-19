@@ -87,11 +87,6 @@ That was really easy. Everything seems to be working perfectly. Maybe we can sto
 But we should probably do some validation to make sure we haven't missed something. Here's a question: *is our domain model realistic enough to trust these results?*
 ~~~
 
-
-
-**After this point is part 2, depending on in-class time.**
-
-
 ## Abstraction Choices We Made
 
 We made a choice to model processes as always eventually _interested_ in accessing the critical section. There's no option to become uninterested, or to pass on a given cycle. 

@@ -172,6 +172,15 @@ test expect {
         -- Note: you need to wrap quantifiers in parens or braces when used like this:
         eventually { some t: Thread | raise[t]}} is sat
 
-
-
+    -----------------------------------------------------------------
+    -- Here is an issue (I've reversed the test expectation so it illustrates truth,
+    --  not what we perhaps expect.) Is the problem that:
+    --   (1) our model makes the _very_ strong abstraction choice that threads never
+    --     finish wanting access; or 
+    --   (2) the scheduler may just never be allowing ThreadA to go at all?
+    -- Which of these our "our problem"?
+    canStop: { 
+        lasso
+        eventually always {World.loc[ThreadA] = Uninterested}
+    } is sat
 }
