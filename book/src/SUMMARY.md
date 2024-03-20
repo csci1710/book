@@ -47,8 +47,8 @@
 
 <!-- Week 9 -->
 - [The Peterson Lock (Part 2)](./chapters/temporal/fixing_lock_temporal.md)
-- [Bounds and Booleans; How Forge Works]()
-- [TBD]()
+- [Bounds and Booleans; How Forge Works](./chapters/solvers/bounds_booleans_how_forge_works.md)
+<!-- - [Zoom Q&A]() -->
 
 <!-- SPRING BREAK -->
 

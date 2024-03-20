@@ -355,11 +355,9 @@ Forge doesn't just filter instances after they're generated; it _adds_ extra con
 
 ## Looking Ahead
 
-There is **no class** on Wednesday or Friday. Instead, come to your case-study meetings with Tim.
-
 After Spring break, we'll come back and talk about:
 * converting to CNF (Tseitin's Transformation); and
-* the algorithms tht Boolean solvers use.
+* the algorithms that Boolean solvers use.
 
 You will write your own solver, which you might even be able to plug in to Forge and compare its performance vs. the solvers we include by default.
 
