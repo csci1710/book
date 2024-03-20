@@ -121,7 +121,9 @@ Now that you know how to read the input format, you might be able to see how the
 
 <details>
 <summary>Think, then click!</summary>
+
 There's one variable for every square on the $4 \times 4$ squares. `1 2 3 4` says that there must be a queen somewhere on the first row. `-1 -2` says that if there is a queen at $1,1$ there cannot also be a queen at $1,2$. And so on.    
+
 </details>
 
 
@@ -268,14 +270,7 @@ The idea is: to satisfy a `some` quantifier, some object exists that can be plug
 * makes debugging easier sometimes, since you can immediately _see_ what might satisfy the quantifier constraint; and
 * sometimes aids in efficiency. 
 
-So if you see a relation labeled something like `$x_some32783`, it's one of these _Skolem_ relations, and points to a value for a `some` quantified variable `x`. 
-
-Unfortunately, this isn't always displayed properly by Sterling---hoping to get this resolved soon. For now, you can see the name of the object in the verbose debugging output of Forge. E.g.,
-
-```xml
-<skolem label=\"$p_some1711\" ID=\"9\">\n<tuple><atom label=\"Bob0\"/></tuple>\n<types><type ID=\"2\"/></types>\n\n</skolem>
-```
-
+So if you see a relation labeled something like `$x_some32783`, it's one of these _Skolem_ relations, and points to a value for a `some` quantified variable `x`. (Forge adds the numeric suffix to help disambiguate variables with the same name.)
 
 
 ## Symmetry Breaking
@@ -313,9 +308,7 @@ sig Person {
 run {} for exactly 3 Person 
 ```
 
-The math is still the same: 27 instances. But now we only get 9 before hitting the unsat indicator:
-
-![](https://i.imgur.com/sAA2D9J.png)
+The math is still the same: 27 instances. But now we only get 9 before hitting the unsat indicator of "no more instances".
 
 What's going on?
 
