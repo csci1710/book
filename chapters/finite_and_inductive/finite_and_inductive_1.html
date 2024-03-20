@@ -1,0 +1,465 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Traces (Part 1) - Logic for Systems</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../././mdbook-admonish.css">
+        <link rel="stylesheet" href="../.././mdbook-admonish.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item "><a href="../../chapters/welcome.html"><strong aria-hidden="true">1.</strong> Welcome</a></li><li class="chapter-item "><a href="../../chapters/manifesto/manifesto.html"><strong aria-hidden="true">2.</strong> Manifesto: Logic for Systems</a></li><li class="chapter-item "><a href="../../chapters/properties/properties.html"><strong aria-hidden="true">3.</strong> From Tests to Properties</a></li><li class="chapter-item "><a href="../../chapters/intro_modeling/intro_modeling_1.html"><strong aria-hidden="true">4.</strong> Intro to Modeling (Part 1, Basics)</a></li><li class="chapter-item "><a href="../../chapters/intro_modeling/intro_modeling_2.html"><strong aria-hidden="true">5.</strong> Intro to Modeling (Part 2, Transitions)</a></li><li class="chapter-item "><a href="../../chapters/intro_modeling/intro_modeling_3.html"><strong aria-hidden="true">6.</strong> Intro to Modeling (Part 3, Traces)</a></li><li class="chapter-item "><a href="../../chapters/intro_modeling/intro_modeling_4.html"><strong aria-hidden="true">7.</strong> Intro to Modeling (Part 4, FAQ)</a></li><li class="chapter-item expanded "><a href="../../chapters/finite_and_inductive/finite_and_inductive_1.html" class="active"><strong aria-hidden="true">8.</strong> Traces (Part 1)</a></li><li class="chapter-item "><a href="../../chapters/finite_and_inductive/finite_and_inductive_2.html"><strong aria-hidden="true">9.</strong> Traces (Part 2)</a></li><li class="chapter-item "><a href="../../chapters/finite_and_inductive/finite_and_inductive_3.html"><strong aria-hidden="true">10.</strong> Traces (Parts 3 and 4)</a></li><li class="chapter-item "><a href="../../chapters/sets-and-boolean-logic/modeling-booleans-1.html"><strong aria-hidden="true">11.</strong> Modeling Syntax, Semantics, and Sets</a></li><li class="chapter-item "><a href="../../chapters/sets-and-boolean-logic/reachability.html"><strong aria-hidden="true">12.</strong> Relations and Reachability</a></li><li class="chapter-item "><a href="../../chapters/sets-and-boolean-logic/sets-induction-mutex.html"><strong aria-hidden="true">13.</strong> More Induction: Modeling a Mutex</a></li><li class="chapter-item "><a href="../../chapters/sets-and-boolean-logic/sets-beyond-assertions.html"><strong aria-hidden="true">14.</strong> Beyond Assertions: Mutex Continued</a></li><li class="chapter-item "><a href="../../chapters/temporal/liveness_and_lassos.html"><strong aria-hidden="true">15.</strong> Liveness and Lassos</a></li><li class="chapter-item "><a href="../../chapters/temporal/temporal_operators.html"><strong aria-hidden="true">16.</strong> Temporal Forge (Part 1)</a></li><li class="chapter-item "><a href="../../chapters/temporal/temporal_operators_2.html"><strong aria-hidden="true">17.</strong> Temporal Forge (Part 2)</a></li><li class="chapter-item "><a href="../../chapters/temporal/obligations_past.html"><strong aria-hidden="true">18.</strong> Obligations and the Past, Deadlock</a></li><li class="chapter-item "><a href="../../chapters/temporal/fixing_lock_temporal.html"><strong aria-hidden="true">19.</strong> The Peterson Lock (Part 1)</a></li><li class="chapter-item "><a href="../../chapters/temporal/fixing_lock_temporal.html"><strong aria-hidden="true">20.</strong> The Peterson Lock (Part 2)</a></li><li class="chapter-item "><a href="../../chapters/solvers/bounds_booleans_how_forge_works.html"><strong aria-hidden="true">21.</strong> Bounds and Booleans; How Forge Works</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Logic for Systems</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+<h1 id="20237-finite-traces-doing-nothing-productively"><a class="header" href="#20237-finite-traces-doing-nothing-productively">2023.7: Finite Traces: Doing Nothing (Productively)</a></h1>
+<p><strong>THESE NOTES ARE BEING MODIFIED UP UNTIL CLASS; EXPECT CHANGES</strong></p>
+<div id="admonition-how-to-contextualize-homeworks" class="admonition admonish-note">
+<div class="admonition-title">
+<p>How to contextualize homeworks</p>
+<p><a class="admonition-anchor-link" href="#admonition-how-to-contextualize-homeworks"></a></p>
+</div>
+<div>
+<p>The Forge homeworks have at least three learning goals, each of which represents a different <em>layer</em> of the course content:</p>
+<ul>
+<li>getting you practice with the low-level details of using Forge (e.g., predicates, sigs, etc.); </li>
+<li>familiarizing you with a number of modeling techniques (e.g., transition predicates, traces, assertions and examples, etc.); and</li>
+<li>giving you an opportunity to experiment with and critique different modeling choices (e.g., should this constraint be included in that predicate? What should we decide a well-formed state looks like? Is this set of sigs and fields right for our modeling goals? What should we interpret this English sentence as asking for?)</li>
+</ul>
+<p>All of these will be vital when we get to the self-directed projects (and the first is coming fairly soon).</p>
+</div>
+</div>
+<p>Today we'll return to tic-tac-toe to do more advanced modeling with traces. We'll also use asserts more generally. </p>
+<!-- ### What is the role of a wheat?
+
+In principle, wheats support all 3 of these learning goals. But if we treat wheats only as "the unique correct solution", they work rather poorly. Modeling choices can be complicated, and there are often multiple reasonable approaches. (As an example, consider how a programmer might choose to represent a graph as either an adjacency list or an adjacency matrix. Both have their own advantages and disadvantages.) 
+
+Ideally, the wheat wouldn't need to be "correct". We could still have discussions and even critique what the wheat does. Some of you have done this on EdStem for Forge 1, which is great to see!
+
+However, we also need a consistent behavioral target for you to aim for when doing assignments. This also helps us grade, both for the autograded and non-autograded parts of our rubrics. So the wheat also can't be "just another solution".
+
+### So what exactly _is_ a wheat, then?
+
+The wheat is the solution we had at the end of TA camp. This means that it is a decent baseline, but it might:
+* contain bugs (actual _wrong_ behavior that isn't a matter of taste or debate); or 
+* contain debatable modeling choices or interpretations of the English handout (which may not be either right or wrong, and may be more or less suited for specific modeling goals beyond the assignment).
+
+In either of these cases:
+* It's disruptive to replace the wheat in the middle of the assignment! (What should those who already finished do? What about those who are in the middle of working with the wheat?)
+* It's missing an opportunity to encourage critique as a class, and exercise that third learning goal. (What makes a good model? How should we design one?)
+
+Therefore, for future Forge assignments where we provide a wheat: 
+* The wheat won't be changed during the semester, even if it's flawed. You'll still aim to write your predicate to match it, and we'll still be grading with respect to the wheat. Think of the wheat as providing the perspective of a stakeholder---you've got to meet their spec, but at the same time, you might discuss why their spec will not give them what they really want.
+* However, you'll have the opportunity to file your concerns about the wheat as you do the assignment. (Is there behavior you disagree with? What do you think the disconnect is between the wheat and what you'd choose to do?)
+* We'll also do a review in class for each homework. I'll bring up some critique that you sent in, and we'll discuss the relative pros and cons.  This will be our in-class exercise on those days.
+* For those who find actual _bugs_ in the wheat, we'll be giving a small amount of extra credit.
+
+Of course, any issues in _Forge_ are different, and we'll still be updating Forge regularly. And we'll be keeping an eye on this process and making needed changes as the semester continues. 
+ -->
+<h2 id="back-to-tic-tac-toe-ending-games"><a class="header" href="#back-to-tic-tac-toe-ending-games">Back To Tic-Tac-Toe: Ending Games</a></h2>
+<p>When we stopped last time, we'd written this <code>run</code> command:</p>
+<pre><code class="language-alloy">run {
+  wellformed
+  traces
+} for exactly 10 State for {next is linear}
+</code></pre>
+<p><strong>Reminder:</strong> Without a <code>run</code>, an <code>example</code>, or a similar <em>command</em>, running a Forge model will do nothing. </p>
+<p>From this <code>run</code> command, Forge will find <em>traces</em> of the system (here, games of Tic-Tac-Toe) represented as a linear sequence of exactly 10 <code>State</code> objects.</p>
+<p>Do you have any worries about the way this is set up?</p>
+<details>
+<summary>Think, then click!</summary>
+Are all Tic-Tac-Toe games 10 states long? 
+<p>Well, <em>maybe</em>; it depends on how we define a game. If we want a game to stop as soon as nobody can win, our <code>exactly 10 State</code> bound is going to prevent us from finding games that are won before the final cell of the board is filled.</p>
+</details>
+<p>Let's add the following guard constraint to the <code>move</code> transition, which forces games to end as soon as somebody wins.</p>
+<pre><code class="language-alloy">all p: Player | not winner[pre, p]
+</code></pre>
+<p>Now we've got problems. Normally we could fix the issue by getting rid of the <code>exactly</code>. Unfortunately, there's a hidden snag: when we tell Forge in this way that that <code>next</code> is linear, it automatically makes the bound exact. </p>
+<p>This behavior, which I admit is bizarre at first, exists for two reasons:</p>
+<ul>
+<li>historical reasons: we inherit <code>is linear</code> from Alloy, which uses somewhat different syntax to mean the same thing; and</li>
+<li>performance reasons: since the <code>is linear</code> annotation is almost always used for trace-generation, and trace-generation solving time grows (in the worst case) exponentially in the length of the trace, we will almost always want to reduce unnecessary uncertainty. Forcing the trace length to always be the same reduces the load on the solver, and makes trace-generation somewhat more efficient.</li>
+</ul>
+<p>But now we need to work around that constraint. Any ideas? Hint: do we need to have <em>only one</em> kind of transition in our system?</p>
+<details>
+<summary>Think, then click!</summary>
+<p>No. A common way to allow trace length to vary is by adding a &quot;do nothing&quot; transition. (In the literature, this is called a <em>stutter transition</em>.) </p>
+<p>The trick is in how to add it without also allowing a &quot;game&quot; to consist of nobody doing anything. To do that requires some more careful modeling.</p>
+</details>
+</br>
+<p>Let's add an additional transition that does nothing. We can't &quot;do nothing&quot; in the predicate body, though -- an empty predicate body would just mean <em>anything</em> could happen. What we mean to say is that the state of the board remains the same, even if the before and after <code>State</code> objects differ.</p>
+<pre><code class="language-alloy">pred doNothing[pre: State, post: State] {
+    all row2: Int, col2: Int | 
+        post.board[row2][col2] = pre.board[row2][col2]
+}
+</code></pre>
+<p>We also need to edit the <code>traces</code> predicate to allow <code>doNothing</code> to take place:</p>
+<pre><code class="language-alloy">pred traces {
+    -- The trace starts with an initial state
+    starting[Game.initialState]
+    no sprev: State | sprev.next = Game.initialState
+    -- Every transition is a valid move
+    all s: State | some Game.next[s] implies {
+      some row, col: Int, p: Player | {
+        move[s, row, col, p, Game.next[s]] 
+      }
+      or
+      doNothing[s, Game.next[s]]      
+    } 
+}
+</code></pre>
+<p>As it stands, this fix solves the <em>overconstraint</em> problem of never seeing an early win, but introduces a new <em>underconstraint</em> problem: we don't want <code>doNothing</code> transitions to happen just anywhere!</p>
+<p>Here's how I like to fix it:</p>
+<pre><code class="language-alloy">gameOver[s: State] {
+  some p: Player | winner[s, p]
+}
+</code></pre>
+<p>Why a new predicate? Because I want to use different predicates to represent different concepts. </p>
+<p>When should a <code>doNothing</code> transition be possible? <em>When the game is over!</em></p>
+<pre><code class="language-alloy">pred doNothing[pre: State, post: State] {
+    gameOver[pre] -- guard of the transition
+    pre.board = post.board -- effect of the transition
+}
+</code></pre>
+<p>If we wanted to, we could add a <code>not gameOver[pre]</code> to the <code>move</code> predicate, enforcing that nobody can move at all after someone has won.</p>
+<h2 id="do-the-rules-allow-cheating"><a class="header" href="#do-the-rules-allow-cheating">Do The Rules Allow Cheating?</a></h2>
+<p>Let's ask Forge whether a <code>cheating</code> state is possible under the rules. </p>
+<pre><code class="language-alloy">run {
+  wellformed
+  traces
+  some bad: State | cheating[bad]
+} for exactly 10 State for {next is linear}
+</code></pre>
+<p>This should work---assuming we don't drop the <code>is linear</code> annotation. Without it, nothing says that every state must be in the trace, and so Forge could produce an instance with an &quot;unused&quot; cheating state.</p>
+<h2 id="checking-conjectures"><a class="header" href="#checking-conjectures">Checking Conjectures</a></h2>
+<p>When I was very small, I thought that moving in the middle of the board would guarantee a win at Tic-Tac-Toe. Now I know that isn't true. But could I have used Forge to check my conjecture (if I'd taken 1710 at that point in life)?</p>
+<details>
+<summary>Think, then Click!</summary>
+Here's how I did it:    
+<pre><code class="language-alloy">run {
+  wellformed
+  traces
+  -- &quot;let&quot; just lets us locally define an expression
+  --  good for clarity in the model!
+  -- here we say that X first moved in the middle
+  let second = Trace.next[Trace.initialState] |
+    second.board[1][1] = X
+  -- ...but X didn't win
+  all s: State | not winner[s, X]
+} for exactly 10 State for {next is linear}
+</code></pre>
+</details>
+<p>We could also write this using an assertion (which would fail):</p>
+<pre><code>pred moveInMiddle { 
+  wellformed
+  traces
+  let second = Trace.next[Trace.initialState] |
+    second.board[1][1] = X
+}
+pred xWins {
+  all s: State | not winner[s, X]
+}
+assert moveInMiddle is sufficient for xWins 
+  for exactly 10 State for {next is linear}
+</code></pre>
+<hr />
+<p>You might wonder how <code>assert</code> can be used for predicates that take arguments. For example, suppose we had defined <code>wellformed</code> to take a board, rather than quantifying over <code>all</code> boards in its body. The <code>assert</code> syntax can take (one layer of) quantification. Would <code>move</code> preserve <code>wellformed</code>-ness?</p>
+<p>Here's how we'd write that. Notice we don't even need to use the <code>Game</code> here (and thus don't need to give the <code>is linear</code> annotation)! We're just asking Forge about 2 boards at a time:</p>
+<pre><code>pred someMoveFromWF[pre, post: Board] { 
+  wellformed[pre]
+  some r, c: Int, p: Player | move[pre, r, c, p, post]
+}
+assert all pre,post: Board | move[pre,post] is sufficient for wellformed[post] 
+</code></pre>
+<h3 id="reminder-the-evaluator"><a class="header" href="#reminder-the-evaluator">Reminder: The Evaluator</a></h3>
+<p>If you're viewing an instance, you can always select the evaluator tray and enter Forge syntax to see what it evaluates to in the instance shown. You can enter both formulas and expressions. We also have the ability to refer to objects in the world directly. E.g., we could try:</p>
+<pre><code class="language-alloy">all s: State | not winner[s, X]
+</code></pre>
+<p>but also (assuming <code>Board0</code> is an object):</p>
+<pre><code class="language-alloy">winner[Board0, X]
+</code></pre>
+<h3 id="going-further"><a class="header" href="#going-further">Going Further</a></h3>
+<p>This illustrates a new class of queries we can ask Forge. Given parties following certain <em>strategies</em>, is it possible to find a trace where one strategy fails to succeed vs. another? </p>
+<p><strong>Challenge exercise:</strong> Write a <code>run</code> that searches for a game where both parties always <em>block</em> immediate wins by their opponent. Is it ever possible for one party to win, if both will act to prevent a 3-in-a-row on the next turn?</p>
+<h2 id="will-this-always-work"><a class="header" href="#will-this-always-work">Will This Always Work?</a></h2>
+<p>Let's say you're checking properties for a real system. A distributed-systems algorithm, maybe, or a new processor. Even a more complex version of Tic-Tac-Toe! </p>
+<p>Next time, we'll talk about the problems with traces, which turn out to be  <strong>central challenges in software and hardware verification</strong>. </p>
+<h2 id="optional-modeling-tip-dealing-with-unsatisfiability"><a class="header" href="#optional-modeling-tip-dealing-with-unsatisfiability">(Optional) Modeling Tip: Dealing with Unsatisfiability</a></h2>
+<p>Many of you have had your first encounter with an over-constraint bug this week. Maybe you wrote an <code>assert</code> and it seemed to never stop. Maybe you wrote a <code>run</code> command and Sterling just produced an <code>UNSAT0</code> result. </p>
+<p>Getting back an unsat result can take a long time. Why? Think of the search process. If there is a satisfying instance, the solver can find it early. If there isn't, the solver needs to explore the entire space of possibilities. Yeah, there are smart algorithms for this, and it's not <em>really</em> enumerating the entire space of instances, but the general idea holds. </p>
+<p>So if you run Forge and it doesn't seem to ever terminate, it's not necessary a Forge problem---surprising over-constraint bugs can produce this behavior.</p>
+<p>So, how do you debug a problem like this? The first thing I like to do is reduce the bounds (if possible) and, if I still get unsat, I'll use that smaller, faster run to debug. But at that point, we're kind of stuck. <code>UNSAT0</code> isn't very helpful. </p>
+<p>Today I want to show you a very useful technique for discovering the problem. There are more advanced approaches we'll get to later in the course, but for now this one should serve you well. </p>
+<p>The core idea is: encode an instance you'd expect to see as a set of constraints, run <em>those</em> constraints only, and then use the evaluator to explore why it fails your other constraints. Let's do an example!</p>
+<pre><code class="language-alloy">#lang forge/bsl
+-- NOT THE EXACT STENCIL!
+sig State {
+  top: lone Element
+}
+sig Element {
+  next: lone Element             
+}
+
+pred buggy {
+  all s: State | all e: Element {
+    s.top = e or reachable[e, s.top, next]
+  }
+  some st1, st2: State | st1.top != st2.top     
+  all e: Element | not reachable[e, e, next]
+}
+test expect {
+  exampleDebug: {buggy} is sat
+}
+</code></pre>
+<p>This test fails. But why?</p>
+<pre><code class="language-alloy">run {
+  some st1, st2: State |
+  some ele1, ele2: Element | {
+    st1.top = ele1
+    st2.top = ele2
+    ele1.next = ele2   
+    no ele2.next    
+  }
+} for exactly 2 State, exactly 2 Element
+</code></pre>
+<p>Given this instance, the question is: <strong>why didn't Forge accept it?</strong> There must be some constraint, or constraints, that it violates. Let's find out which one. We'll paste them into the evaluator...</p>
+<ul>
+<li><code>some st1, st2: State | st1.top != st2.top</code>? This evaluates to <code>#t</code> (true). No problem there.</li>
+<li><code>  all s: State | all e: Element { s.top = e or reachable[e, s.top, next] }</code>? This evaluates to <code>#f</code> (false). So this is a problem.</li>
+</ul>
+<p>Now we proceed by breaking down the constraint. The outer shell is an <code>all</code>, so let's plug in a concrete value:</p>
+<ul>
+<li><code>all e: Element { State0.top = e or reachable[e, State0.top, next] }</code>? This evaluates to <code>#f</code>. So the constraint fails for <code>State0</code>. </li>
+</ul>
+<p><strong>Important</strong>: Don't try to name specific states in your model. They <em>don't exist</em> at that point. </p>
+<p>Which element does the constraint fail on? Again, we'll substitute concrete values and experiment:</p>
+<ul>
+<li><code>State0.top = Element0 or reachable[Element0, State0.top, next]</code>? This evaluates to <code>#t</code>. What about <code>State0.top = Element1 or reachable[Element1, State0.top, next]</code>?</li>
+</ul>
+<p>Following this process very often leads to discovering an over-constraint bug, or a misconception the author had about the goals of the model or the meaning of the constraints. </p>
+<p><strong>Question: What's the problem here?</strong></p>
+<details>
+<summary>Think, then click!</summary>
+<p>Since the <code>next</code> field never changes with time, the <code>all</code> constraint doesn't allow states to vary the <code>top</code> of the stack. Instead, we need a weaker constraint to enforce that the stack is shaped like a state.</p>
+</details>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../chapters/intro_modeling/intro_modeling_4.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../chapters/finite_and_inductive/finite_and_inductive_2.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../chapters/intro_modeling/intro_modeling_4.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../chapters/finite_and_inductive/finite_and_inductive_2.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="../../ace.js"></script>
+        <script src="../../editor.js"></script>
+        <script src="../../mode-rust.js"></script>
+        <script src="../../theme-dawn.js"></script>
+        <script src="../../theme-tomorrow_night.js"></script>
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
