@@ -52,6 +52,16 @@
 
 <!-- SPRING BREAK -->
 
+<!-- Week 10 + 11 -->
+- [Solving SAT (Part 1 and 2)](./chapters/solvers/dpll.md)
+- [Beyond "False": Resolution (Parts 1 and 2)]()
+
+<!-- 2 days DPLL, 2--3 days resolution, Friday of week 11 is "future of 1710" -->
+
+<!-- Week 12 and Week 13: SMT, Synthesis, guest -->
+
+
+
 <!--
 
 - [Domain-Specific Modeling](./chapters/dom_spec.md)
