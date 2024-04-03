@@ -53,8 +53,8 @@
 <!-- SPRING BREAK -->
 
 <!-- Week 10 + 11 -->
-- [Solving SAT (Part 1 and 2)](./chapters/solvers/dpll.md)
-- [Beyond "False": Resolution (Parts 1 and 2)]()
+- [Solving SAT: DPLL](./chapters/solvers/dpll.md)
+- [Beyond "False": Resolution](./chapters/solvers/resolution.md)
 
 <!-- 2 days DPLL, 2--3 days resolution, Friday of week 11 is "future of 1710" -->
 
