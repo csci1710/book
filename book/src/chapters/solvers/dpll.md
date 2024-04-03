@@ -285,9 +285,28 @@ def solve(formula: Set[Clause], assumptions: Set[Literal]) -> Set[Literal]:
             return false_result    
 ```
 
-Now we'll get an answer the caller can use. We can also use PBT to test our solver! What do we need?
+~~~admonish warning title="Hold on..." 
+Does this actually work? Let's think about testing. We can use PBT to test our solver! What do we need?
 * A _generator_ for clause sets;
 * A _predicate_ that tests whether an instance satisfies a clause set.
+
+If we try this out, we may find a potential issue. Here's an example we might be concerned about (but notice how many contingencies are involved in generating it!):
+
+```
+(x1 or x2)
+(!x1 or x3) 
+```
+
+If our solver uses lexical order to decide what to branch on first, it's going to pick `x1` before the others. And if it tries `True` first, we'll end up unit-propagating to:
+
+```
+x1 
+x3 
+```
+
+because the first original clause is subsumed by `x1`, and the second can be unit-propagated into. Yet, if we only return the assumptions, rather than _all_ derived unit clauses, we'll return `{x1: True}`, not `{x1: True, x3: True}`. Beware!
+
+~~~
 
 ### Total or Partial Instances?
 
