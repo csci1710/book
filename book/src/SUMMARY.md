@@ -60,7 +60,8 @@
 
 <!-- Week 12 and Week 13: SMT, Synthesis, guest -->
 
-
+- [Satisfiability Modulo Theories (SMT)](./chapters/solvers/smt.md)
+- [CEGIS and Synthesis](./chapters/solvers/cegis.md)
 
 <!--
 
