@@ -241,7 +241,7 @@ Let's return to that CNF from before:
 (-5, -3)
 ```
 
-Instead of trying to build a _proof_, let's look at what your DPLL implementations might do when given this input. I'm going to try to sketch that here. Your own implementation may be slightly different. (That doesn't necessarily make it wrong!) **Open up your implementation as you read, and follow along**.
+Instead of trying to build a _proof_, let's look at what your DPLL implementations might do when given this input. I'm going to try to sketch that here. Your own implementation may be slightly different. (That doesn't necessarily make it wrong!) If you've started the SAT1 assignment, then open up your implementation as you read, and follow along. If not, note down this example.
 
 * Called on: `[(-1, 2, 3), (1), (-2, 4), (-3, 5), (-4, -2), (-5, -3)]`
 * Unit-propagate `(1)` into `(-1, 2, 3)` to get `(2, 3)`
@@ -255,9 +255,9 @@ Instead of trying to build a _proof_, let's look at what your DPLL implementatio
 
 Upon deriving the empty clause, we've found a contradiction. _Some part_ of the assumptions we've made so far (here, only that `2` is `True`) contradicts the input CNF.
 
-If we wanted to, we could learn a new clause that disjoins (applies `or` to) all the assumptions made to reach this point. But there might be many assumptions in general, so it would be good to do some sort of fast analysis: learning a new clause with 5 literals is a lot better than learning a new clause with 20 literals!
+If we wanted to, we could learn a new clause that applies `or` to ("disjoins") all the assumptions made to reach this point. But there might be many assumptions in general, so it would be good to do some sort of fast blame analysis: learning a new clause with 5 literals is a lot better than learning a new clause with 20 literals!
 
-Here's the idea: we're going to use the unit-propagation steps we recorded to derive a resolution proof that the input CNF _plus the assumptions_ lead to the empty clause. We'll then reduce that proof into a "conflict clause". This is one of the key ideas behind how modern solvers---CDCL, or Conflict Driven Clause Learning solvers---improve on DPLL. We won't talk about all the tricks that CDCL uses here, nor will you have to implement them. If you're curious for more, consider shopping CSCI 2951-O. For now, it suffices to be aware that reasoning about _why_ a conflict has been reached can be useful for performance. 
+Here's the idea: we're going to use the unit-propagation steps we recorded to derive a resolution proof that the input CNF _plus any current assumptions_ lead to the empty clause. We'll then reduce that proof into a "conflict clause". This is one of the key ideas behind a modern improvement to DPLL: CDCL, or Conflict Driven Clause Learning. We won't talk about all the tricks that CDCL uses here, nor will you have to implement them. If you're curious for more, consider shopping CSCI 2951-O. For now, it suffices to be aware that **reasoning about _why_ a conflict has been reached can be useful for performance.**
 
 In the above case, what did we actually use to derive the empty clause? Let's work _backwards_. We'll try to produce a linear proof where the leaves are input clauses or assumptions, and the internal nodes are unit-propagation steps (remember that these are just a restricted kind of resolution). We ended with:
 
@@ -277,23 +277,25 @@ Now we're done; we have a proof:
 
 ![](https://i.imgur.com/H6iqwAf.png)
 
-Using only those two input clauses, we know that assuming `(2)` won't be productive. 
+Using only those two input clauses, we know that assuming `(2)` won't be productive, and (because we have a proof) we can explain why. And, crucially, because the proof is a data structure, we can manipulate it if we need to.
 
 ## Explaining Unsatisfiable Results 
 
-This is promising: we have a _piece_ of the overall proof of unsatisfiability that we want. But we can't use it alone as a proof that the _input_ is unsatisfiable: the proof currently has an assumption `(2)` in it. We'd like to convert this proof into one that derives `(-2)`---the negation of the assumption responsible---from the input. 
+This is promising: we have a _piece_ of the overall proof of unsatisfiability that we want. But we can't use it alone as a proof that the _input_ is unsatisfiable: the proof currently has an assumption `(2)` in it. We'd like to convert this proof into one that derives `(-2)`---the negation of the assumption responsible---from *just* the input. 
 
-Let's rewrite the (contingent) proof we generated before. We'll *remove* assumptions from the tree and recompute the result of every resolution step, resulting in a proof of something weaker that isn't contingent on any assumptions. To do this, we'll recursively walk the tree, treating inputs as the base case and resolution steps as the recursive case. In the end, we should get something like this:
+Let's rewrite the (contingent, because it relies on an assumption the solver tried) proof we generated before. We'll *remove* assumptions from the tree and recompute the result of every resolution step, resulting in a proof of something weaker that isn't contingent on any assumptions. To do this, we'll recursively walk the tree, treating inputs as the base case and resolution steps as the recursive case. In the end, we should get something like this:
 
 ![](https://i.imgur.com/oAjYL8V.png)
 
-Notice that we need to re-run resolution _after processing its children_ to produce the result of an internal node.
+Notice that we need to re-run resolution _after processing each node's children_ to produce the new result for that node. This suggests some of the structure we'll need:
+* If one child is an assiumption, then "promote" the other child and use that value, without re-running resolution. (**Think: Why is this safe to this? It has to do with the way DPLL makes guesses.**) 
+* Otherwise, recur on children first, then re-run resolution on the new child nodes, then return a new node with the new value. 
 
 ~~~admonish title="Implementation Advice"
 
-Break down these operations into small helper functions, and write test cases for each of them. Really! It's very easy for something to go wrong somewhere in the pipeline, and if your visibility into behavior is only at the level of DPLL, you'll find it much harder to debug issues. 
+Break down these operations into small helper functions, and write test cases for each of them. Really! It's easy for something to go wrong somewhere in the pipeline, and if your visibility into behavior is only at the top level of DPLL, you'll find it *much* harder to debug issues. 
 
-Remember that you can use PBT on these helpers as well. The assignment doesn't require it, but it can be helpful.
+Remember that you can use PBT on these helpers as well. The assignment doesn't strictly require it, but it can be quite helpful. Use the testing tools that are available to you; they'll help find bugs during development.  
 ~~~
 
 #### Takeaway
