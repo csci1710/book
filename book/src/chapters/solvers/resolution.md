@@ -205,7 +205,7 @@ This is a fair question! Resolution doesn't account for subsumption because proo
 </details>
 
 ~~~admonish warning title="One variable at a time!"
-Don't try to run resolution on multiple variables at once. To see why not, try resolving the following two clauses:
+Don't try to "run resolution on multiple variables at once". To see why not, try resolving the following two clauses:
 
 ```
 (1, 2, 3)
@@ -218,7 +218,9 @@ It might initially appear that these are a good candidate for resolution. Howeve
 (3, 4)
 ```
 
-which is _not_ a consequence of the input! And if we only resolve on one variable, we'd get something like this:
+which is _not_ a consequence of the input! In fact, we've mis-applied the resolution rule. The rule says that if we have $(A \vee B)$ and we have $(\neg A \vee C)$ we can deduce $(B \vee C)$. These letters can correspond to any formula---but they have to match! If we pick (say) $1 \vee 2$ for $A$, then we need a clause that contains $\neg A $, which is $\neg (1 \vee 2)$, but that's not possible to see in clause; a clause has to be a big "or" of literals only. So we simply cannot run resolution in this way. 
+
+Following the rule correctly, if we only resolve on one variable, we'd get something like this:
 
 ```
 (2, -2, 3, 4)
