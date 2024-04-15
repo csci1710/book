@@ -1,4 +1,4 @@
-from z3 import Solver, Bool, And, Or, Implies, Not, sat, unsat
+from z3 import Solver, Bool, Bools, Ints, ForAll, Reals, Function, IntSort, And, Or, Implies, Not, sat, unsat
 
 def demoBool():
     # Create a new solver
@@ -88,6 +88,8 @@ def demoFactoringReals():
         print(result)
 
 def demoFactoringRealsUnsat():
+    s = Solver()
+
     # Here's how to start using cores in Z3 if you want, but
     # see the docs -- it's a bit more annoying because you need to create 
     # new boolean variables etc.
@@ -97,6 +99,8 @@ def demoFactoringRealsUnsat():
     # see: https://z3prover.github.io/api/html/classz3py_1_1_solver.html#ad1255f8f9ba8926bb04e1e2ab38c8c15 
 
     # Now, for the demo!
+
+    x, r1, r2 = Reals('x root1 root2') # real number vars
 
     # Note e.g., x^2 - 2x + 5 has no real roots (b^2 - 4ac negative)
     s.add(ForAll(x, (x + r1) * (x + r2) 
@@ -157,6 +161,11 @@ def nQueens(numQ):
         print("unsat")
 
 if __name__ == "__main__":
+    demoBool()
+    demoFactoringInt()
+    demoFactoringReals()
+    demoFactoringRealsUnsat()
+    demoUninterpreted()
     nQueens(4)
 
 
