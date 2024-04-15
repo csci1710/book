@@ -1,17 +1,15 @@
 # Satisfiability Modulo Theories (SMT)
 
-**THESE NOTES ARE UNDER CONSTRUCTION, AND IN DRAFT FORM! THEY MAY CHANGE SUBSTANTIALLY..**
+Boolean solvers are powerful, but not very expressive. If you want to use them to solve a problem involving (e.g.)  arithmetic, you need to encode that idea with booleans. Forge does this with a technique called "bit-blasting": one boolean variable per bit in a fixed bitwidth, along with formulas that build boolean adders, multipliers, etc. as needed. This works well for small examples, but can quickly run into performance issues---and if you need actual mathematical integers (to say nothing of real numbers!) you're out of luck.
 
+An SMT solver is a SAT solver that can handle various domain-specific concepts beyond boolean logic. Hence "modulo theories": it's satisfiability, but with the addition of (say) the "theory" of linear integer arithmetic.
+From a certain point of view, Forge is an "SMT" solver, because it includes concepts like relations and bit-vector integers. But this isn't usually how people understand the term these days.
 
-## What's "Modulo Theories"?
+~~~admonish note title="Theories"
+In the logic community, _theory_ is just another word for set of constraints. So when we say "the theory of linear integer arithmetic" we mean the axioms that define the domain of linear integer arithmetic.
+~~~
 
-Boolean solvers are powerful, but not very expressive. If you want to use them to solve a problem involving (e.g.)  arithmetic, you need to encode that idea with booleans. Forge does this by "bit-blasting": one boolean variable per bit in a fixed bitwidth, along with formulas that build boolean adders, multipliers, etc.
-
-An SMT solver is a SAT solver that can handle various domain-specific concepts beyond boolean logic. Hence "modulo theories": it's satisfiability, but with the addition of (say) the theory of linear integer arithmetic.
-
-From a certain point of view, Forge is an "SMT" solver, because it includes concepts like relations and bit-vector integers. But this isn't usually how people understand the term in 2022. 
-
-SMT solvers can be either "eager" or "lazy". An eager solver translates all the domain-specific constraints to boolean logic and then uses a boolean solver engine---this is Forge's approach. E.g., it might translate integer arithmetic to boolean circuits about bit-vectors. In contrast, a lazy solver actually implements domain-specific algorithms and integrates those with a purely-boolean solver core. Most modern SMT solvers are lazy, and so they can benefit from clever domain algorithms. 
+The reason is that SMT solvers can be either "eager" or "lazy". An eager solver translates all the domain-specific constraints to boolean logic and then uses a boolean solver engine---this is Forge's approach. In contrast, a lazy solver actually implements domain-specific algorithms and integrates those with a purely-boolean solver core. Most modern SMT solvers tend to be lazy, and so they can benefit from clever domain algorithms. 
 
 Here are some common domains that SMT solvers tend to support:
 * uninterpreted functions with equality;
@@ -30,11 +28,13 @@ And of course there are many others. The solver we'll use this week supports man
 
 ### A Key Difference
 
-Most SMT solvers don't have "bounds" in the same way Forge does. You can declare a datatype that's bounded in size, but the addition of domains like mathematical integers or lists means that unless you're working in a very restricted space, the set of possible objects is infinite. This can cause some confusion vs. what we're used to.
+Most SMT solvers don't have "bounds" in the same way Forge does. You can declare a datatype that's bounded in size, but the addition of domains like mathematical integers or lists means that unless you're working in a very restricted space, the set of possible objects is infinite. This can cause some confusion versus what we're used to.
 
-What does it mean to say "For all $x$ of type $A$, $P(x)$ is true?" In Forge, $A$ always has an upper bound, and so the quantifier can always be converted to a big, but finite, "`and`" constraint. But suppose the type is actual mathematical _integers_? There are infinitely many integers, which means the solver can't convert the quantifier to a (finite) boolean constraint. 
+What does it mean to say "For all $x$ of type $A$, $P(x)$ is true?" In Forge, $A$ always has an upper bound, and so the quantifier can always be converted to a big, but finite, "`and`" constraint. But suppose the type is actual mathematical _integers_? There are infinitely many integers, which means the solver can't convert the quantifier to a (finite) boolean constraint. This is such an important factor in designing SMT solvers that SMT literature often refers to universal quantification as just "quantification". 
 
-Try to avoid universal quantification ("`all`") in SMT, at least at first. If we had two weeks for SMT, we'd cover universal quantification in the second week.
+~~~admonish warning title="Universal quantification"
+Try to avoid universal quantification ("`all`") in SMT if you can. You can't always avoid it, but make sure you really need it to express your goals.
+~~~
 
 Even without universal quantifiction, a problem might not necessarily be solvable. We'll talk more about why on Wednesday; for now, just be aware that the solver might return a third result in addition to sat and unsat: _unknown_ (the solver gave up or ran out of time).
 
@@ -48,7 +48,7 @@ We'll be using the Python bindings for the Z3 solver, available [here](https://p
 
 To update to the latest version of the solver, you can run:
 
-`pip install z3-solver --upgrade`
+`pip3 install z3-solver --upgrade`
 
 Another great solver is [CVC5](https://cvc5.github.io). Although we won't use it in class, it supports some things that Z3 doesn't (and vice versa). For instance: relations!
 
@@ -74,8 +74,9 @@ def demoBool():
         print(s.model().evaluate(p)) # can pass a formula              
 ```
 
-**Watch out!** Different communities use different terminology. We use the word _model_ to describe the definitions and constraints you use to model a system, just like an automotive engineer might build a computer model of a car. This is generally what the software-engineering community means by the word. The logic community, on the other hand, uses _model_ to mean the same thing that we call an _instance_ in Forge: the valuation that either satisfies or dissatisfies a set of constraints.  There are good historical reasons for this, but for now, just be aware that Z3 will use the word "model" like a logician, not a software engineer.
-
+~~~admonish warning title="Terminology: model" 
+Different communities use different terminology. We use the word _model_ to describe the definitions and constraints you use to model a system, just like an automotive engineer might build a computer model of a car. This is generally what the software-engineering community means by the word. The logic community, on the other hand, uses _model_ to mean the same thing that we call an _instance_ in Forge: the valuation that either satisfies or dissatisfies a set of constraints.  There are good historical reasons for this, but for now, just be aware that Z3 will use the word "model" like a logician, not a software engineer.
+~~~
 
 ### Uninterpreted Functions And Integer Inequalities
 
@@ -83,7 +84,7 @@ If a symbol (function, relation, constant, ...) is _interpreted_, then its meani
 * `add` is an interpreted function, since Forge assigns it a meaning innately; but
 * relations you add as sig fields are uninterpreted, since absent constraints you add yourself, Forge treats their values as arbitrary.
 
-**Functions, not relations:** With some exceptions, SMT solvers usually focus on functions, not relations. This is another reason for Froglet to be about functions---they're more useful as a foundation in other tools!
+**Functions, not relations:** With some exceptions, SMT solvers usually focus on functions, not relations. This is another reason for Froglet to be about functions: they're more useful as a foundation in other tools!
 
 Here is a Z3 function that demonstrates the difference between interpreted and uninterpreted functions:
 
@@ -253,8 +254,6 @@ Today we'll talk about how SMT solvers work. We'll sketch:
 * Goldbach argument; and 
 * undecidability.
 
-We should also have time for an **in-class exercise on temporal logic**.
-
 ## What's Going On In The Solver?
 
 Modern SMT-solvers tend to be _lazy_ (a technical term): they use a base boolean solver, and call out to domain-specific algorithms ("theory solvers") when needed. This is how Z3 manages to be so fast at algebraic reasoning.
@@ -374,7 +373,7 @@ There's a famous unsolved problem in number theory called [Goldbach's conjecture
 
 > Every integer greater than 2 can be written as the sum of three primes.
 
-This is simple to state, and it's straightforward to express to Z3 or other SMT solvers. Yet, **we don't know** in April 2023 whether or not the conjecture holds for _all_ integers greater than 2. Mathematicians have looked for small (and not so small) counterexamples, and haven't found one yet. 
+This is simple to state, and it's straightforward to express to Z3 or other SMT solvers. Yet, **we don't know** (at time of writing) whether or not the conjecture holds for _all_ integers greater than 2. Mathematicians have looked for small (and not so small) counterexamples, and haven't found one yet. 
 
 That illustrates a big problem. To know whether Goldbach's conjecture is _false_, we just need to find an integer greater than 2 that cannot be written as the sum of 3 primes. Here's an algorithm for disproving the conjecture:
 
