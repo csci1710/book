@@ -1,18 +1,14 @@
-from z3 import Solver, Bool, Bools, Ints, ForAll, Reals, Function, IntSort, And, Or, Implies, Not, sat, unsat
+from z3 import Solver, Bool, Bools, Ints, ForAll, Reals, Real, Function, IntSort, And, Or, Implies, Not, sat, unsat
 
 def demoBool():
     # Create a new solver
     s = Solver()
-
     # declare some boolean *solver* variables
     p, q = Bools('p q')         
-    
     s.add(Or(p, q))
     if s.check() == sat:        
         print(s.model()) # "model" ~= "instance" here :/
-    
     # (Think: how would we get a different instance?)
-
     # getting at pieces of a model for programmatic use
     print(s.model().evaluate(p)) # can pass a formula    
 
@@ -139,7 +135,7 @@ def nQueens(numQ):
     # for every i,j, if queen present there, implies no queen at various other places
     # Recall: queens can move vertically, horizontally, and diagonally.
     # "Threaten" means that a queen could capture another in 1 move. 
-    queenThreats = And([Implies(cells[i][j], # Prefix notaton: (And x y) means "x and y".
+    queenThreats = And([Implies(cells[i][j], # Prefix notation: (And x y) means "x and y".
                                 And([Not(cells[i][k]) for k in range(0, numQ) if k != j] +
                                     [Not(cells[k][j]) for k in range(0, numQ) if k != i] +
                                     # Break up diagonals and don't try to be too smart about iteration
@@ -160,12 +156,14 @@ def nQueens(numQ):
     else: 
         print("unsat")
 
+
 if __name__ == "__main__":
-    demoBool()
-    demoFactoringInt()
-    demoFactoringReals()
-    demoFactoringRealsUnsat()
-    demoUninterpreted()
-    nQueens(4)
+    # demoBool()
+    # demoFactoringInt()
+    #demoFactoringReals()
+    #demoFactoringRealsUnsat()
+    # demoUninterpreted()
+    # demoReals()
+    nQueens(8)
 
 
