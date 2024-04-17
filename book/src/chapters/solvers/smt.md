@@ -253,7 +253,7 @@ if __name__ == "__main__":
 Today we'll talk about how SMT solvers work. We'll sketch:
 * the _boolean skeleton_ of an SMT problem;
 * the intuition behind the congruence closure argument;
-* Goldbach argument; and 
+* the Goldbach conjecture as an example; and 
 * undecidability.
 
 ## What's Going On In The Solver?
@@ -393,9 +393,9 @@ But what about the other direction? What if the conjecture is actually true? The
 
 Now, just because this specific algorithm isn't great doesn't mean that a better one might not exist. Maybe it's possible to be very smart, and search in a way that will terminate with _either_ true or false. 
 
-Except that it's not. CSCI 1010 talks about this a lot more, but I want to give you a bit of a taste of the ideas today. 
+Except that it's not _always_ possible. CSCI 1010 talks about this a lot more, but I want to give you a bit of a taste of the ideas now that we're nearing the end of 1710.
 
-## Undecidability (If Time Permits)
+## Undecidability 
 
 I want to tell you a story---with only _some_ embellishment. 
 
@@ -420,21 +420,52 @@ There is pandemonium. There is massive controversy. But, later mathematicians sa
 
 How did Cantor prove this? By contradiction. Assume you're given a bijection between a set $\mathbb{N}$ and its power set. Now, this bijection can be thought of as an infinite table, with subsets of $N$ as rows and elements of $N$ as columns. The cells contain booleans: true if the subset contains the element, and false if it doesn't. 
 
-**PLACEHOLDER FOR FALL: sketch**
+|   Set   | 0    | 1    | ...  |
+| ------- | ---- | ---- | ---- | 
+| {}      | N    | N    | ...  | 
+| {0}     | Y    | N    | ...  | 
+| {0, 1}  | Y    | Y    | ...  | 
+| ...     | ...  | ...  | ...  | 
 
-Cantor showed that there must _always_ be a row (i.e., a subset of $\mathbb{N}$) that _isn't_ represented in the table. That is, such a bijection cannot exist. Even with the very permissive definition of "same size" we use for infinite sets, there are _still_ more subsets of the natural numbers than there are natural numbers.
+
+Cantor showed that there must _always_ be a subset of $\mathbb{N}$ that _isn't_ represented as a row in the table. That is, such a bijection cannot exist. Even with the very permissive definition of "same size" we use for infinite sets, there are _still_ more subsets of the natural numbers than there are natural numbers.
+
+What is the subset that can't be represented as a row in the table?
+
+<details>
+<summary>Think, then click!</summary>
+
+Read off the diagonal from the top-left onward, and invert each boolean. In the table above, the set would contain both 0 and 1 (because those first two rows do not contain them, respectively) and so on.
+
+This technique is called "Cantor diagonalization". 
+
+</details>
 
 Why does this matter to *US*? Let me ask you two questions:
 
 **QUESTION 1**: How many syntactically-valid Java program source files are there?
 
-**QUESTION 2**: How many mathematical functions from `int` inputs to `bool` outputs are there?
+<details>
+<summary>Think, then click!</summary>
+
+There are infinitely many. But let's be more precise. A the source code of a program is a _finite_ text file. The size may be unbounded, but each specific file is finite. And the alphabet used for each character is also finite (let's say between 0 and 255, although that isn't always entirely accurate). 
+
+Thus, we can think of a program source file as a finite sequence of numbers between 0 and 255. This is the same as representing a natural number in base 256. There are as many Java program source files as there are natural numbers. 
+
+</details>
+
+**QUESTION 2**: How many mathematical functions from non-negative integer inputs to `bool` outputs are there, assuming your language has unbounded integers?
+
+<details>
+<summary>Think, then click!</summary>
+
+Each such function returns true or false for any given non-negative integer. In effect, it is defining a specific set of these. There are as many such mathematical functions as there are sets of natural numbers. 
+
+</details>
 
 What is our conclusion? 
 
-Try as you might, it is impossible to express all functions (of infinite type) in any programming language where program texts are finite. 
-
-So we know that programs in any language must be unable to express _some_ things (indeed, most things). But is there anything NO language can express? Maybe all the things unexpressible nobody actually needs or cares about. That would be comforting.
+Try as you might, it is impossible to express all functions of these in any programming language where program texts are finite. So we know that programs in any language must be unable to express _some_ things (indeed, most things). But is there anything that **no** language can express? Maybe all the things that are inexpressible are things that nobody actually needs or cares about. That would be comforting.
 
 Unfortunately, there are _plenty_ of important ideas that can't be expressed in any finite program. If you're curious about this, you might investigate CSCI 1010. I'm also happy to talk more about it offline. The following (very rough!) notes are meant to sketch one of the most famous problems in this area.
 
