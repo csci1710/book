@@ -375,6 +375,10 @@ There's a famous unsolved problem in number theory called [Goldbach's conjecture
 
 > Every integer greater than 2 can be written as the sum of three primes.
 
+~~~admonish warning title="1 isn't prime!"
+We generally consider 1 to be a non-prime number nowadays. But in the original formulation of this conjecture, it was meant to be. There are some alternative formulations in the article linked above, e.g., that *every even natural number greater than two is the sum of two primes*.
+~~~
+
 This is simple to state, and it's straightforward to express to Z3 or other SMT solvers. Yet, **we don't know** (at time of writing) whether or not the conjecture holds for _all_ integers greater than 2. Mathematicians have looked for small (and not so small) counterexamples, and haven't found one yet. 
 
 That illustrates a big problem. To know whether Goldbach's conjecture is _false_, we just need to find an integer greater than 2 that cannot be written as the sum of 3 primes. Here's an algorithm for disproving the conjecture:
