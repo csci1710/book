@@ -1,0 +1,420 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>From Tests to Properties - Logic for Systems</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../././mdbook-admonish.css">
+        <link rel="stylesheet" href="../.././mdbook-admonish.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item "><a href="../../chapters/welcome.html"><strong aria-hidden="true">1.</strong> Welcome</a></li><li class="chapter-item "><a href="../../chapters/manifesto/manifesto.html"><strong aria-hidden="true">2.</strong> Manifesto: Logic for Systems</a></li><li class="chapter-item expanded "><a href="../../chapters/properties/properties.html" class="active"><strong aria-hidden="true">3.</strong> From Tests to Properties</a></li><li class="chapter-item "><a href="../../chapters/intro_modeling/intro_modeling_1.html"><strong aria-hidden="true">4.</strong> Intro to Modeling (Part 1, Basics)</a></li><li class="chapter-item "><a href="../../chapters/intro_modeling/intro_modeling_2.html"><strong aria-hidden="true">5.</strong> Intro to Modeling (Part 2, Transitions)</a></li><li class="chapter-item "><a href="../../chapters/intro_modeling/intro_modeling_3.html"><strong aria-hidden="true">6.</strong> Intro to Modeling (Part 3, Traces)</a></li><li class="chapter-item "><a href="../../chapters/intro_modeling/intro_modeling_4.html"><strong aria-hidden="true">7.</strong> Intro to Modeling (Part 4, FAQ)</a></li><li class="chapter-item "><a href="../../chapters/finite_and_inductive/finite_and_inductive_1.html"><strong aria-hidden="true">8.</strong> Traces (Part 1)</a></li><li class="chapter-item "><a href="../../chapters/finite_and_inductive/finite_and_inductive_2.html"><strong aria-hidden="true">9.</strong> Traces (Part 2)</a></li><li class="chapter-item "><a href="../../chapters/finite_and_inductive/finite_and_inductive_3.html"><strong aria-hidden="true">10.</strong> Traces (Parts 3 and 4)</a></li><li class="chapter-item "><a href="../../chapters/sets-and-boolean-logic/modeling-booleans-1.html"><strong aria-hidden="true">11.</strong> Modeling Syntax, Semantics, and Sets</a></li><li class="chapter-item "><a href="../../chapters/sets-and-boolean-logic/reachability.html"><strong aria-hidden="true">12.</strong> Relations and Reachability</a></li><li class="chapter-item "><a href="../../chapters/sets-and-boolean-logic/sets-induction-mutex.html"><strong aria-hidden="true">13.</strong> More Induction: Modeling a Mutex</a></li><li class="chapter-item "><a href="../../chapters/sets-and-boolean-logic/sets-beyond-assertions.html"><strong aria-hidden="true">14.</strong> Beyond Assertions: Mutex Continued</a></li><li class="chapter-item "><a href="../../chapters/temporal/liveness_and_lassos.html"><strong aria-hidden="true">15.</strong> Liveness and Lassos</a></li><li class="chapter-item "><a href="../../chapters/temporal/temporal_operators.html"><strong aria-hidden="true">16.</strong> Temporal Forge (Part 1)</a></li><li class="chapter-item "><a href="../../chapters/temporal/temporal_operators_2.html"><strong aria-hidden="true">17.</strong> Temporal Forge (Part 2)</a></li><li class="chapter-item "><a href="../../chapters/temporal/obligations_past.html"><strong aria-hidden="true">18.</strong> Obligations and the Past, Deadlock</a></li><li class="chapter-item "><a href="../../chapters/temporal/fixing_lock_temporal.html"><strong aria-hidden="true">19.</strong> The Peterson Lock (Part 1)</a></li><li class="chapter-item "><a href="../../chapters/temporal/fixing_lock_temporal.html"><strong aria-hidden="true">20.</strong> The Peterson Lock (Part 2)</a></li><li class="chapter-item "><a href="../../chapters/solvers/bounds_booleans_how_forge_works.html"><strong aria-hidden="true">21.</strong> Bounds and Booleans; How Forge Works</a></li><li class="chapter-item "><a href="../../chapters/solvers/dpll.html"><strong aria-hidden="true">22.</strong> Solving SAT: DPLL</a></li><li class="chapter-item "><a href="../../chapters/solvers/resolution.html"><strong aria-hidden="true">23.</strong> Beyond "False": Resolution</a></li><li class="chapter-item "><a href="../../chapters/solvers/smt.html"><strong aria-hidden="true">24.</strong> Satisfiability Modulo Theories (SMT)</a></li><li class="chapter-item "><a href="../../chapters/solvers/cegis.html"><strong aria-hidden="true">25.</strong> CEGIS and Synthesis</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Logic for Systems</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+<h1 id="from-tests-to-properties"><a class="header" href="#from-tests-to-properties">From Tests to Properties</a></h1>
+<!-- Other examples we could include
+
+Implementation of a linked list. 
+* What should `add` guarantee?
+
+* change-making 
+  * simple greedy algorithm (largest coins first)
+  * apply PBT (correct total, in drawer)
+  * let's try this on LLM-generated code
+
+ -->
+<p>Today's livecode is <a href="./pbt.py">here</a>.</p>
+<div id="admonition-brown-csci-1710-logistics" class="admonition admonish-note">
+<div class="admonition-title">
+<p>(Brown CSCI 1710) Logistics</p>
+<p><a class="admonition-anchor-link" href="#admonition-brown-csci-1710-logistics"></a></p>
+</div>
+<div>
+<p>The first assignment goes out today: it's a homework, in Python. If you're not familiar with Python, you should check out our optional Python lab. The homework uses a library called Hypothesis, which we'll see some of in lecture today. You'll also be asked to use ChatGPT to generate code. Next Wednesday's lab will also use ChatGPT. </p>
+<p><strong>Please fill out the <a href="https://forms.gle/w8TN6Qg8RV4pps6U9">lab preference form</a>!</strong></p>
+</div>
+</div>
+<h2 id="where-are-we-going"><a class="header" href="#where-are-we-going">Where are we going?</a></h2>
+<p>We'll talk about more than just software soon. For now, let's go back to testing. Most of us have learned how to write test cases. Given an input, here's the output to expect. Tests are a kind of pointwise \emph{specification}; a partial one, and not great for fully describing what you want, but a kind of specification nonetheless. They're cheap, non-trivially useful, and better than nothing.</p>
+<p>We talked a bit <a href="./manifesto.html">last time</a> about how tests aren't always good enough: they carry our biases, they can't cover an infinite input space, etc. But even more, they're not always adequate carriers of intent: if I write <code>assert median([1,2,3]) == 2</code>, what exactly is the behavior of the system I'm trying to confirm? Surely I'm not writing the test because I care specifically about <code>[1,2,3]</code> only, and not about <code>[3,4,5]</code> in the same way? Maybe there was some broader aspect, some <em>property</em> of median I cared about when I wrote that test. What do you think it was? What makes an implementation of <code>median</code> correct?</p>
+<details>
+<summary>Think, then click!</summary>
+<p>There might be many things! One particular idea is that, if the input list has odd length, the median needs to be an element of the list. </p>
+</details>
+<p>There isn't always an easy-to-extract property for every unit test. But this idea---of encoding <em>goals</em> instead of specific behaviors---forces us to start thinking critically about <em>what we want</em> from a system and helps us to express it in a way that others (including, perhaps, LLMs) can use. It's only a short hop from there to some of the real applications we talked about last time, like verifying firewalls or modeling the Java type system.</p>
+<div id="admonition-sometimes-you-can-test-exhaustively" class="admonition admonish-note">
+<div class="admonition-title">
+<p>Sometimes, you can test exhaustively!</p>
+<p><a class="admonition-anchor-link" href="#admonition-sometimes-you-can-test-exhaustively"></a></p>
+</div>
+<div>
+<p>Sometimes the input space is small enough that exhaustive testing works well. This blog post, entitled <a href="https://news.ycombinator.com/item?id=34726919">&quot;There are only four billion floats&quot;</a> is an example.</p>
+<p>Notice that this, too, is a different kind from testing from what you're used to.</p>
+</div>
+</div>
+<h2 id="a-new-kind-of-testing"><a class="header" href="#a-new-kind-of-testing">A New Kind of Testing</a></h2>
+<h3 id="cheapest-paths"><a class="header" href="#cheapest-paths">Cheapest Paths</a></h3>
+<p>Consider the problem of finding cheapest paths in a weighted graph. There are quite a few algorithms you might use: Dijkstra, Bellman-Ford, even a plain breadth-first search for an unweighted graph. You might have implemented one of these for another class! </p>
+<p>The problem statement seems simple: take a graph <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.00773em;">GR</span><span class="mord mathnormal">A</span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mord mathnormal" style="margin-right:0.08125em;">H</span></span></span></span> and two vertex names <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="mord">1</span></span></span></span> and <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="mord">2</span></span></span></span> as input. Produce the cheapest path from <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="mord">1</span></span></span></span> to <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="mord">2</span></span></span></span> in <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.00773em;">GR</span><span class="mord mathnormal">A</span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mord mathnormal" style="margin-right:0.08125em;">H</span></span></span></span>. But it turns out that this problem hides a lurking issue.</p>
+<p>Find the cheapest path from vertex <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">G</span></span></span></span> to vertex <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">E</span></span></span></span> on the graph below.</p>
+<p><img src="https://i.imgur.com/CT7MSgl.jpg" alt="" /></p>
+<details>
+<summary>Think, then click!</summary>
+The path is G to A to B to E.    
+<p>Great! We have the answer. Now we can go and add a test case for with that graph as input and (G, A, B, E) as the output. </p>
+<p>Wait -- you found a different path? G to D to B to E?</p>
+<p>And another path? G to H to F to E?</p>
+</details>
+<p>If we add a traditional test case corresponding to <em>one</em> of the correct answers, our test suite will falsely raise alarms for correct implementations that happen to find different answers. In short, we'll be over-fitting our tests to @italic{one specific implementation}: ours. But there's a fix. Maybe instead of writing:</p>
+<p><code>shortest(GRAPH, G, E) == [(G, A), (A, B), (B, E)]</code></p>
+<p>we write:</p>
+<pre><code>shortest(GRAPH, G, E) == [(G, A), (A, B), (B, E)] or
+shortest(GRAPH, G, E) == [(G, D), (D, B), (B, E)] or
+shortest(GRAPH, G, E) == [(G, H), (H, F), (F, E)]
+</code></pre>
+<p>What's wrong with the &quot;big or&quot; strategy? Can you think of a graph where it'd be unwise to try to do this?</p>
+<details>
+    <summary>Think, then click!</summary>
+<p>There are at least two problems. First, we might have missed some possible solutions, which is quite easy to do; the first time Tim was preparing these notes, he missed the third path above! Second, there might be an unmanageable number of equally correct solutions. The most pathological case might be something like a graph with all possible edges present, all of which have weight zero. Then, every path is cheapest.</p>
+</details>
+<p>This problem -- multiple correct answers -- occurs in every part of Computer Science. Once you're looking for it, you can't stop seeing it. Most graph problems exhibit it. Worse, so do most optimization problems. Unique solutions are convenient, but the universe isn't built for our convenience. </p>
+<p>What's the solution? If <em>test cases</em> won't work, is there an alternative? (Hint: instead of defining correctness bottom-up, by small test cases, think top-down: can we say what it <strong>means</strong> for an implementation to be correct, at a high level?)</p>
+<details>
+<summary>Think, then click!</summary>
+<p>In the cheapest-path case, we can notice that the costs of all cheapest paths are the same. This enables us to write:</p>
+<p><code>cost(cheapest(GRAPH, G, E)) = 11</code></p>
+<p>which is now robust against multiple implementations of <code>cheapest</code>.</p>
+</details>
+<p>This might be something you were taught to do when implementing cheapest-path algorithms, or it might be something you did on your own, unconsciously. (You might also have been told to ignore this problem, or not told about it at all...) We're not going to stop there, however.</p>
+<p>Notice that we just did something subtle and interesting. Even if there are a billion cheapest paths between two vertices in the input graph, they all have that same, minimal length. Our testing strategy has just evolved past naming <em>specific</em> values of output to checking broader <em>properties</em> of output.</p>
+<p>Similarly, we can move past specific inputs: randomly generate them. Then, write a function <code>is_valid</code> that takes an arbitrary <code>input, output</code> pair and returns true if and only if the output is a valid solution for the input. Just pipe in a bunch of inputs, and the function will try them all. You can apply this strategy to most any problem, in any programming language. (For your homework this week, you'll be using Python.)</p>
+<p>Let's be more careful, though. Is there something <em>else</em> that <code>cheapest</code> needs to guarantee for that input, beyond finding a path with the same cost as our solution?</p>
+<details>
+<summary>Think, then click!</summary>
+<p>We also need to confirm that the path returned by <code>cheapest</code> is indeed a path in the graph! </p>
+</details>
+<p>Here's a sketch of an <code>is_valid</code> function for cheapest path:</p>
+<details>
+<summary>Think, then click!</summary>
+<pre><code>isValid : input: (graph, vertex, vertex), output: list(vertex) -&gt; bool
+  returns true IFF:
+    (1) output.cost == trustedImplementation(input).cost
+    (2) every vertex in output is in input's graph
+    (3) every step in output is an edge in input
+    ... and so on ...
+</code></pre>
+</details>
+<p>This style of testing is called Property-Based Testing (PBT). When we're using a trusted implementation---or some other artifact---to either evaluate the output or to help generate useful inputs, it is also a variety of Model-Based Testing (MBT). </p>
+<div id="admonition-model-based-testing" class="admonition admonish-note">
+<div class="admonition-title">
+<p>Model-Based Testing</p>
+<p><a class="admonition-anchor-link" href="#admonition-model-based-testing"></a></p>
+</div>
+<div>
+<p>There's a lot of techniques under the umbrella of MBT. If time permits, we'll talk 
+more about this later in the semester. For now, know that modeling systems, which 
+is what we'll be doing 
+for much of this class, can be used to help generate good tests.</p>
+</div>
+</div>
+<p>There are a few questions, though...</p>
+<p><strong>Question:</strong> Can we really trust a &quot;trusted&quot; implementation?</p>
+<p>No, not completely. It's impossible to reach a hundred percent trust; anybody who tells you otherwise is selling something. Even if you spend years creating a correct-by-construction system, there could be a bug in (say) how it is deployed or connected to other systems. </p>
+<p>But often, questions of correctness are really about the <em>transfer of confidence</em>: my old, slow implementation has worked for a couple of years now, and it's probably mostly right. I don't trust my new, optimized implementation at all: maybe it uses an obscure data structure, or a language I'm not familiar with, or maybe I don't even have access to the source code at all. </p>
+<p>And anyway, often we don't need recourse to any trusted model; we can just phrase the properties directly. </p>
+<p><strong>Exercise:</strong> What if we don't have a trusted implementation?</p>
+<p>You can use this approach whenever you can write a function that checks the correctness of a given output. It doesn't need to use an existing implementation (it's just easier to talk about that way). In the next example we won't use a trusted implementation at all!</p>
+<p><strong>Question:</strong> Where do the inputs come from?</p>
+<p>Great question! Some we will manually create based on our own cleverness and understanding of the problem. Others, we'll generate randomly.</p>
+<p>Random inputs are used for many purposes in software engineering: &quot;fuzz testing&quot;, for instance, creates vast quantities of random inputs in an attempt to find crashes and other serious errors. We'll use that same idea here, except that our notion of correctness is usually a bit more nuanced.</p>
+<p>Concretely:</p>
+<p><img src="https://i.imgur.com/gCGDK6m.jpg" alt="A diagram of property-based testing. A random input generator, plus some manually-chosen inputs, are sent to the implementation under test. The outputs are then run through the validator function." /></p>
+<p>It's important to note that some creativity is still involved here: you need to come up with an <code>is_valid</code> function (the &quot;property&quot;), and you'll almost always want to create some hand-crafted inputs (don't trust a random generator to find the subtle corner cases you already know about!) The strength of this approach lies in its resilience against problems with multiple correct answers, and in its ability to <em>mine for bugs while you sleep</em>. Did your random testing find a bug? Fix it, and then add that input to your list of regression tests. Rinse, repeat.</p>
+<p>If we were still thinking in terms of traditional test cases, this would make no sense: where would the outputs come from? Instead, we've created a testing system where concrete outputs aren't something we need to provide. Instead, we check whether the program under test produces <em>any valid output</em>.</p>
+<h2 id="hypothesis"><a class="header" href="#hypothesis">Hypothesis</a></h2>
+<p>There are PBT libraries for most every popular language. For your homework, you'll be using a library for Python called <a href="https://hypothesis.readthedocs.io/en/latest/index.html">Hypothesis</a>. Hypothesis has many helper functions to make generating random inputs relatively easy.  I want to spend the rest of class stepping you through using the library. Let's test a function in Python itself: the <code>median</code> function in the <code>statistics</code> library, which we began this chapter with. What are some important properties of <code>median</code>?</p>
+<div id="admonition-csci-1710-llms-and-testing" class="admonition admonish-note">
+<div class="admonition-title">
+<p>CSCI 1710: LLMs and Testing</p>
+<p><a class="admonition-anchor-link" href="#admonition-csci-1710-llms-and-testing"></a></p>
+</div>
+<div>
+<p>We're all going to be using LLMs to generate code in the future. But (like humans) LLMs aren't infallable. Knowing how to test will be even more important than ever. That's why your first homework in 1710 starts by asking you to generate code using an LLM of your choice, such as ChatGPT. Then, you'll use property-based testing to assess its correctness. </p>
+<p>To be clear, <strong>you will not be graded on the correctness of the code you prompt an LLM to generate</strong>. Rather, you will be graded on how good your property-based testing is. </p>
+<p>Later in the semester, you'll be using PBT again to test more complex software.</p>
+</div>
+</div>
+<p>Now let's use Hypothesis to test at least one of those properties. We'll start with this template:</p>
+<pre><code class="language-python">from hypothesis import given, settings
+from hypothesis.strategies import integers, lists
+from statistics import median
+
+# Tell Hypothesis: inputs for the following function are non-empty lists of integers
+@given(lists(integers(), min_size=1)) 
+# Tell Hypothesis: run up to 500 random inputs
+@settings(max_examples=500)
+def test_python_median(input_list):    
+    pass
+
+# Because of how Python's imports work, this if statement is needed to prevent 
+# the test function from running whenever a module imports this one. This is a 
+# common feature in Python modules that are meant to be run as scripts. 
+if __name__ == &quot;__main__&quot;: # ...if this is the main module, then...
+    test_python_median()
+
+</code></pre>
+<p>Let's start by filling in the <em>shape</em> of the property-based test case:</p>
+<pre><code class="language-python">def test_python_median(input_list):    
+    output_median = median(input_list) # call the implementation under test
+    print(f'{input_list} -&gt; {output_median}') # for debugging our property function
+    if len(input_list) % 2 == 1:
+        assert output_median in input_list 
+    # The above checks a conditional property. But what if the list length isn't even?
+    #   (and can we write a stronger property, regardless?)
+    # ...
+</code></pre>
+<p>After some back and forth, we might end up somewhere like this:</p>
+<pre><code class="language-python">def test_python_median(input_list):
+    output_median = median(input_list)
+    print(f'{input_list} -&gt; {output_median}')
+    if len(input_list) % 2 == 1:
+        assert output_median in input_list
+    
+    # Question 1: What's going wrong? The _property_ seems reasonable...
+    lower_or_eq =  [val for val in input_list if val &lt;= output_median]
+    higher_or_eq = [val for val in input_list if val &gt;= output_median]
+    assert len(lower_or_eq) &gt;= len(input_list) // 2    # // ~ floor
+    assert len(higher_or_eq) &gt;= len(input_list) // 2   # // ~ floor
+    # Question 2: Is this enough? :-)
+</code></pre>
+<p>As the questions in the code hint, there's still a problem with this. What do you think is missing? </p>
+<!-- <details>
+  <summary>Think, then click!</summary>
+
+  What do you think? 
+
+<details> -->
+<p>Notice how <em>being precise</em> about what correctness means is very important. With ordinary unit tests, we're able to think about behavior point-wise; here, we need to broadly describe our goals. There's advantages to that work: comprehension, more powerful testing, better coverage, etc. </p>
+<p>There's more to do, but hopefully this gives you a reasonably nice starting point.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../chapters/manifesto/manifesto.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../chapters/intro_modeling/intro_modeling_1.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../chapters/manifesto/manifesto.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../chapters/intro_modeling/intro_modeling_1.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="../../ace.js"></script>
+        <script src="../../editor.js"></script>
+        <script src="../../mode-rust.js"></script>
+        <script src="../../theme-dawn.js"></script>
+        <script src="../../theme-tomorrow_night.js"></script>
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

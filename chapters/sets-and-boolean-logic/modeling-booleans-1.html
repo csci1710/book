@@ -1,0 +1,588 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Modeling Syntax, Semantics, and Sets - Logic for Systems</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../././mdbook-admonish.css">
+        <link rel="stylesheet" href="../.././mdbook-admonish.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item "><a href="../../chapters/welcome.html"><strong aria-hidden="true">1.</strong> Welcome</a></li><li class="chapter-item "><a href="../../chapters/manifesto/manifesto.html"><strong aria-hidden="true">2.</strong> Manifesto: Logic for Systems</a></li><li class="chapter-item "><a href="../../chapters/properties/properties.html"><strong aria-hidden="true">3.</strong> From Tests to Properties</a></li><li class="chapter-item "><a href="../../chapters/intro_modeling/intro_modeling_1.html"><strong aria-hidden="true">4.</strong> Intro to Modeling (Part 1, Basics)</a></li><li class="chapter-item "><a href="../../chapters/intro_modeling/intro_modeling_2.html"><strong aria-hidden="true">5.</strong> Intro to Modeling (Part 2, Transitions)</a></li><li class="chapter-item "><a href="../../chapters/intro_modeling/intro_modeling_3.html"><strong aria-hidden="true">6.</strong> Intro to Modeling (Part 3, Traces)</a></li><li class="chapter-item "><a href="../../chapters/intro_modeling/intro_modeling_4.html"><strong aria-hidden="true">7.</strong> Intro to Modeling (Part 4, FAQ)</a></li><li class="chapter-item "><a href="../../chapters/finite_and_inductive/finite_and_inductive_1.html"><strong aria-hidden="true">8.</strong> Traces (Part 1)</a></li><li class="chapter-item "><a href="../../chapters/finite_and_inductive/finite_and_inductive_2.html"><strong aria-hidden="true">9.</strong> Traces (Part 2)</a></li><li class="chapter-item "><a href="../../chapters/finite_and_inductive/finite_and_inductive_3.html"><strong aria-hidden="true">10.</strong> Traces (Parts 3 and 4)</a></li><li class="chapter-item expanded "><a href="../../chapters/sets-and-boolean-logic/modeling-booleans-1.html" class="active"><strong aria-hidden="true">11.</strong> Modeling Syntax, Semantics, and Sets</a></li><li class="chapter-item "><a href="../../chapters/sets-and-boolean-logic/reachability.html"><strong aria-hidden="true">12.</strong> Relations and Reachability</a></li><li class="chapter-item "><a href="../../chapters/sets-and-boolean-logic/sets-induction-mutex.html"><strong aria-hidden="true">13.</strong> More Induction: Modeling a Mutex</a></li><li class="chapter-item "><a href="../../chapters/sets-and-boolean-logic/sets-beyond-assertions.html"><strong aria-hidden="true">14.</strong> Beyond Assertions: Mutex Continued</a></li><li class="chapter-item "><a href="../../chapters/temporal/liveness_and_lassos.html"><strong aria-hidden="true">15.</strong> Liveness and Lassos</a></li><li class="chapter-item "><a href="../../chapters/temporal/temporal_operators.html"><strong aria-hidden="true">16.</strong> Temporal Forge (Part 1)</a></li><li class="chapter-item "><a href="../../chapters/temporal/temporal_operators_2.html"><strong aria-hidden="true">17.</strong> Temporal Forge (Part 2)</a></li><li class="chapter-item "><a href="../../chapters/temporal/obligations_past.html"><strong aria-hidden="true">18.</strong> Obligations and the Past, Deadlock</a></li><li class="chapter-item "><a href="../../chapters/temporal/fixing_lock_temporal.html"><strong aria-hidden="true">19.</strong> The Peterson Lock (Part 1)</a></li><li class="chapter-item "><a href="../../chapters/temporal/fixing_lock_temporal.html"><strong aria-hidden="true">20.</strong> The Peterson Lock (Part 2)</a></li><li class="chapter-item "><a href="../../chapters/solvers/bounds_booleans_how_forge_works.html"><strong aria-hidden="true">21.</strong> Bounds and Booleans; How Forge Works</a></li><li class="chapter-item "><a href="../../chapters/solvers/dpll.html"><strong aria-hidden="true">22.</strong> Solving SAT: DPLL</a></li><li class="chapter-item "><a href="../../chapters/solvers/resolution.html"><strong aria-hidden="true">23.</strong> Beyond "False": Resolution</a></li><li class="chapter-item "><a href="../../chapters/solvers/smt.html"><strong aria-hidden="true">24.</strong> Satisfiability Modulo Theories (SMT)</a></li><li class="chapter-item "><a href="../../chapters/solvers/cegis.html"><strong aria-hidden="true">25.</strong> CEGIS and Synthesis</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Logic for Systems</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+<h1 id="modeling-boolean-logic-syntax-semantics-and-sets"><a class="header" href="#modeling-boolean-logic-syntax-semantics-and-sets">Modeling Boolean Logic (Syntax, Semantics, and Sets)</a></h1>
+<div id="admonition-csci-1710" class="admonition admonish-note">
+<div class="admonition-title">
+<p>CSCI 1710</p>
+<p><a class="admonition-anchor-link" href="#admonition-csci-1710"></a></p>
+</div>
+<div>
+<p>Welcome back from long weekend!</p>
+<ul>
+<li>Start on Curiosity Modeling if you haven't already. You don't need &quot;approval&quot;, but check my advice in the megathread. Post on Ed if you have questions or concerns. I haven't seen many ideas in the thread yet; please do share yours! </li>
+<li>Professionalism is important in 1710. If you are unprofessional with your project or case study partner(s), your grade may suffer.</li>
+</ul>
+</div>
+</div>
+<p>Livecode is <a href="./booleanLogic.frg">here</a>.</p>
+<p>Today, we'll be writing a new model from scratch. Across today and Friday, we'll have 3 goals:</p>
+<ul>
+<li>distinguishing <em>syntax</em> versus <em>semantics</em> (and what that even means);</li>
+<li>introducing sets to Forge; and</li>
+<li>learning a way to model recursive concepts in a language without recursion.</li>
+</ul>
+<!-- ## Forge 2 Review
+
+See Lecture capture. We discussed a handful of test cases that you all reported for Forge 2.
+
+[Form link for visualization feedback](https://forms.gle/2GGtmBfSTfqFiU557).  -->
+<h2 id="in-class-exercise"><a class="header" href="#in-class-exercise">In-class exercise</a></h2>
+<p>We'll warm up with an in-class exercise. I'd like everyone to take 5 minutes responding to this <a href="https://docs.google.com/forms/d/e/1FAIpQLSfv7p6PH1ZkXQuSc-29NmFRwDS5JQiDX-6cHdHehvabpfBE7g/viewform">request for feedback about Toadus Ponens</a>. Feedback here is actionable; e.g., we might be able to make Forge give an overall test report rather than stopping after the first test failure---something that came out of the feedback so far.</p>
+<h2 id="boolean-formulas"><a class="header" href="#boolean-formulas">Boolean Formulas</a></h2>
+<p>You've all worked a lot with boolean formulas before. Any time you write the conditional for an <code>if</code> statement in a programming language, and you need <code>and</code>s and <code>or</code>s and <code>not</code>s, you're constructing a boolean formula. E.g., if you're building a binary search tree, you might write something like:</p>
+<pre><code class="language-java=">if(this.getLeftChild()!= null &amp;&amp;
+   this.getLeftChild().value &lt; goal) { 
+    ... 
+}
+</code></pre>
+<p>The conditional inside the <code>if</code> is a boolean formula with two <em>variables</em> (also sometimes called <em>atomic propositions</em>): <code>leftChild != null</code> and <code>leftChild.value &lt; goal</code>. Then a single <code>&amp;&amp;</code> (and) combines the two.</p>
+<p>We might describe this example in Forge as:</p>
+<pre><code class="language-alloy">example leftBranchFormula is {} for {
+  And = `And0
+  Var = `VarNeqNull + `VarLTLeft
+  Formula = And + Var
+}
+</code></pre>
+<p>Can you think of more examples of boolean formulas?</p>
+<h2 id="modeling-boolean-formulas"><a class="header" href="#modeling-boolean-formulas">Modeling Boolean Formulas</a></h2>
+<p>Let's define some types for formulas in Froglet. It can be helpful to have an <code>abstract sig</code> to represent all the formula types, and then extend it with each kind of formula:</p>
+<pre><code class="language-alloy">-- Syntax: formulas
+abstract sig Formula {}
+-- Forge doesn't allow repeated field names, so manually disambiguate
+sig Var extends Formula {} 
+sig Not extends Formula {child: one Formula} 
+sig Or extends Formula {o_left, o_right: one Formula}
+sig And extends Formula {a_left, a_right: one Formula}
+</code></pre>
+<p>If we really wanted to, we could go in and add <code>sig Implies</code>, <code>sig IFF</code>, and other operators. For now, we'll stick with these.</p>
+<p>As in the family-trees homework, we need a notion of well-formedness. What would make a formula in an instance &quot;garbage&quot;? Well, if the syntax tree contained a cycle, the formula wouldn't be a formula! We'd like to write a <code>wellformed</code> predicate that excludes something like this:</p>
+<pre><code class="language-alloy">pred trivialLeftCycle { 
+    some a: And | a.a_left = a
+}
+pred notWellformed { not wellformed }
+assert trivialLeftCycle is sufficient for notWellformed
+</code></pre>
+<p>Like (again) in family trees, we've got multiple fields that a cycle could occur on. We don't just need to protect against this basic example, but against cycles that use multiple kinds of field. Let's build a helper predicate:</p>
+<pre><code class="language-alloy">-- IMPORTANT: remember to update this if adding new fmla types!
+pred subFormulaOf[sub: Formula, f: Formula] {
+  reachable[sub, f, child, a_left, o_left, a_right, o_right]
+}
+</code></pre>
+<p>At first, this might seem like a strange use of a helper---just one line, that's calling <code>reachable</code>. However, what if we need to check this in multiple places, and we want to add more formula types (<code>Implies</code>, say)? Then we need to remember to add the fields of the new <code>sig</code> everywhere that <code>reachable</code> is used. This way, we have <em>one</em> place to make the change.</p>
+<pre><code class="language-alloy">-- Recall we tend to use wellformed to exclude &quot;garbage&quot; instances
+--   analogous to PBT *generator*; stuff we might want to verify 
+--   or build a system to enforce goes elsewhere!
+pred wellformed {
+  -- no cycles
+  all f: Formula | not subFormulaOf[f, f]
+}
+</code></pre>
+<p>We'll want to add <code>wellformed</code> to the first example we wrote, but it should still pass. Let's run the model and look at some formulas!</p>
+<pre><code class="language-alloy">run {wellformed}
+</code></pre>
+<p>That's prone to giving very small examples, though, so how about this?</p>
+<pre><code class="language-alloy">run {
+  wellformed
+  some top: Formula | {
+    all other: Formula | top != other =&gt; {
+      subFormulaOf[other, top]
+    }
+  }
+} for exactly 8 Formula
+</code></pre>
+<p>Note this is another good use for a <code>subFormulaOf</code> predicate: if we wrote a bunch of tests that looked like this, and then added more, we wouldn't have to remember to add the new field to a bunch of separate places.</p>
+<h2 id="inst-syntax"><a class="header" href="#inst-syntax"><code>inst</code> Syntax</a></h2>
+<p>The syntax that you use in <code>example</code>s can be used more generally. We can define a partial instance of our own using the <code>inst</code> command. We can then provide the instance to <code>run</code>, tests, and other commands along with numeric bounds. This is sometimes <em>great</em> for performance optimization. </p>
+<p>For example:</p>
+<pre><code class="language-alloy">inst onlyOneAnd {
+  And = `And0  
+}
+
+run {
+  wellformed
+} for exactly 8 Formula for onlyOneAnd
+</code></pre>
+<p>Compare the statistical info for the run with and without this added partial instance information. Do you notice any changes? What do you think might be going on, here? </p>
+<details>
+<summary>Think, then click!</summary>
+<p>The statistical information is reporting runtime, but also something else. It turns out these express how big the boolean constraint problem is. </p>
+</details>
+<p>Last time we started modeling boolean formulas in Forge. We'd defined what a &quot;well-formed&quot; formula was, and then ran Forge to produce an example with <code>run {wellformed}</code>.</p>
+<p>That's prone to giving very small examples, though, so how about this?</p>
+<pre><code class="language-alloy">run {
+  wellformed
+  some top: Formula | {
+    all other: Formula | top != other =&gt; {
+      subFormulaOf[other, top]
+    }
+  }
+} for exactly 8 Formula
+</code></pre>
+<p>Note this is an example of why we wrote a <code>subFormulaOf</code> predicate: it's convenient for re-use! If we wrote a bunch of tests that looked like this, and then added more, we wouldn't have to remember to add the new field to a bunch of separate places.</p>
+<!-- ## Sets in Forge -- Survey
+
+[Survey](https://forms.gle/TRu83Wy8fVg8XHpb7) -->
+<h2 id="modeling-the-meaning-of-boolean-circuits"><a class="header" href="#modeling-the-meaning-of-boolean-circuits">Modeling the <em>Meaning</em> Of Boolean Circuits</a></h2>
+<p>What's the <em>meaning</em> of a formula? So far they're just bits of syntax. Sure, they're pretty trees, but we haven't defined a way to understand them or interpret them. </p>
+<p>This distinction is <em>really</em> important, and occurs everywhere we use a language (natural, programming, modeling, etc.). Let's go back to that BST example:</p>
+<pre><code class="language-java=">if(this.getLeftChild() != null &amp;&amp; this.getLeftChild().value &lt; goal) { 
+    ... 
+}
+</code></pre>
+<p>Suppose that the BST class increments a counter whenever <code>getLeftChild()</code> is called. If it's zero before this <code>if</code> statement runs, what will it be afterward?</p>
+<details>
+<summary>Think, then click!</summary>
+<p>It depends! If the left-child is non-null, the counter will hold <code>2</code> afterward. but what if the left-child is null? </p>
+<p>If we're working in a language like Java, which &quot;short circuits&quot; conditionals, the counter would be <code>1</code> since the second branch of the <code>&amp;&amp;</code> would never need to execute. </p>
+<p>But in another language, one that <em>didn't</em> have short-circuiting conditionals, the counter might be <code>2</code>. </p>
+</details>
+<br/>
+<p>If we don't know the <em>meaning</em> of that <code>if</code> statement and the <code>and</code> within it, we don't actually know what will happen! Sure, we have an intuition---but when you're learning a new language, experimenting to check your intuition is a good idea. Syntax can mislead us. </p>
+<p>So let's understand the meaning, the <em>semantics</em>, of boolean logic. What can I <em>do</em> with a formula? What's it meant to enable? </p>
+<details>
+<summary>Think, then click!</summary>
+If I have a formula, I can plug in various values into its variables, and see whether it evaluates to true or false for those values.  
+<p>So let's think of a boolean formula like a function from variable valuations to boolean values. </p>
+</details>
+<br/>
+<p>There's many ways to model that, but notice there's a challenge: what does it mean to be a function that maps <em>a variable valuation</em> to a boolean value? Let's make a new <code>sig</code> for that: </p>
+<pre><code class="language-alloy">-- If we were talking about Forge's underlying boolean 
+-- logic, this might represent an instance! More on that soon.
+sig Valuation {
+  -- [HELP: what do we put here? Read on...]
+}
+</code></pre>
+<p>We have to decide what field a <code>Valuation</code> should have. And then, naively, we might start out by writing a <em>recursive</em> predicate or function, kind of like this pseudocode:</p>
+<pre><code class="language-alloy">pred semantics[f: Formula, val: Valuation] {
+  f instanceof Var =&gt; val sets the f var true
+  f instanceof And =&gt; semantics[f.a_left, val] and semantics[f.a_right, val]
+  ...
+}
+</code></pre>
+<p>This <em>won't work!</em> Forge is not a recursive language. We've got to do something different.</p>
+<p>Let's move the recursion into the model itself, by adding a mock-boolean sig: </p>
+<pre><code class="language-alloy">one sig Yes {}
+</code></pre>
+<p>and then adding a new field to our <code>Formula</code> sig (which we will, shortly, constrain to encode the semantics of formulas):</p>
+<pre><code class="language-alloy">   satisfiedBy: pfunc Valuation -&gt; Yes
+</code></pre>
+<p>This <em>works</em> but it's a bit verbose. It'd be more clean to just say that every formula has a <em>set</em> of valuations that satisfy it. So I'm going to use this opportunity to start introducing sets in Forge. </p>
+<h4 id="language-change"><a class="header" href="#language-change">Language change!</a></h4>
+<p>First, let's change our language from <code>#lang forge/bsl</code> to <code>#lang forge</code>. This gives us a language with more expressive power, but also some subtleties we'll need to address.</p>
+<div id="admonition-relational-forge" class="admonition admonish-tip">
+<div class="admonition-title">
+<p>Relational Forge</p>
+<p><a class="admonition-anchor-link" href="#admonition-relational-forge"></a></p>
+</div>
+<div>
+<p>This language is called <strong>Relational Forge</strong>, for reasons that will become apparent. For now, when you see <code>#lang forge</code> rather than <code>#lang forge/bsl</code>, expect us to say &quot;relational&quot;, and understand there's more expressivity there than Froglet gives you.</p>
+</div>
+</div>
+<h4 id="adding-sets"><a class="header" href="#adding-sets">Adding sets...</a></h4>
+<p>Now, we can write:</p>
+<pre><code class="language-alloy">abstract sig Formula {
+  -- Work around the lack of recursion by reifying satisfiability into a field
+  -- f.satisfiedBy contains an instance IFF that instance makes f true.
+  -- [NEW] set field
+  satisfiedBy: set Valuation
+}
+</code></pre>
+<p>and also:</p>
+<pre><code class="language-alloy">sig Valuation {
+  trueVars: set Var
+}
+</code></pre>
+<p>And we can encode the semantics as a predicate like this:</p>
+<pre><code class="language-alloy">-- IMPORTANT: remember to update this if adding new fmla types!
+-- Beware using this fake-recursion trick in general cases (e.g., graphs)
+-- It's safe to use here because the data are tree shaped. 
+pred semantics
+{
+  -- [NEW] set difference
+  all f: Not | f.satisfiedBy = Valuation - f.child.satisfiedBy
+  -- [NEW] set comprehension, membership
+  all f: Var | f.satisfiedBy = {i: Valuation | f in i.trueVars}
+  -- [NEW] set union
+  all f: Or  | f.satisfiedBy = f.o_left.satisfiedBy + f.o_right.satisfiedBy
+  -- [NEW] set intersection
+  all f: And | f.satisfiedBy = f.a_left.satisfiedBy &amp; f.a_right.satisfiedBy
+}
+</code></pre>
+<p>There's a lot going on here, but if you like the idea of sets in Forge, some of these new ideas might appeal to you. However, there are some <em>Forge</em> semantics questions you might have. </p>
+<details>
+<summary>Wait, was that a joke?</summary>
+No, it actually wasn't! Are you sure that you know the _meaning_ of `=` in Forge now? 
+</details>
+<br/>
+<p>Suppose I started explaining Forge's set-operator semantics like so:</p>
+<ul>
+<li>Set union (<code>+</code>) in Forge produces a set that contains exactly those elements that are in one or both of the two arguments. </li>
+<li>Set intersection (<code>&amp;</code>) in Forge produces a set that contains exactly those elements that are in both of the two arguments.</li>
+<li>Set difference (<code>-</code>) in Forge produces a set that contains exactly those elements of the first argument that are not present in the second argument.</li>
+<li>Set comprehension (<code>{...}</code>) produces a set containing exactly those elements from the domain that match the condition in the comprehension.</li>
+</ul>
+<p>That may sound OK at a high level, but you shouldn't let me get away with <em>just</em> saying that. (Why not?) </p>
+<details>
+<summary>Think, then click!</summary>
+<p>What does &quot;produces a set&quot; mean? And what happens if I use <code>+</code> (or other set operators) to combine a set and another kind of value? And so on... </p>
+</details>
+<br/>
+<p>We're often dismissive of semantics---you'll hear people say, in an argument, &quot;That's just semantics!&quot; (to mean that the other person is being unnecessarily pedantic and quibbling about technicalities, rather than engaging). But especially when we're talking about computer languages, precise definitions <em>matter a lot</em>! </p>
+<div id="admonition-the-key-idea" class="admonition admonish-warning">
+<div class="admonition-title">
+<p>The key idea</p>
+<p><a class="admonition-anchor-link" href="#admonition-the-key-idea"></a></p>
+</div>
+<div>
+<p>Here's the vital high-level idea: <strong>in Relational Forge, all values are sets.</strong> A singleton value is just a set with one element, and <code>none</code> is the empty set. That's it.</p>
+</div>
+</div>
+<p>This means that <code>+</code>, <code>&amp;</code>, etc. and even <code>=</code> are well-defined, but that our usual intuitions (sets are different from objects) start to break down when we add sets into the language. <strong>This is one of the major reasons we started with Froglet</strong>, because otherwise the first month of 1710 is a lot of extra work for people who haven't yet taken 0220, or who are taking it concurrently. Now, everyone is familiar with things like constraints and quantification, and there's less of a learning curve.</p>
+<p>From now on, we'll admit that everything in Forge is a set, but introduce the ideas that grow from that fact gradually, resolving potential confusions as we go.</p>
+<h4 id="returning-to-well-formedness"><a class="header" href="#returning-to-well-formedness">Returning to well-formedness</a></h4>
+<p>Now we have a new kind of ill-formed formula: one where the <code>semantics</code> haven't been properly applied. So we enhance our <code>wellformed</code> predicate:</p>
+<pre><code class="language-alloy">pred wellformed {
+  -- no cycles
+  all f: Formula | not subFormulaOf[f, f]
+  -- the semantics of the logic apply
+  semantics
+}
+</code></pre>
+<h2 id="some-validation"><a class="header" href="#some-validation">Some Validation</a></h2>
+<p>Here are some examples of things you might check in the model. Some are validation of the model (e.g., that it's possible to have instances that disagree on which formulas they satisfy) and others are results we might expect after taking a course like 0220.</p>
+<pre><code class="language-alloy">-- First, some tests for CONSISTENCY. We'll use test-expect/is-sat for these. 
+test expect {
+  nuancePossible: {
+    wellformed
+    -- [NEW] set difference in quantifier domain
+    --   Question: do we need the &quot;- Var&quot;?
+    some f: Formula - Var | {
+      some i: Valuation | i not in f.satisfiedBy
+      some i: Valuation | i in f.satisfiedBy
+    }    
+  } for 5 Formula, 2 Valuation is sat  
+  ---------------------------------
+  doubleNegationPossible: {
+    wellformed 
+    some f: Not | {
+      -- [NEW] set membership (but is it &quot;subset of&quot; or &quot;member of&quot;?)
+      f.child in Not      
+    }
+  } for 3 Formula, 1 Valuation is sat  
+} 
+
+-- Now, what are some properties we'd like to check? 
+-- We already know a double-negation is possible, so let's write a predicate for it
+-- and use it in an assertion. Since it's satisfiable (above) we need not worry 
+-- about vacuous truth for this assertion.
+pred isDoubleNegationWF[f: Formula] { 
+    f in Not  -- this is a Not
+    f.child in Not -- that is a double negation
+    wellformed
+} 
+pred equivalent[f1, f2: Formula] {
+    f1.satisfiedBy = f2.satisfiedBy
+}
+-- Note that this check is always with respect to scopes/bounds. &quot;equivalent&quot; isn't 
+-- real logical equivalence if we have a bug in our model! 
+assert all n: Not | isDoubleNegationWF[n] is sufficient for equivalent[n, n.child.child] 
+  for 5 Formula, 4 Valuation is unsat    
+
+-- de Morgan's law says that 
+-- !(x and y) is equivalent to (!x or !y) and vice versa. Let's check it. 
+
+-- First, we'll set up a general scenario with constraints. This _could_ also 
+-- be expressed with `inst`, but I like using constraints for this sort of thing. 
+pred negatedAnd_orOfNotsWF[f1, f2: Formula] {
+    wellformed
+    
+    -- f1 is !(x and y)
+    f1 in Not 
+    f1.child in And      
+    -- f2 is (!x or !y)
+    f2 in Or
+    f2.o_left in Not
+    f2.o_right in Not
+    f2.o_left.child = f1.child.a_left
+    f2.o_right.child = f1.child.a_right      
+}
+
+assert all f1, f2: Formula | 
+  negatedAnd_orOfNotsWF[f1, f2] is sufficient for equivalent[f1, f2]
+  for 8 Formula, 4 Valuation is unsat      
+
+-- If we're going to trust that assertion passing, we need to confirm 
+-- that the left-hand-side is satisfiable! 
+test expect {
+    negatedAnd_orOfNotsWF_sat: {
+        some f1, f2: Formula | negatedAnd_orOfNotsWF[f1, f2]
+    } for 8 Formula, 4 Valuation is sat
+}
+</code></pre>
+<!-- ```  
+  ---------------------------------    
+  andAssociativePossible: {
+    -- ((X and Y) and Z) 
+    --      ^ A1MID  ^ A1TOP
+    -- (X and (Y and Z)
+    --      ^ A2TOP  ^ A2MID
+    wellformed
+    some A1TOP, A2TOP, A1MID, A2MID : And {
+      A1TOP.a_left = A1MID
+      A2TOP.a_right = A2MID
+      A1TOP.a_right = A2MID.a_right
+      A1MID.a_left = A2TOP.a_left
+      A1MID.a_right = A2MID.a_left
+    }
+  } for 8 Formula, 4 Valuation is sat 
+  andAssociativeCheck: {
+    -- ((X and Y) and Z) 
+    --      ^ A1MID  ^ A1TOP
+    -- (X and (Y and Z)
+    --      ^ A2TOP  ^ A2MID
+    wellformed
+    some A1TOP, A2TOP, A1MID, A2MID : And {
+      A1TOP.a_left = A1MID
+      A2TOP.a_right = A2MID
+      A1TOP.a_right = A2MID.a_right
+      A1MID.a_left = A2TOP.a_left
+      A1MID.a_right = A2MID.a_left
+      A1TOP.satisfiedBy != A2TOP.satisfiedBy
+    }
+  } for 8 Formula, 4 Valuation is unsat 
+} 
+```
+-->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../chapters/finite_and_inductive/finite_and_inductive_3.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../chapters/sets-and-boolean-logic/reachability.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../chapters/finite_and_inductive/finite_and_inductive_3.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../chapters/sets-and-boolean-logic/reachability.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="../../ace.js"></script>
+        <script src="../../editor.js"></script>
+        <script src="../../mode-rust.js"></script>
+        <script src="../../theme-dawn.js"></script>
+        <script src="../../theme-tomorrow_night.js"></script>
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

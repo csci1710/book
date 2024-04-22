@@ -1,0 +1,364 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Relations and Reachability - Logic for Systems</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../././mdbook-admonish.css">
+        <link rel="stylesheet" href="../.././mdbook-admonish.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item "><a href="../../chapters/welcome.html"><strong aria-hidden="true">1.</strong> Welcome</a></li><li class="chapter-item "><a href="../../chapters/manifesto/manifesto.html"><strong aria-hidden="true">2.</strong> Manifesto: Logic for Systems</a></li><li class="chapter-item "><a href="../../chapters/properties/properties.html"><strong aria-hidden="true">3.</strong> From Tests to Properties</a></li><li class="chapter-item "><a href="../../chapters/intro_modeling/intro_modeling_1.html"><strong aria-hidden="true">4.</strong> Intro to Modeling (Part 1, Basics)</a></li><li class="chapter-item "><a href="../../chapters/intro_modeling/intro_modeling_2.html"><strong aria-hidden="true">5.</strong> Intro to Modeling (Part 2, Transitions)</a></li><li class="chapter-item "><a href="../../chapters/intro_modeling/intro_modeling_3.html"><strong aria-hidden="true">6.</strong> Intro to Modeling (Part 3, Traces)</a></li><li class="chapter-item "><a href="../../chapters/intro_modeling/intro_modeling_4.html"><strong aria-hidden="true">7.</strong> Intro to Modeling (Part 4, FAQ)</a></li><li class="chapter-item "><a href="../../chapters/finite_and_inductive/finite_and_inductive_1.html"><strong aria-hidden="true">8.</strong> Traces (Part 1)</a></li><li class="chapter-item "><a href="../../chapters/finite_and_inductive/finite_and_inductive_2.html"><strong aria-hidden="true">9.</strong> Traces (Part 2)</a></li><li class="chapter-item "><a href="../../chapters/finite_and_inductive/finite_and_inductive_3.html"><strong aria-hidden="true">10.</strong> Traces (Parts 3 and 4)</a></li><li class="chapter-item "><a href="../../chapters/sets-and-boolean-logic/modeling-booleans-1.html"><strong aria-hidden="true">11.</strong> Modeling Syntax, Semantics, and Sets</a></li><li class="chapter-item expanded "><a href="../../chapters/sets-and-boolean-logic/reachability.html" class="active"><strong aria-hidden="true">12.</strong> Relations and Reachability</a></li><li class="chapter-item "><a href="../../chapters/sets-and-boolean-logic/sets-induction-mutex.html"><strong aria-hidden="true">13.</strong> More Induction: Modeling a Mutex</a></li><li class="chapter-item "><a href="../../chapters/sets-and-boolean-logic/sets-beyond-assertions.html"><strong aria-hidden="true">14.</strong> Beyond Assertions: Mutex Continued</a></li><li class="chapter-item "><a href="../../chapters/temporal/liveness_and_lassos.html"><strong aria-hidden="true">15.</strong> Liveness and Lassos</a></li><li class="chapter-item "><a href="../../chapters/temporal/temporal_operators.html"><strong aria-hidden="true">16.</strong> Temporal Forge (Part 1)</a></li><li class="chapter-item "><a href="../../chapters/temporal/temporal_operators_2.html"><strong aria-hidden="true">17.</strong> Temporal Forge (Part 2)</a></li><li class="chapter-item "><a href="../../chapters/temporal/obligations_past.html"><strong aria-hidden="true">18.</strong> Obligations and the Past, Deadlock</a></li><li class="chapter-item "><a href="../../chapters/temporal/fixing_lock_temporal.html"><strong aria-hidden="true">19.</strong> The Peterson Lock (Part 1)</a></li><li class="chapter-item "><a href="../../chapters/temporal/fixing_lock_temporal.html"><strong aria-hidden="true">20.</strong> The Peterson Lock (Part 2)</a></li><li class="chapter-item "><a href="../../chapters/solvers/bounds_booleans_how_forge_works.html"><strong aria-hidden="true">21.</strong> Bounds and Booleans; How Forge Works</a></li><li class="chapter-item "><a href="../../chapters/solvers/dpll.html"><strong aria-hidden="true">22.</strong> Solving SAT: DPLL</a></li><li class="chapter-item "><a href="../../chapters/solvers/resolution.html"><strong aria-hidden="true">23.</strong> Beyond "False": Resolution</a></li><li class="chapter-item "><a href="../../chapters/solvers/smt.html"><strong aria-hidden="true">24.</strong> Satisfiability Modulo Theories (SMT)</a></li><li class="chapter-item "><a href="../../chapters/solvers/cegis.html"><strong aria-hidden="true">25.</strong> CEGIS and Synthesis</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Logic for Systems</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+<h1 id="relations-and-reachability"><a class="header" href="#relations-and-reachability">Relations and Reachability</a></h1>
+<p>Today we'll work with a fairly simple model, and use it to demonstrate how reachability works in Forge. That is, You'll see how the <code>reachable</code> predicate is defined (via <em>transitive closure</em>), and get some more practice with sets in Forge. </p>
+<p>Livecode is <a href="reach.frg">here</a>.</p>
+<div id="admonition-brown-csci-1710" class="admonition admonish-note">
+<div class="admonition-title">
+<p>Brown CSCI 1710</p>
+<p><a class="admonition-anchor-link" href="#admonition-brown-csci-1710"></a></p>
+</div>
+<div>
+<ul>
+<li>Hopefully everyone has been making good progress with Curiosity Modeling! I'm seeing a lot of awesome questions on Ed and at hours. </li>
+<li>Some of you are curious about how far you need to go to earn a check on the project. This is hard to give a precise answer to, because everyone's models will be different. However, I can say that we're looking for:
+<ul>
+<li>evidence that you explored your topic of choice;</li>
+<li>evidence that you validated your model;</li>
+<li>something you <em>got</em> from the model (generating or solving puzzles, checking a property, or even just understanding a domain better).</li>
+</ul>
+</li>
+<li><strong>There's a lab this week</strong> that focuses on <em>sets</em> and other <em>relational</em> concepts. You'll be exploring automated memory management in Forge. This lab leads directly into the next homework, and is meant to give you useful insight into how these systems work.</li>
+</ul>
+</div>
+</div>
+<h2 id="reachability"><a class="header" href="#reachability">Reachability</a></h2>
+<p>Consider this small Forge model:</p>
+<pre><code class="language-alloy">#lang forge
+sig Person {
+    friends: set Person,
+    followers: set Person
+}
+one sig Nim, Tim extends Person {}
+
+pred wellformed {
+    -- friends is symmetric
+    all disj p1, p2: Person | p1 in p2.friends implies p2 in p1.friends 
+    -- cannot follow or friend yourself
+    all p: Person | p not in p.friends and p not in p.followers
+}
+run {wellformed} for exactly 8 Person
+</code></pre>
+<p>Let's run it, get a reasonably large instance, and try to figure out how to express some goals in the evaluator. </p>
+<p><strong>EXERCISE</strong>: You'll be following along with each of these questions. Use the evaluator heavily---it's great for figuring out what different expressions evaluate to.</p>
+<h4 id="expression-nims-followers"><a class="header" href="#expression-nims-followers">Expression: Nim's followers</a></h4>
+<p>This is just <code>Nim.followers</code>.</p>
+<h4 id="formula-nim-is-reachable-from-tim-via-followers"><a class="header" href="#formula-nim-is-reachable-from-tim-via-followers">Formula: Nim is reachable from Tim via &quot;followers&quot;</a></h4>
+<p>We can use the <code>reachable</code> built-in: <code>reachable[Nim, Tim, followers]</code>.</p>
+<h4 id="expression-nims-followers-followers"><a class="header" href="#expression-nims-followers-followers">Expression: Nim's followers' followers</a></h4>
+<p>Another application of the field! <code>Nim.followers.followers</code>.</p>
+<p>But wait, what does this really mean? Since <code>Nim.followers</code> is a set, rather than a <code>Person</code>, should I be able to apply <code>.followers</code> to it? </p>
+<h4 id="formula-nim-is-reachable-from-tim-via-the-inverse-of-followers-what-we-might-call-following"><a class="header" href="#formula-nim-is-reachable-from-tim-via-the-inverse-of-followers-what-we-might-call-following">Formula: Nim is reachable from Tim via the inverse of &quot;followers&quot; (what we might call &quot;following&quot;)?</a></h4>
+<p>Hmm. This seems harder. We don't have a field called <code>following</code>, and the <code>reachable</code> built-in takes fields! </p>
+<p>...it does take fields, right? </p>
+<p>Let's try something else.</p>
+<h4 id="formula-nim-is-reachable-from-tim-via-followers-but-not-including-tims-friends"><a class="header" href="#formula-nim-is-reachable-from-tim-via-followers-but-not-including-tims-friends">Formula: Nim is reachable from Tim via followers, but not including Tim's friends?</a></h4>
+<p>We might try <code>reachable[Nim, Tim, (followers-Tim.friends)]</code> but this will produce an error. Why? Well, one reason we might give is:</p>
+<blockquote>
+<p>...because <code>followers</code> is a field but <code>Tim.friends</code> is a set.</p>
+</blockquote>
+<p>But is that the real answer? The error complains about &quot;arity&quot;: 2 vs 1. Let's type those two expressions into the evaluator and see what we get. For <code>followers</code>, we get a set of <em>pairs</em> of people. But <code>Tim.friends</code> is a set of <em>singletons</em>. </p>
+<div id="admonition-evaluator-output" class="admonition admonish-warning">
+<div class="admonition-title">
+<p>Evaluator Output</p>
+<p><a class="admonition-anchor-link" href="#admonition-evaluator-output"></a></p>
+</div>
+<div>
+<p>The evaluator prints these as parenthesized lists of lists. But don't be fooled! It's really printing a <em>set</em> of <em>lists</em>. The order in which the inner lists print shouldn't matter.</p>
+</div>
+</div>
+<h3 id="arity-relations-and-tuples"><a class="header" href="#arity-relations-and-tuples">Arity, Relations, and Tuples</a></h3>
+<p><em>Arity</em> is another word for how wide the elements of a set are. Here, we'd say that <code>followers</code> has arity 2 and <code>Tim.friends</code> has arity 1. So Forge is pointing out that taking the set difference of these two makes no sense: you'll never find a singleton in a set of pairs. </p>
+<p>When we're talking about sets in this way, we sometimes call them <em>relations</em>. E.g., the <code>followers</code> field is a <em>binary relation</em> because it has arity 2. We'll call elements of relations <em>tuples</em>. E.g., if <code>Nim</code> follows <code>Tim</code>, the tuple <code>(Tim, Nim)</code> would be present in <code>followers</code>.</p>
+<h3 id="almost-everything-is-a-set"><a class="header" href="#almost-everything-is-a-set">(Almost) Everything Is A Set</a></h3>
+<p>In Relational Forge, <code>reachable</code> doesn't take &quot;fields&quot;; it takes relations. Specifically, binary relations, which define the steps it can use to connect the two objects.</p>
+<p>That's the fact we'll use to solve the 2 problems above. </p>
+<h4 id="formula-nim-is-reachable-from-tim-via-the-inverse-of-followers-what-we-might-call-following-1"><a class="header" href="#formula-nim-is-reachable-from-tim-via-the-inverse-of-followers-what-we-might-call-following-1">Formula: Nim is reachable from Tim via the inverse of &quot;followers&quot; (what we might call &quot;following&quot;)?</a></h4>
+<p>Now that we know <code>followers</code> is a binary relation, we can imagine flipping it to get its inverse. How can we do that? Well, there are multiple ways! We could write a set-comprehension:</p>
+<pre><code>{p1, p2: Person | p1 in p2.followers}
+</code></pre>
+<p>The order matters here! If <code>p1</code> is in <code>p2.followers</code>, then there is an entry in the relation that looks like <code>(p2, p1)</code>. We could make this more explicit by writing:</p>
+<pre><code>{p1, p2: Person | p2-&gt;p1 in followers}
+</code></pre>
+<p>Now that we know <code>followers</code> is a set, this makes sense! The <em>product</em> (<code>-&gt;</code>) operator combines <code>p2</code> and <code>p1</code> into a binary tuple, which may (or may not) be in <code>followers</code>.</p>
+<p>Forge provides an operator that does this directly: transpose (<code>~</code>). So we could write instead:</p>
+<pre><code>~followers
+</code></pre>
+<p>Which should you use? It's up to you! Regardless, we could now answer this question with:</p>
+<pre><code class="language-alloy">reachable[Nim, Tim, ~followers]
+</code></pre>
+<h4 id="formula-nim-is-reachable-from-tim-via-followers-but-not-including-tims-friends-1"><a class="header" href="#formula-nim-is-reachable-from-tim-via-followers-but-not-including-tims-friends-1">Formula: Nim is reachable from Tim via followers, but not including Tim's friends?</a></h4>
+<p>Everything is a set, so let's build the subset of <code>followers</code> that doesn't involve anyone in <code>Tim.friends</code>. We can't write <code>followers-(Tim.friends)</code>, since that's an arity mismatch. Somehow, we need to remove entries in <code>followers</code> involving one of Tim's friends <em>and anybody else</em>. </p>
+<p>One way is to use the product operator to build cooresponding binary relations. E.g.:</p>
+<pre><code>followers-(Tim.friends-&gt;Person)
+</code></pre>
+<div id="admonition-default" class="admonition admonish-tip">
+<div>
+<p>You may notice that we've now used <code>-&gt;</code> in what seems like 2 different ways. We used it to combine specific people, <code>p1</code> and <code>p2</code> above into a single tuple. But now we're using it to combine two <em>sets</em> into a <em>set</em> of tuples. This flexibility is a side effect of sets being the fundamental concept in Relational Forge:</p>
+<ul>
+<li>the product of <code>((Tim))</code> and <code>((Nim))</code> is <code>((Tim, Nim))</code>; </li>
+<li>the product of <code>((Person1), (Person2))</code> and <code>((Person3), (Person4))</code> is <code>((Person1, Person3), (Person1, Person4), (Person2, Person3), (Person2, Person4))</code>. </li>
+</ul>
+<p>Formally, <code>-&gt;</code> is the cross-product operation on sets. </p>
+<p>You'll see this apparently double-meaning when using <code>in</code> and <code>=</code>, too: singletons are single-element sets, where the element is a one-column tuple.</p>
+</div>
+</div>
+<h2 id="how-reachability-works"><a class="header" href="#how-reachability-works">How Reachability Works</a></h2>
+<p>If we wanted to encode reachability, we could start by writing a helper predicate:</p>
+<pre><code class="language-alloy">pred reachable2[to: Person, from: Person, via: Person -&gt; Person]: set Person {
+    to in 
+    from.via +
+    from.via.via +
+    from.via.via.via 
+    -- ...and so on...
+}
+</code></pre>
+<p>But we always have to stop writing somewhere. We could write the union out to 20 steps, and still we wouldn't catch some very long (length 21 or higher) paths. So we need some way to talk about <em>unbounded reachability</em>.</p>
+<p>Forge's <code>reachable</code> built-in does this, but it's just a facade over a new relational operator: transitive closure (<code>^R</code>).</p>
+<p>The <em>transitive closure</em> <code>^R</code> of a binary relation <code>R</code> is the <em>smallest</em> binary relation such that:</p>
+<ul>
+<li>if <code>(x, y)</code> is in <code>R</code>, then <code>(x, y)</code> is in <code>^R</code>; and</li>
+<li>if <code>(x, z)</code> is in <code>R</code> and <code>(z, y)</code> is in <code>^R</code> then <code>(x, y)</code> is in <code>R</code>.</li>
+</ul>
+<p>That is, <code>^R</code> encodes exactly what we were trying to encode above. The <code>reachable[to, from, f1, ...]</code> built-in is just syntactic sugar for:</p>
+<pre><code class="language-alloy">    to in from.^(f1 + ...)
+</code></pre>
+<h4 id="none-is-reachable-from-everything"><a class="header" href="#none-is-reachable-from-everything"><code>none</code> is reachable from everything</a></h4>
+<p>You might remember that <code>reachable</code> always evaluates to true if we give <code>none</code> as its first argument. This is because of the translation above: if <code>to</code> is the empty set, then it is a subset of anything. </p>
+<!-- ~~~admonish tip title="Design Discussion"
+You might wonder why we don't translate `reachable[to, from, f1, ...]` to something like `to in from.^(f1 + ...) and some to`. This would, after all, fix the problem of `none` being reachable from everything! The answer is that this fix might cause other confusion, and either way the ...
+...
+~~~ -->
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../chapters/sets-and-boolean-logic/modeling-booleans-1.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../chapters/sets-and-boolean-logic/sets-induction-mutex.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../chapters/sets-and-boolean-logic/modeling-booleans-1.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../chapters/sets-and-boolean-logic/sets-induction-mutex.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="../../ace.js"></script>
+        <script src="../../editor.js"></script>
+        <script src="../../mode-rust.js"></script>
+        <script src="../../theme-dawn.js"></script>
+        <script src="../../theme-tomorrow_night.js"></script>
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

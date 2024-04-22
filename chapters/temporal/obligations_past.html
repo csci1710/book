@@ -1,0 +1,346 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Obligations and the Past, Deadlock - Logic for Systems</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../././mdbook-admonish.css">
+        <link rel="stylesheet" href="../.././mdbook-admonish.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item "><a href="../../chapters/welcome.html"><strong aria-hidden="true">1.</strong> Welcome</a></li><li class="chapter-item "><a href="../../chapters/manifesto/manifesto.html"><strong aria-hidden="true">2.</strong> Manifesto: Logic for Systems</a></li><li class="chapter-item "><a href="../../chapters/properties/properties.html"><strong aria-hidden="true">3.</strong> From Tests to Properties</a></li><li class="chapter-item "><a href="../../chapters/intro_modeling/intro_modeling_1.html"><strong aria-hidden="true">4.</strong> Intro to Modeling (Part 1, Basics)</a></li><li class="chapter-item "><a href="../../chapters/intro_modeling/intro_modeling_2.html"><strong aria-hidden="true">5.</strong> Intro to Modeling (Part 2, Transitions)</a></li><li class="chapter-item "><a href="../../chapters/intro_modeling/intro_modeling_3.html"><strong aria-hidden="true">6.</strong> Intro to Modeling (Part 3, Traces)</a></li><li class="chapter-item "><a href="../../chapters/intro_modeling/intro_modeling_4.html"><strong aria-hidden="true">7.</strong> Intro to Modeling (Part 4, FAQ)</a></li><li class="chapter-item "><a href="../../chapters/finite_and_inductive/finite_and_inductive_1.html"><strong aria-hidden="true">8.</strong> Traces (Part 1)</a></li><li class="chapter-item "><a href="../../chapters/finite_and_inductive/finite_and_inductive_2.html"><strong aria-hidden="true">9.</strong> Traces (Part 2)</a></li><li class="chapter-item "><a href="../../chapters/finite_and_inductive/finite_and_inductive_3.html"><strong aria-hidden="true">10.</strong> Traces (Parts 3 and 4)</a></li><li class="chapter-item "><a href="../../chapters/sets-and-boolean-logic/modeling-booleans-1.html"><strong aria-hidden="true">11.</strong> Modeling Syntax, Semantics, and Sets</a></li><li class="chapter-item "><a href="../../chapters/sets-and-boolean-logic/reachability.html"><strong aria-hidden="true">12.</strong> Relations and Reachability</a></li><li class="chapter-item "><a href="../../chapters/sets-and-boolean-logic/sets-induction-mutex.html"><strong aria-hidden="true">13.</strong> More Induction: Modeling a Mutex</a></li><li class="chapter-item "><a href="../../chapters/sets-and-boolean-logic/sets-beyond-assertions.html"><strong aria-hidden="true">14.</strong> Beyond Assertions: Mutex Continued</a></li><li class="chapter-item "><a href="../../chapters/temporal/liveness_and_lassos.html"><strong aria-hidden="true">15.</strong> Liveness and Lassos</a></li><li class="chapter-item "><a href="../../chapters/temporal/temporal_operators.html"><strong aria-hidden="true">16.</strong> Temporal Forge (Part 1)</a></li><li class="chapter-item "><a href="../../chapters/temporal/temporal_operators_2.html"><strong aria-hidden="true">17.</strong> Temporal Forge (Part 2)</a></li><li class="chapter-item expanded "><a href="../../chapters/temporal/obligations_past.html" class="active"><strong aria-hidden="true">18.</strong> Obligations and the Past, Deadlock</a></li><li class="chapter-item "><a href="../../chapters/temporal/fixing_lock_temporal.html"><strong aria-hidden="true">19.</strong> The Peterson Lock (Part 1)</a></li><li class="chapter-item "><a href="../../chapters/temporal/fixing_lock_temporal.html"><strong aria-hidden="true">20.</strong> The Peterson Lock (Part 2)</a></li><li class="chapter-item "><a href="../../chapters/solvers/bounds_booleans_how_forge_works.html"><strong aria-hidden="true">21.</strong> Bounds and Booleans; How Forge Works</a></li><li class="chapter-item "><a href="../../chapters/solvers/dpll.html"><strong aria-hidden="true">22.</strong> Solving SAT: DPLL</a></li><li class="chapter-item "><a href="../../chapters/solvers/resolution.html"><strong aria-hidden="true">23.</strong> Beyond "False": Resolution</a></li><li class="chapter-item "><a href="../../chapters/solvers/smt.html"><strong aria-hidden="true">24.</strong> Satisfiability Modulo Theories (SMT)</a></li><li class="chapter-item "><a href="../../chapters/solvers/cegis.html"><strong aria-hidden="true">25.</strong> CEGIS and Synthesis</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Logic for Systems</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+<h1 id="obligations-and-the-past"><a class="header" href="#obligations-and-the-past">Obligations and The Past</a></h1>
+<div id="admonition-temporal-forge-reminders" class="admonition admonish-tip">
+<div class="admonition-title">
+<p>Temporal Forge Reminders</p>
+<p><a class="admonition-anchor-link" href="#admonition-temporal-forge-reminders"></a></p>
+</div>
+<div>
+<ul>
+<li>Remember the definition of &quot;configuration&quot;: the value of all relations that aren't marked <code>var</code>. Thus, if you click the Sterling button that asks for a <em>new configuration</em>, the solver will always find a new trace that varies on one or more of those relations. This is useful when you want to see different temporal behavior, but not vary the constants.</li>
+<li><em>Do not</em> try to use <code>example</code> in temporal mode. For reasons we'll get to soon (when we talk about how Forge works) <code>example</code> and <code>inst</code> constrain <em>all states</em> in temporal mode, and so an example will prevent anything it binds from ever changing in the trace.</li>
+</ul>
+</div>
+</div>
+<p>The in-class exercise is <a href="https://docs.google.com/forms/d/e/1FAIpQLSemtfAG44sxqkRSS4imTcGC1LVwcHgJWOrgrHp3wXyLbuMAZw/viewform?usp=sf_link">here</a>. The livecode is the same model we've been working on: the <a href="./mutex_temporal.frg">locking algorithm</a>, and the (new) <a href="./traffic.frg">traffic lights example</a>.</p>
+<h2 id="reminder-priming-for-next-state-expressions"><a class="header" href="#reminder-priming-for-next-state-expressions">Reminder: Priming for &quot;next state&quot; expressions</a></h2>
+<p>You can talk about the value of an expression <em>in the next state</em> by appending <code>'</code> to the expression. So writing <code>flags'</code> means the value of the flags relation in the state after the current one.</p>
+<h2 id="back-to-ltl-obligation"><a class="header" href="#back-to-ltl-obligation">Back to LTL: Obligation</a></h2>
+<p>Suppose we've written a model where <code>stopped</code> and <code>green_light</code> are predicates that express our car is stopped, and the light is green. Now, maybe we want to write a constraint like, at the current moment in time, it's true that:</p>
+<ul>
+<li>the light must eventually turn green; and </li>
+<li>the <code>stopped</code> predicate must hold true until the light turns green. </li>
+</ul>
+<p>We can write the first easily enough: <code>eventually green</code>. But what about the second? We might initially think about writing something like: <code>always {not green implies stopped}</code>. But this doesn't quite express what we want. (Why?) </p>
+<details>
+<summary>Think, then click!</summary>
+<p>The formula <code>always {not green implies stopped}</code> says that at any single moment in time, if the light isn't green, our car is stopped. This isn't the same as &quot;the <code>stopped</code> predicate holds until the light turns green&quot;, though; for one thing, the latter applies <em>until</em> <code>green</code> happens, and after that there is no obligation remaining on <code>stopped</code>. </p>
+</details>
+<p>In LTL, the <code>until</code> operator can be used to express a stronger sort of <code>eventually</code>. If I write <code>stopped until green_light</code>, it encodes the meaning above. This operator is a great way to phrase obligations that might hold only until some releasing condition occurs.</p>
+<div id="admonition-strong-vs-weak-until" class="admonition admonish-tip">
+<div class="admonition-title">
+<p>Strong vs. Weak Until</p>
+<p><a class="admonition-anchor-link" href="#admonition-strong-vs-weak-until"></a></p>
+</div>
+<div>
+<p>Some logics include a &quot;weak&quot; <code>until</code> operator that doesn't actually enforce that the right-hand side ever holds, and so the left-hand side can just be true forever. But, for consistency with industrial languages, Forge's <code>until</code> is &quot;strong&quot;, so it requires the right-hand side hold eventually.</p>
+</div>
+</div>
+<div id="admonition-the-car-doesnt-have-to-move" class="admonition admonish-warning">
+<div class="admonition-title">
+<p>The car doesn't have to move!</p>
+<p><a class="admonition-anchor-link" href="#admonition-the-car-doesnt-have-to-move"></a></p>
+</div>
+<div>
+<p>The <code>until</code> operator doesn't prevent its <em>left</em> side from being true after its right side is. E.g., <code>stopped until green_light</code> doesn't mean that the car has to move immediately (or indeed, ever) once the light is green. It just means that the light eventually turns green, and the car can't move until then.</p>
+</div>
+</div>
+<h2 id="the-past-rarely-used-but-sometimes-useful"><a class="header" href="#the-past-rarely-used-but-sometimes-useful">The Past (Rarely Used, but Sometimes Useful)</a></h2>
+<p>Forge also includes <a href="https://csci1710.github.io/forge-documentation/electrum/electrum-overview.html">temporal operators corresponding to the <em>past</em></a>. This isn't standard in some LTL tools, but we include it for convenience. It turns out that past-time operators don't increase the expressive power of the language, but they do make it much easier and consise to write some constraints. </p>
+<div id="admonition-elevator-critique" class="admonition admonish-note">
+<div class="admonition-title">
+<p>Elevator Critique</p>
+<p><a class="admonition-anchor-link" href="#admonition-elevator-critique"></a></p>
+</div>
+<div>
+<p>These operators may be useful to you on the second Temporal Forge homework. You may also see them in lab.</p>
+</div>
+</div>
+<p>Here are some examples:</p>
+<h3 id="prev_state-init"><a class="header" href="#prev_state-init"><code>prev_state init</code></a></h3>
+<p>This means that the <em>previous</em> state satisfied the initial-state predicate. <strong>But beware</strong>: traces are infinite in the forward direction, but <em>not</em> infinite in the backward direction. For any subformula <code>myPredicate</code>, <code>prev_state myPredicate</code> is <em>false</em> if the current state is the first state of the trace.</p>
+<p>There are also analogues to <code>always</code> and <code>eventually</code> in the past: <code>historically</code> and <code>once</code>. For more information, see the <a href="https://csci1710.github.io/forge-documentation/electrum/electrum-overview.html">documentation</a>.</p>
+<h2 id="interlude-on-testing-and-properties"><a class="header" href="#interlude-on-testing-and-properties">Interlude on Testing and Properties</a></h2>
+<p>As we start modeling more complex systems, models become more complex. The more complex the model is, the more important it is to test the model carefully. Just like in software testing, however, you can never be 100% sure that you have tested everything. Instead, you proceed using your experience and following some methodology. </p>
+<p>Let's get some practice with this. Before we start modifying our locking algorithm model, we should think carefully---both about testing, but also about how the model reflects the real world. </p>
+<h3 id="principle-1-whats-the-domain-whats-the-system"><a class="header" href="#principle-1-whats-the-domain-whats-the-system">Principle 1: What's the Domain? What's the System?</a></h3>
+<p>When we're writing a model, it's useful to know when we're talking about the <em>system</em>, and when we're talking about the <em>domain</em> that the system is operating on. </p>
+<ul>
+<li>The domain has a set of behaviors it can perform on its own. In this example, the threads represent the domain: programs running concurrently. </li>
+<li>The system affects that set of behaviors in a specific way. In this example, the locking algorithm is the system. Usually the system functions by putting limits and structure on otherwise unfettered behavior. (E.g., without a locking algorithm in place, in reality threads would still run and violate mutual exclusion.)</li>
+<li>Because we usually have goals about how, exactly, the system constrains the domain, we state <em>requirements</em> about how the domain behaves in the system's presence. Think of these as the top-level goals that we might be modeling in order to prove (or disprove) about the system or otherwise explore.</li>
+<li>Because the domain cannot &quot;see&quot; inside the system, we'll try to avoid stating requirements in terms of internal system variables. However, models are imperfect! We will also have some <em>validation tests</em> that are separate from the requirements. These may or may not involve internal system state.</li>
+</ul>
+<p>We'll develop these ideas more over the next few weeks. For now, keep in mind that when you add something to a model, it's good to have a sense of where it comes from. Does it represent an internal system state, which should probably not be involved in a requirement, but perhaps should be checked in model validation?</p>
+<div id="admonition-have-we-been-disciplined-about-this-so-far" class="admonition admonish-note">
+<div class="admonition-title">
+<p>Have we been disciplined about this so far?</p>
+<p><a class="admonition-anchor-link" href="#admonition-have-we-been-disciplined-about-this-so-far"></a></p>
+</div>
+<div>
+<p>No we have not! And we may be about to encounter some problems because of that.</p>
+</div>
+</div>
+<h3 id="principle-2-what-can-be-observed"><a class="header" href="#principle-2-what-can-be-observed">Principle 2: What Can Be Observed?</a></h3>
+<p>Ask what behaviors might be important in the domain, but not necessarily always observed. These are sometimes referred to as <em>optional predicates</em>, because they may or may not hold. In real life, here are some optional predicates:</p>
+<ul>
+<li>we have class today;</li>
+<li>it's raining today; </li>
+<li>homework is due today; etc. </li>
+</ul>
+<p><strong>Exercise:</strong> What are some optional predicates about the domain in our locking algorithm model? </p>
+<details>
+<summary>Think, then click!</summary>
+<p>We might see, but won't necessarily always see:</p>
+<ul>
+<li>combinations of different transitions; </li>
+<li>threads that are both simultaneously interested;</li>
+<li>threads that are uninterested; </li>
+<li>etc.</li>
+</ul>
+<p>As the model includes more domain complexity, the set of optional predicates grows. </p>
+</details>
+<p>Let's write some actual tests to confirm that these behaviors can happen (or not), and check whether that matches our modeling intuition. </p>
+<div id="admonition-for-next-time" class="admonition admonish-note">
+<div class="admonition-title">
+<p>For Next Time</p>
+<p><a class="admonition-anchor-link" href="#admonition-for-next-time"></a></p>
+</div>
+<div>
+<p>We'll consider questions of atomicity (how granular should transitions be?), and model a different variation of this lock.</p>
+</div>
+</div>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../chapters/temporal/temporal_operators_2.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../chapters/temporal/fixing_lock_temporal.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../chapters/temporal/temporal_operators_2.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../chapters/temporal/fixing_lock_temporal.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="../../ace.js"></script>
+        <script src="../../editor.js"></script>
+        <script src="../../mode-rust.js"></script>
+        <script src="../../theme-dawn.js"></script>
+        <script src="../../theme-tomorrow_night.js"></script>
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

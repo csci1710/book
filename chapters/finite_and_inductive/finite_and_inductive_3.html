@@ -1,0 +1,346 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Traces (Parts 3 and 4) - Logic for Systems</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../../highlight.css">
+        <link rel="stylesheet" href="../../tomorrow-night.css">
+        <link rel="stylesheet" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../././mdbook-admonish.css">
+        <link rel="stylesheet" href="../.././mdbook-admonish.css">
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item "><a href="../../chapters/welcome.html"><strong aria-hidden="true">1.</strong> Welcome</a></li><li class="chapter-item "><a href="../../chapters/manifesto/manifesto.html"><strong aria-hidden="true">2.</strong> Manifesto: Logic for Systems</a></li><li class="chapter-item "><a href="../../chapters/properties/properties.html"><strong aria-hidden="true">3.</strong> From Tests to Properties</a></li><li class="chapter-item "><a href="../../chapters/intro_modeling/intro_modeling_1.html"><strong aria-hidden="true">4.</strong> Intro to Modeling (Part 1, Basics)</a></li><li class="chapter-item "><a href="../../chapters/intro_modeling/intro_modeling_2.html"><strong aria-hidden="true">5.</strong> Intro to Modeling (Part 2, Transitions)</a></li><li class="chapter-item "><a href="../../chapters/intro_modeling/intro_modeling_3.html"><strong aria-hidden="true">6.</strong> Intro to Modeling (Part 3, Traces)</a></li><li class="chapter-item "><a href="../../chapters/intro_modeling/intro_modeling_4.html"><strong aria-hidden="true">7.</strong> Intro to Modeling (Part 4, FAQ)</a></li><li class="chapter-item "><a href="../../chapters/finite_and_inductive/finite_and_inductive_1.html"><strong aria-hidden="true">8.</strong> Traces (Part 1)</a></li><li class="chapter-item "><a href="../../chapters/finite_and_inductive/finite_and_inductive_2.html"><strong aria-hidden="true">9.</strong> Traces (Part 2)</a></li><li class="chapter-item expanded "><a href="../../chapters/finite_and_inductive/finite_and_inductive_3.html" class="active"><strong aria-hidden="true">10.</strong> Traces (Parts 3 and 4)</a></li><li class="chapter-item "><a href="../../chapters/sets-and-boolean-logic/modeling-booleans-1.html"><strong aria-hidden="true">11.</strong> Modeling Syntax, Semantics, and Sets</a></li><li class="chapter-item "><a href="../../chapters/sets-and-boolean-logic/reachability.html"><strong aria-hidden="true">12.</strong> Relations and Reachability</a></li><li class="chapter-item "><a href="../../chapters/sets-and-boolean-logic/sets-induction-mutex.html"><strong aria-hidden="true">13.</strong> More Induction: Modeling a Mutex</a></li><li class="chapter-item "><a href="../../chapters/sets-and-boolean-logic/sets-beyond-assertions.html"><strong aria-hidden="true">14.</strong> Beyond Assertions: Mutex Continued</a></li><li class="chapter-item "><a href="../../chapters/temporal/liveness_and_lassos.html"><strong aria-hidden="true">15.</strong> Liveness and Lassos</a></li><li class="chapter-item "><a href="../../chapters/temporal/temporal_operators.html"><strong aria-hidden="true">16.</strong> Temporal Forge (Part 1)</a></li><li class="chapter-item "><a href="../../chapters/temporal/temporal_operators_2.html"><strong aria-hidden="true">17.</strong> Temporal Forge (Part 2)</a></li><li class="chapter-item "><a href="../../chapters/temporal/obligations_past.html"><strong aria-hidden="true">18.</strong> Obligations and the Past, Deadlock</a></li><li class="chapter-item "><a href="../../chapters/temporal/fixing_lock_temporal.html"><strong aria-hidden="true">19.</strong> The Peterson Lock (Part 1)</a></li><li class="chapter-item "><a href="../../chapters/temporal/fixing_lock_temporal.html"><strong aria-hidden="true">20.</strong> The Peterson Lock (Part 2)</a></li><li class="chapter-item "><a href="../../chapters/solvers/bounds_booleans_how_forge_works.html"><strong aria-hidden="true">21.</strong> Bounds and Booleans; How Forge Works</a></li><li class="chapter-item "><a href="../../chapters/solvers/dpll.html"><strong aria-hidden="true">22.</strong> Solving SAT: DPLL</a></li><li class="chapter-item "><a href="../../chapters/solvers/resolution.html"><strong aria-hidden="true">23.</strong> Beyond "False": Resolution</a></li><li class="chapter-item "><a href="../../chapters/solvers/smt.html"><strong aria-hidden="true">24.</strong> Satisfiability Modulo Theories (SMT)</a></li><li class="chapter-item "><a href="../../chapters/solvers/cegis.html"><strong aria-hidden="true">25.</strong> CEGIS and Synthesis</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Logic for Systems</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
+<h1 id="20231011-counterexamples-to-induction"><a class="header" href="#20231011-counterexamples-to-induction">2023.10,11: Counterexamples To Induction</a></h1>
+<p>You'll need <a href="./binarysearch_template.frg">this exercise template</a> for these notes, which cover 3 class sessions. The completed version, complete with in-class comments, is <a href="./binarysearch_inclass.frg">here</a>.</p>
+<p>We prototyped some confidence tests about the <code>reachable</code> predicate (<a href="./testing_reachable.frg">livecode file</a>).</p>
+<div id="admonition-csci-1710-curiosity-modeling-ideas" class="admonition admonish-warning">
+<div class="admonition-title">
+<p>CSCI 1710: curiosity modeling ideas</p>
+<p><a class="admonition-anchor-link" href="#admonition-csci-1710-curiosity-modeling-ideas"></a></p>
+</div>
+<div>
+<p>Curiosity modeling signups are going out soon. <a href="https://edstem.org/us/courses/54376/discussion/4325962">Read over others' ideas! Post your own!</a></p>
+</div>
+</div>
+<div id="admonition-csci-1710-endorsed-ed-posts" class="admonition admonish-warning">
+<div class="admonition-title">
+<p>CSCI 1710: endorsed Ed posts</p>
+<p><a class="admonition-anchor-link" href="#admonition-csci-1710-endorsed-ed-posts"></a></p>
+</div>
+<div>
+<p>I endorse public posts where there's an answer I think could be broadly useful. For example, these (as of today) are useful for physical keys:</p>
+<ul>
+<li><a href="https://edstem.org/us/courses/54376/discussion/4318621">Physical Keys Testing with Booleans</a></li>
+<li><a href="https://edstem.org/us/courses/54376/discussion/4318146">How should I interpret the diagram</a></li>
+</ul>
+</div>
+</div>
+<h2 id="forge-performance"><a class="header" href="#forge-performance">Forge Performance</a></h2>
+<p>Some of you encountered bad Forge performance in the n-queens lab. I think it's useful to discuss the problem briefly. Forge works by converting your model into a boolean satisfiability problem. That is, it builds a boolean circuit where inputs making the circuit true satisfy your model. But boolean circuits don't understand quantifiers, and so it needs to compile them out. </p>
+<p>The compiler has a lot of clever tricks to make this fast, and we'll talk about some of them around mid-semester. But if it can't apply those tricks, it uses a basic idea: an <code>all</code> is just a big <code>and</code>, and a <code>some</code> is just a big <code>or</code>. And this very simply conversion process increases the size of the circuit exponentially in the depth of quantification. </p>
+<p>Here is a perfectly reasonable and correct way to approach part of this week's lab:</p>
+<pre><code class="language-alloy">pred notAttacking {
+  all disj q1, q2 : Queen | {
+    some r1, c1, r2, c2: Int | {
+      // ...
+    } } }
+</code></pre>
+<p>The problem is: there are 8 queens, and 16 integers. It turns out this is a pathological case for the compiler, and it runs for a really long time. In fact, it runs for a long time even if we reduce the scope to 4 queens. The default <code>verbosity</code> option shows the blowup here, in &quot;translation&quot;:</p>
+<pre><code>:stats ((size-variables 410425) (size-clauses 617523) (size-primary 1028) (time-translation 18770) (time-solving 184) (time-building 40)) :metadata ())
+#vars: (size-variables 410425); #primary: (size-primary 1028); #clauses: (size-clauses 617523)        
+Transl (ms): (time-translation 18770); Solving (ms): (time-solving 184)
+</code></pre>
+<p>The <code>time-translation</code> figure is the number of milliseconds used to convert the model to a boolean circuit. Ouch!</p>
+<p>Instead, we might try a different approach that uses fewer quantifiers. In fact, <em>we can write the constraint without referring to specific queens at all -- just 4 integers</em>. </p>
+<div id="admonition-how" class="admonition admonish-tip">
+<div class="admonition-title">
+<p>How?</p>
+<p><a class="admonition-anchor-link" href="#admonition-how"></a></p>
+</div>
+<div>
+<p>Does the identity of the queens matter at all, if they are in different squares?</p>
+</div>
+</div>
+<p>If you encounter bad performance from Forge, this sort of branching blowup is a common cause, and can often be fixed by reducing quantifier nesting, or by narrowing the scope of what's being quantified over.</p>
+<h2 id="induction"><a class="header" href="#induction">Induction</a></h2>
+<p>When we're talking about whether or not a reachable state violates a desirable property <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span></span></span></span> (recall we sometimes say that if this holds, <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span></span></span></span> is an <em>invariant</em> of the system), it's useful to think geometrically. Here's a picture of the space of <em>all states</em>, with the cluster of &quot;good&quot; states separated from the &quot;bad&quot;:</p>
+<p><img src="https://i.imgur.com/n3F16P4.png" alt="" /></p>
+<p>If this space is large, we probably can't use trace-finding to get a real <em>proof</em>: we'd have to either reduce the trace length (in which case, maybe there's a bad state <em>just barely</em> out of reach of that length) or we'd be waiting until the sun expands and engulfs the earth.</p>
+<p>Traces are still useful, especially for finding shallow bugs, and the technique is used in industry! But we need more than one tool in our bag of tricks. </p>
+<h3 id="step-1-initiation-or-base-case"><a class="header" href="#step-1-initiation-or-base-case">Step 1: Initiation or Base Case</a></h3>
+<p>Let's break the problem down. What if we just consider reachability for traces of length <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span>---that is, traces of only one state, an <code>initial</code> state?</p>
+<p>This we can check in Forge just by asking for a state <code>s</code> satisfying <code>{initial[s] and wellformed[s] and not P[s]}.</code> There's no exponential blowup with trace length since the transition predicates are never even involved! If we see something like this:</p>
+<p><img src="https://i.imgur.com/Aia9V0q.png" alt="" /></p>
+<p>We know that at least the starting states are good. If instead there was a region of the starting states that overlapped the bad states, then we immediately know that the property isn't invariant.</p>
+<h3 id="step-15-noticing-and-wondering"><a class="header" href="#step-15-noticing-and-wondering">Step 1.5: Noticing and Wondering</a></h3>
+<p>We can surely also check whether there are bad states within <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> transition. We're using the transition predicate (or predicates) now, but only <em>once</em>. Forge can also do this; we ask for a pair of states <code>s0</code>, <code>s1</code> satisfying <code>{initial[s0] and someTransition[s0, s1] and not P[s1]}</code> (where <code>someTransition</code> is my shorthand for allowing any transition predicate to work; we could write the predicate ourselves). </p>
+<p>If Forge doesn't find any way for the second state to violate <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span></span></span></span>, it means we have a picture like this:</p>
+<p><img src="https://i.imgur.com/NdA7RwF.png" alt="" /></p>
+<p>It's looking promising! Note that in general, there might be overlap (as shown) between the set of possible initial states and the set of possible second states. (For example, imagine if we allowed a <code>doNothing</code> transition at any time).</p>
+<p>If we keep following this process exactly, we'll arrive back at the trace-based approach: a set of 3rd states, a set of 4th states, and so on. That's sometimes useful (and people do it in industry---if you're interested, you can see the original paper by <a href="https://www.cs.cmu.edu/~emc/papers/Books%20and%20Edited%20Volumes/Bounded%20Model%20Checking.pdf">Biere, et al.</a>) but it won't scale to systems with very long traces.</p>
+<p><strong>Sometimes great ideas arise from dire limitations.</strong> What if we limit ourselves to only ever asking Forge for these <em>two state</em> examples? That would solve the exponential-blowup problem of traces, but how can we ever get something useful, that is, a result that isn't limited to trace length 1?</p>
+<p>I claim that we can (often) use these small, efficient queries to show that <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span></span></span></span> holds at <em>any</em> finite length from a starting state. But how? </p>
+<p>By no longer caring whether the pre-state of the check is reachable or not. </p>
+<h3 id="step-2-consecution-or-inductive-case"><a class="header" href="#step-2-consecution-or-inductive-case">Step 2: Consecution or Inductive Case</a></h3>
+<p>We'll ask Forge whether <code>{P[s0] and someTransition[s0, s1] and not P[s1]}</code> is satisfiable for <em>any</em> pair of states. Just so long as the pre-state satisfies <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span></span></span></span> and the post-state doesn't. We're asking Forge if it can find a transition that looks like this:</p>
+<p><img src="https://i.imgur.com/CWSjSrr.png" alt="" /></p>
+<p>If the answer is <em>no</em>, then it is simply impossible (up to the bounds we gave Forge) for any transition predicate to stop property <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span></span></span></span> from holding: if it holds in the pre-state, it <em>must</em> hold in the post-state. </p>
+<p>But if that's true, and we know that all initial states satisfy <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span></span></span></span>, then all states reachable in <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> transition satisfy <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span></span></span></span> (by what we just checked). And if that's true, then all states reachable in <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span></span></span></span> transitions satisfy <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span></span></span></span> also (since all potential pre-states must satisfy <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span></span></span></span>). And so on: <em>any</em> state that's reachable in a finite number of transitions must satisfy <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span></span></span></span>. </p>
+<p>If you've seen &quot;proof by induction&quot; before in another class, we've just applied the same idea here. Except, rather than using it to show that the sum of the numbers from <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span> to <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> is <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.355em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.01em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.485em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span><span class="mopen mtight">(</span><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span><span class="mbin mtight">+</span><span class="mord mtight">1</span><span class="mclose mtight">)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span>, we've just used it to prove that <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span></span></span></span> is invariant in our system. </p>
+<p>In Tic-Tac-Toe, this would be something like &quot;cheating states can't be reached with legal moves&quot;. In an operating system, this might be &quot;two processes can never modify a block of memory simultaneously&quot;. In hardware, it might be &quot;only one device has access to write to the bus at any point&quot;. In a model of binary search, it might be &quot;if the target is in the array, it's located between the <code>low</code> and <code>high</code> indexes&quot;.</p>
+<p>For most computer-scientists, I think that this feels like a far more relatable and immediately useful example of the induction principle. That's not to dismiss mathematical induction! I quite like it (and it's useful for establishing some useful results related to Forge). But multiple perspectives enrich life.</p>
+<h3 id="exercise-try-it"><a class="header" href="#exercise-try-it">Exercise: Try it!</a></h3>
+<p>In the binary-search model, there's a pair of tests labeled <code>initStep</code> and <code>inductiveStep</code>, under a comment that says &quot;Exercise 1&quot;. Fill these in using the logic above, and run them. Do they both pass? Does one fail?</p>
+<h3 id="what-if-forge-finds-a-counterexample"><a class="header" href="#what-if-forge-finds-a-counterexample">What if Forge finds a counterexample?</a></h3>
+<p>What if Forge <em>does</em> find a transition that fails to preserve our property <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span></span></span></span>? Does it mean that <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span></span></span></span> is not an invariant of the system?</p>
+<details>
+<summary>Think, then click!</summary>
+<p>No! It just means that <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span></span></span></span> isn't <em>inductively invariant</em>.  <strong>The pre-state that Forge finds might not <em>itself</em> be reachable!</strong></p>
+<p>This technique is a great way to quickly show that <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span></span></span></span> is invariant, but if it fails, we need to do more work.</p>
+</details>
+<p>We see this happen when we try to run the above checks for our binary-search model! The <code>inductiveStep</code> test fails, and we get a counterexample. </p>
+<h3 id="fix-1-adding-reasonable-assumptions"><a class="header" href="#fix-1-adding-reasonable-assumptions">Fix 1: Adding Reasonable Assumptions</a></h3>
+<p>Sometimes there are conditions about the world that we need in order for the system to work at all. For example, we already require the array to be sorted. Are there other requirements?</p>
+<p>It's possible that the counterexample we're shown involves a subtle <em>bug</em> in binary search: if the array is large relative to the maximum integer in the system, the value <code>(high+low)</code> can overflow. </p>
+<p>We're not trying to <em>fix</em> this problem in the algorithm. This is a real bug, and modeling found it. So let's log the issue and add a <em>global assumption</em> that the array is not so large. We'll add that in the <code>safeArraySize</code> predicate, which we'll then use in the 2 checks. How can we express what we want---that the array is not too large?</p>
+<details>
+<summary>Think, then click!</summary>
+<p>The core challenge here is that we'll never have enough integers to actually count <code>#Int</code>. However, we <em>can</em> ask for the maximum integer---<code>max[Int]</code>. So we could say that <code>arr.lastIndex</code> is less than <code>divide[max[Int], 2]</code>. This might be a little conservative, but it guarantees that the array is never larger than half of the maximum integer. </p>
+</details>
+</br>
+<p><strong>Exercise</strong>: Try expressing this in the <code>safeArraySize</code> predicate, and adding it to the test that failed. Add a comment explaining why this is a requirement.</p>
+<h3 id="fix-2-enriching-the-invariant"><a class="header" href="#fix-2-enriching-the-invariant">Fix 2: Enriching the Invariant</a></h3>
+<p>Sometimes the property we're hoping to verify is simply not preserved by system transitions in general, but the pre-state in any counterexample isn't actually reachable. <strong>This is the tradeoff of the inductive approach!</strong> We have to do some work to make progress.</p>
+<p>Concretely, we'll need to <em>verify something stronger</em>. At the very least, if <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span></span></span></span> is the pre-state of the counterexample we were given, we need to also add &quot;and this state isn't <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span></span></span></span>&quot; to the property <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span></span></span></span> we're checking. In practice, we usually add something more general that covers whatever quality it is about <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span></span></span></span> that makes it unreachable. </p>
+<p>The technique is sometimes called &quot;enriching the invariant&quot;. </p>
+<p><strong>Exercise</strong>: Do you believe the counterexample you're getting is reachable? If not, what is it about the state that looks suspicious?</p>
+<p><strong>Exercise</strong>: Now add new constraints to the <code>bsearchInvariant</code> predicate that exclude this narrow criterion. Be careful not to exclude too much! An over-constrained property can be easy to verify, but may not actually give many guarantees.</p>
+<h2 id="but-can-we-trust-the-model"><a class="header" href="#but-can-we-trust-the-model">But Can We Trust The Model?</a></h2>
+<p>What would it mean for this verification idea if there were simply no initial states, or no way to take a certain transition? That would probably be a bug in the model; how would it impact our proof?</p>
+<p>Look again at the two checks we wrote. If <code>initial</code> were unsatisfiable by any state, surely the Step 1 check would also be unsatisfiable (since it just adds <em>more</em> constraints). Similarly, unsatisfiable transition predicates would limit the power of Step 2 to find ways that the system could transition out of safety. This  would mean that our confidence in the check was premature: Forge would find no initial bad states, <em>but only because we narrowed its search to nothing</em>! </p>
+<p>This problem is called <em>vacuity</em>, and I'll give you another example. Suppose I told you: &quot;All my billionaire friends love Logic for Systems&quot;. I have, as far as I know anyway, no billionaire friends. So is the sentence true or false? If you asked Forge, it would say that the sentence was true---after all, there's no billionaire friend of mine who <em>doesn't</em> love Logic for Systems...</p>
+<p>This is a problem you might first hear about in other courses like 0220, or in the philosophy department. There's a risk you'll think vacuity is silly, or possibly a topic for debate among people who like drawing their As upside down and their Es backwards, and love writing formulas with lots of Greek letters in. <strong>Don't be fooled!</strong> Vacuity is a major problem even in industrial settings like Intel, because verification tools are literal-minded. (Still doubtful? Ask Tim to send you links, and check out the EdStem post at the top of these notes.)</p>
+<p>At the very least, we'd better test that the left-hand-side of the implication can be satisfied. This isn't a guarantee of trustworthiness, but it's a start. And it's easy to check with Forge. </p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../chapters/finite_and_inductive/finite_and_inductive_2.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../chapters/sets-and-boolean-logic/modeling-booleans-1.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../chapters/finite_and_inductive/finite_and_inductive_2.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../chapters/sets-and-boolean-logic/modeling-booleans-1.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+        <script src="../../ace.js"></script>
+        <script src="../../editor.js"></script>
+        <script src="../../mode-rust.js"></script>
+        <script src="../../theme-dawn.js"></script>
+        <script src="../../theme-tomorrow_night.js"></script>
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
