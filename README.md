@@ -1,5 +1,7 @@
 # Logic for Systems (CSCI 1710) Textbook 
 
+This repository holds the draft source for the new (summer 2024) Logic for Systems textbook.
+
 ## Building
 
 1. Install Rust and Cargo from [here](https://rust-lang.github.io/mdBook/guide/installation.html#:~:text=Rust%20installation%20page).

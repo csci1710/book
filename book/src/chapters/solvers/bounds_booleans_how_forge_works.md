@@ -6,17 +6,18 @@
 
 ## How Does Forge Work?
 
-Every `run` (or `test`, or `example`) command defines a _search problem_: find some instance that satisfies the given constraints and is within the given bounds. 
+We've hinted about this a bit in the [past](../qna/static.md), but now we'll go a bit deeper into how Forge works.  
 
-When you click "Run", Forge compiles this search problem into a _boolean_ satisfiability problem, which it can give to a (hopefully well-engineered!) 3rd party boolean solver. **You'll be writing such a solver for homework after Spring break!**
+Recall that every `run` (or `test`, or `example`) command defines a _search problem_: find some instance that satisfies the given constraints and is within the given bounds. When you click "Run", Forge compiles this search problem into a _boolean satisfiability problem_, which it then gives to an external boolean solver package.
 
-There are complications, though. The search problem is in terms of atomic _things_: objects of particular types, which can go into sets and relations and so on. In contrast, a boolean problem is in terms of boolean variables: atomic _truths_ that can be combined with `and`, `or`, etc. Somehow, we need to bridge that gap.
+There are complications, though. The search problem Forge needs to solve is in terms of _atomic objects_: objects of particular types, which can go into sets and relations and so on. In contrast, a boolean problem is in terms of just boolean variables: _atomic truths_ that can be combined with `and`, `or`, etc. Somehow, we need to bridge that gap from object to boolean.
 
 ## What Boolean Solvers Understand
 
-As an example of where Forge needs to end up, here's an example of a real problem to pass to a boolean solver. It's in a standard format called DIMACS, and it describes finding a solution to the 4-queens problem. 
+As an example of where Forge needs to end up, here's an example of a real problem to pass to a boolean solver. It's in a standard format called DIMACS, and it describes a way to find a solution to the [4-queens puzzle](https://en.wikipedia.org/wiki/Eight_queens_puzzle). There are many other ways to express this problem, but we'll focus on this one. What do you think it's saying, exactly?
 
-There are many different ways to express this problem to the solver, but this is one of them. What do you think it's saying, exactly?
+<details>
+<summary>Click to expand the DIMACS problem definition</summary>
 
 ```
 c DIMACS for 4 queens
@@ -107,17 +108,20 @@ p cnf 16 84
 -11 -14 0
 -12 -15 0
 ```
+<details>
 
-You won't need to write a parser for DIMACS for your homework; we'll give that to you. But the format tells us a lot about what a solver understands. Here are a few facts about DIMACS:
+---
+
+Even without parsing it with a computer, the format tells us a lot about what a purely boolean solver understands. Here are a few facts about DIMACS:
 * Boolean variables in DIMACS are represented by integers greater than zero. 
 * If `p` is a variable, then `not p` is represented as the integer `-p`. 
 * Lines starting with a `c` are comments.
-* The line `p cnf 16 84` says there are 16 variables and 84 _clauses_. A clause is a set of variables and their negations combined with `or`. E.g., `4 8 12 16 0` means `4 or 8 or 12 or 16` (`0` is a line-terminator).
+* The line `p cnf 16 84` says there are 16 variables and 84 _clauses_. A clause is a set of variables (or negated variables) all combined with `or`. E.g., `4 8 12 -16 0` means `4 or 8 or 12 or (not 16)`. (The `0` is a line-terminator.)
 * To satisfy the input, every clause must be satisfied.
 
-A set of constraints expressed as a set of clauses, each of which must hold true, is said to be in _Conjunctive Normal Form_ (CNF). Boolean solvers often expect input in CNF, for algorithmic reasons we'll see after break.
+A set of constraints expressed as a set of clauses, each of which must hold true, is said to be in _Conjunctive Normal Form_ (CNF). Boolean solvers often expect input in CNF, for algorithmic reasons we'll soon see.
 
-Now that you know how to read the input format, you might be able to see how the boolean constraints work. Any ideas?
+Now that you know how to read the input format, you might be able to see how the boolean constraints work to solve the 4-queens problem. Any ideas?
 
 <details>
 <summary>Think, then click!</summary>
@@ -143,9 +147,12 @@ How many potential instances are there? Note that there can only ever be exactly
 
 <details>
 <summary>Think, then click!</summary>
-There are always exactly 3 people, and the only relation that can vary is `followers`, which has 2 columns. That means $3^2 = 9$ potential pairs of people, and the field contains a set of those. So there are $2^9 = 512$ potential instances.
+
+There are always exactly 3 people, and the only relation that can vary is `followers`, which has 2 columns. That means $3^2 = 9$ potential pairs of people, and the field contains a set of those. The set either contains or does not contain each pair. So there are $2^9 = 512$ potential instances.
+
 </details>
-</br>
+
+---
 
 Notice how we reached that number. There are 9 potential pairs of people. 9 potential follower relationships. 9 essential things that may, or may not, be the case in the world. Nothing else.
 
@@ -156,7 +163,7 @@ If you run Forge on this model, you'll see statistics like these:
 Transl (ms): (time-translation 122); Solving (ms): (time-solving 1)
 ```
 
-The timing may vary, but the other stats will be the same. The thing to focus on is: 9 `primary variables`. Primary variables correspond to these atomic truths, which in this case is just who follows who in our fixed 3-person world.
+The timing may vary, but the other stats will be the same. The thing to focus on is: 9 `primary variables`. Primary variables correspond to these atomic truths, which in this case is just who follows who in our fixed 3-person world: the number of rows that are potentially in the `followers` relation.
 
 Let's try increasing the size of the world:
 
@@ -181,33 +188,39 @@ This equals 17 variables.
 </details>
 </br>
 
+This is how Forge translates statements about atoms into statements about booleans. 
+
 ## Intermediate Representation: Lower Bounds, Upper Bounds
 
-Forge's `inst` blocks allow more fine-grained control over what can be true in an instance. To motivate this, let's increase the verbosity and look at what Forge produces as an intermediate problem description for the above model.
+Not every potential boolean needs to actually be considered, however. You might [remember](../qna/events.md) that annotations like `{next is linear}` or partial instances defined by `example` or `inst` further limit the set of variables before the boolean solver encounters them. To understand this better, let's increase the verbosity setting in Forge. This will let us look at what Forge produces as an intermediate problem description before converting to boolean logic.
 
 ```alloy
 option verbose 5
 ```
 
-Let's focus on a few lines:
+Let's focus on a few lines. First, you should see this somewhere:
 
 ```
 (univ 20)
 ```
 
-This tells the compiler that there are 20 potential objects in the world. (Why 20? Because the default bitwidth is 4. 16 integers plus 4 potential people.) These objects get assigned integer identifiers by the compiler. This is an unfortunate overlap in the engine's language: _objects_ (input) get assigned integers, as do _boolean variables_ (output). **But they are not the same thing!**
+This tells the compiler that there are 20 potential objects in the world. (Why 20? Because the default bitwidth is 4: that's 16 integers, plus 4 potential people.) These objects get assigned integer identifiers by the compiler. 
+
+~~~admonish warning title="3 different meanings" 
+This is an unfortunate overlap in the backend solver engine's language: all _atoms_, including atoms of type `Int`, get assigned integers by the engine. Moreover, the boolean solver itself uses integer indexes for boolean variables. **These are not the same thing!**
+~~~
 
 Next, the compiler gets provided a _lower_ and _upper_ bound for every relation in the model.
 * The _lower_ bound is a set of tuples that must always be in the relation.
 * The _upper_ bound is a set of tuples that may be in the relation.
 
-Here are the bounds on `Int`:
+For example, here are the bounds on `Int`:
 
 ```
 (r:Int [{(0) (1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15)} :: {(0) (1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15)}])
 ```
 
-The lower bound comes first, then a `::`, then the upper bound. Annoyingly, every integer gets assigned an object identifier, and so these tuples containing `0` through `15` are actually the representatives of integers `-8` through `7`. This is an artifact of how the solver process works.
+The lower bound comes first, then a `::`, then the upper bound. These singleton tuples containing `0` through `15` are actually the representatives of integers `-8` through `7`. This is an artifact of how the solver process works.
 
 Here's the bound on `Person` and its three sub-`sig`s:
 
@@ -218,9 +231,9 @@ Here's the bound on `Person` and its three sub-`sig`s:
 (r:Charlie [{(18)} :: {(18)}])
 ```
 
-The lower bound on `Person` contains 3 object identifiers, because there must always be 3 distinct objects (representing our three `one` sigs). There's an object in the upper, but not the lower, bound, because that fourth person may or may not exist. `Alice`, `Bob`, and `Charlie` are exactly set to be those 3 always-present objects.
+The lower bound on `Person` contains 3 object identifiers, because there must always be 3 distinct objects (representing our three `one` sigs). There's an object in the upper, but not the lower, bound, because that fourth person may or may not exist. `Alice`, `Bob`, and `Charlie` are exactly set to be those 3 different always-present objects.
 
-Finally:
+Finally, let's look at a field's bounds:
 
 ```
 (r:followers [(-> none none) :: {(16 16) (16 17) (16 18) (16 19) (17 16) (17 17) (17 18) (17 19) (18 16) (18 17) (18 18) (18 19) (19 16) (19 17) (19 18) (19 19)}])
@@ -232,13 +245,9 @@ _Any tuple in the upper bound of a relation, that isn't also in the lower bound,
 * If a tuple isn't in the upper bound, it can never exist in an instance---it would always be assigned false---and so we needn't assign a variable.
 * If a tuple is in the lower bound, it must always exist in an instance---it would always be assigned true---and so we can again omit a variable.
 
-**Important: To minimize confusion between the object numbered $k$ and the Boolean variable numbered $k$, which are not the same thing, from now on in these notes, numbers will correspond only to Boolean variables.**
-
 ## From Forge Constraints to Boolean Constraints
 
-Once we know the set of Boolean variables we'll use, we can translate Forge constraints to purely Boolean ones via substitution. 
-
-The actual compiler is more complex than this, but here's an example of how a basic compiler might work. Suppose we have the constraint:
+Once we know the set of Boolean variables we'll use, we can translate Forge constraints to purely Boolean ones via substitution. Here's an example of how a basic compiler, without optimizations, might work.  Suppose we have the constraint:
 
 ```alloy
 all p: Person | Alice in p.followers
@@ -260,22 +269,28 @@ Alice in Charlie.followers
 </details>
 </br>
 
-There are similar rules for other operators.
+There are similar rules for other operators: a `some` becomes a big `or`, a relational join becomes a `some`-quantified statement about the existence of a value to join on, which then becomes a big `or`, etc.
 
-## Skolemization
+## Example optimization: Skolemization
 
-Forge performs a process called _Skolemization_, named after the logician [Thoralf Skolem](https://en.wikipedia.org/wiki/Thoralf_Skolem), to convert select `some` quantifiers into supplemental relations. 
+Forge performs a process called _Skolemization_, named after the logician [Thoralf Skolem](https://en.wikipedia.org/wiki/Thoralf_Skolem), to convert specific `some` quantifiers into supplemental relations. 
 
-The idea is: to satisfy a `some` quantifier, some object exists that can be plugged into the quantifier's variable to make the child formula true. Skolemization reifies that object witness into the model as a new constant. This:
+The idea is: to satisfy a `some` quantifier, some atom exists that can be plugged into the quantifier's variable `x` to make the child formula true. Skolemization reifies that object witness into the model as a new relational constant `$x`. This:
 * makes debugging easier sometimes, since you can immediately _see_ what might satisfy the quantifier constraint; and
-* sometimes aids in efficiency. 
+* sometimes aids in efficiency, especially in a "target poor" environment like an unsatisfiable problem. 
 
-So if you see a relation labeled something like `$x_some32783`, it's one of these _Skolem_ relations, and points to a value for a `some` quantified variable `x`. (Forge adds the numeric suffix to help disambiguate variables with the same name.)
+By convention, these variables are prefixed with a `$`. So if you see a relation labeled `$x`, it's a Skolem relation that points to a value for a `some` quantified variable `x`. The relation will grow wider for every `all` quantifier that wraps the `some` quantifier being Skolemized. To see why that happens, suppose that we have a constraint: `all p: Person | all b: Bank | hasAccount[p,b] implies some i: Int | bankBalance[p,b,i]`. This constraint says that if a person has a bank account at a certain bank, there's a balance entered for that account. That balance isn't constant! It's potentially different for every `Person`-`Bank` pairing. Thus, `$i` would have arity 3: 2 for the "input" and 1 for the "output". 
 
+~~~admonish tip title="Skolem Depth"
+You can change how deeply `some` quantifiers will get Skolemized by using the `skolem_depth` [option](../../docs/running-models/options.md) in Forge.
+~~~
+
+<!-- (Forge adds the numeric suffix to help disambiguate variables with the same name.)
+`$x_some32783` -->
 
 ## Symmetry Breaking
 
-Let's return to the original model:
+Let's return to the original Followers model:
 
 ```alloy
 abstract sig Person {
@@ -285,19 +300,17 @@ one sig Alice, Bob, Charlie extends Person {}
 run {some followers} for exactly 3 Person 
 ```
 
-We decided it probably had $512$ instances. But does it _really_? Let's hit `Next` a few times, and count!
-
-Actually, that sounds like a lot of work. Let's simplify things a bit more:
+We decided it probably had $512$ instances. But does it _really_? Let's hit `Next` a few times, and count! Actually, that sounds like a lot of work. Let's simplify things a bit more, instead:
 
 ```alloy
 abstract sig Person {
-  follower: one Person
+  follower: one Person -- changed: replace `set` with `one` 
 }
 one sig Alice, Bob, Charlie extends Person {}
-run {} for exactly 3 Person 
+run {} for exactly 3 Person  -- changed: don't run any predicates
 ```
 
-Now everybody has exactly one follower. There are still 9 potential tuples, but we're no longer storing _sets_ of them for each `Person`. Put another way, every instance corresponds to an ordered triplet of `Person` objects (Alice's follower, Bob's followers, and Charlie's follower). There will be $3 \times 3 \times 3 = 3^3 = 27$ instances. And indeed, if we click "Next" 26 times, this is what we find. 
+Now everybody has exactly one follower. There are still 9 potential tuples, but we're no longer storing _sets_ of them for each `Person`. Put another way, every instance corresponds to an ordered triplet of `Person` objects (Alice's follower, Bob's follower, and Charlie's follower). There will be $3 \times 3 \times 3 = 3^3 = 27$ instances. And indeed, if we click "Next" 26 times, this is what we see. (Whew.) 
 
 Now suppose we didn't name the 3 people, but just had 3 anonymous `Person` objects:
 
@@ -305,10 +318,10 @@ Now suppose we didn't name the 3 people, but just had 3 anonymous `Person` objec
 sig Person {
   follower: one Person
 }
-run {} for exactly 3 Person 
+run {} for exactly 3 Person  -- changed: no named people
 ```
 
-The math is still the same: 27 instances. But now we only get 9 before hitting the unsat indicator of "no more instances".
+The math is still the same: $27$ instances. But now we only get $9$ before hitting the unsat indicator of "no more instances" in the visualizer.
 
 What's going on?
 
@@ -328,30 +341,19 @@ Person3 follows Person2
 Person1 follows Person3
 ```
 
-since the individual `Person` atoms are _anonymous_. We call these instances _isomorphic_ to each other, or _symmetries_ of each other.
-
-Formally, we say that Forge finds every instance "up to isomorphism". This is useful for:
+since the individual `Person` atoms are _anonymous_ to the constraints, which cannot refer to atoms by name. We call these instances _isomorphic_ to each other, and say that there is a _symmetry_ between them.  Formally, Forge finds every instance "up to isomorphism". This is useful for:
 * increasing the quality of information you get from paging through instances; and
-* improving the runtime on unsatisfiable problems.
+* (sometimes) improving the runtime on problems, especally if solutions are very rare.
 
-This process isn't always perfect: some equivalent instances can sneak in. Removing _all_ equivalent instances turns out to sometimes be even more expensive than solving the problem. So Forge provides a best-effort, low cost attempt.
+This process isn't always perfect: some equivalent instances can sneak in. Removing _all_ equivalent instances turns out to sometimes be even more expensive than solving the problem. So Forge provides a best-effort, low cost attempt based on a _budget_ for adding additional constraints to the problem, specifically to eliminate symmetries.
 
 You can adjust the budget for symmetry breaking via an option:
 *  `option sb 0` turns off symmetry breaking; and
 *  `option sb 20` is the default.
 
-If we turn off symmetry-breaking, we'll get the expected number of instances in the above run: 27.
+If we turn off symmetry-breaking, we'll get the expected number of instances in the above run: $27$.
 
-### Implementing Symmetry Breaking
-
+~~~admonish note title="Symmetry Breaking != Filtering"
 Forge doesn't just filter instances after they're generated; it _adds_ extra constraints that try to rule out symmetric instances. These constraints are guaranteed to be satisfied by at least one element of every equivalence class of instances. There's a lot of research work on this area, e.g., [this paper](https://kaiyuanw.github.io/papers/paper22-tacas20.pdf) from 2020.
-
-## Looking Ahead
-
-After Spring break, we'll come back and talk about:
-* converting to CNF (Tseitin's Transformation); and
-* the algorithms that Boolean solvers use.
-
-You will write your own solver, which you might even be able to plug in to Forge and compare its performance vs. the solvers we include by default.
-
+~~~
 

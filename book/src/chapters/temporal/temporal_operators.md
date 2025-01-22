@@ -1,12 +1,11 @@
-# 2023.18: Temporal Operators in Forge
+# Temporal Forge
 
-~~~admonish tip title="CSCI 1710"
-I want to remind everyone that if you got a check-minus, it doesn't mean "not passing"; it doesn't even mean "can't get an A". It means "not A quality work on **this** assignment". You do not need any check-plusses to get an A. Check-plusses are rare.
-~~~
+Temporal Forge works by adding additional operators to the language. You can still do everything you could before (with one exception that we'll get to) in Relational Forge, but you get new operators&mdash;new operators like `always` and `eventually`&mdash;that make describing properties and specifying systems easier. Moreover, these operators are standard in industrial model-checking tools.
 
-Livecode is [here](./mutex_temporal.frg).
 
-## Temporal Operators: Survey
+<!-- Livecode is [here](./mutex_temporal.frg). -->
+
+<!-- ## Temporal Operators: Survey
 
 I wonder if we could add notions of "always" and "eventually" and so on to Forge. That would help us avoid some of the errors that occur when we try to represent lasso traces manually.
 
@@ -14,83 +13,111 @@ I wonder if we could add notions of "always" and "eventually" and so on to Forge
 Your class exercise today is to try out [this survey](https://docs.google.com/forms/d/e/1FAIpQLSf4nNtzjVhEv3daqZeySbsApoX9L2cwVts23qIzOlX6Ug8nug/viewform?usp=sf_link).  
 
 We're asking whether a _specific trace_ satisfies a constraint that uses the new operators.
-~~~
+~~~ -->
 
-## Temporal Forge
+Temporal Forge takes away the need for you to explicitly model traces, and gives some convenient syntax for describing what can change over time. But there is something to watch out for: Temporal Forge **forces the engine to only ever find lasso traces**. It's very convenient if that's what you want, but _don't use it if you don't want a lasso trace_!
 
-Here's a quick run-down:
-* lasso traces are kind of a bother to handle manually; 
-* properties like the ones we checked last time more naturally expressed with (carefully defined) operators like `always` and `eventually`; and
-* supporting more industrial model-checking languages in Forge will give everyone a better grounding in using those tools in the future (outside of class, but also on the term project). These tools very often use such operators.
+## Example: Integer Counter
 
-Temporal Forge takes away the need for you to explicitly model traces. It forces the engine to only ever find lasso traces, and gives you some convenient syntax for working under that assumption. A field can be declared `var`, meaning it may change over time. And so on. 
+Here's a quick example that motivates how Temporal Forge works, and some pitfalls that can occur when you use it. Suppose that we're modeling a system with a single integer counter:
 
-I'll repeat the most important clause above: Forge's temporal mode **forces the engine to only ever find lasso traces**. It's very convenient if that's what you want, but don't use it if you don't!
-
-Here's an example of what I mean. I'll give you a small example of a temporal-mode model in Forge. Suppose we're modeling a system with a single integer counter...
-
-```
+```forge
 #lang forge/temporal
 
 -- enable traces of up to length 10
 option max_tracelength 10
 
 one sig Counter {
+  -- The value of the "counter" field may vary over time.
   var counter: one Int
 }
 
 run {
--- Temporal-mode formulas "start" at the first state
--- The counter starts out at 0
+  -- Temporal-mode formulas are interpreted from an implicit current time. By default, 
+  -- we're talking about the start of the trace. So, the counter starts at 0.
   Counter.counter = 0
-  -- The counter is incremented every transition:
+  -- `always` means "now and at every time in the future". The prime (') operator 
+  -- says "value in the next state". So this means that the counter is incremented 
+  -- with every transition:
   always Counter.counter' = add[Counter.counter, 1]
 } for 3 Int
 ```
 
-This is _satisfiable_, but only by exploiting integer overflow. If we weren't able to use overflow, this would be _unsatisfiable_: there wouldn't be enough integers available to form a lasso. And Temporal Forge **only looks for lassos**.
+First, notice that we didn't need to define the structure of a trace. We got that for free by using Temporal Forge, which only ever finds traces.
 
+Second, this is _satisfiable_, as we might expect. But what happens if you change the bound on `Int` to `for 4 Int`? 
 
-### Converting to Temporal Forge
+**Exercise:** Try it. What happens? Why do you think it did happen?
 
-Let's convert the model from last time into temporal mode. We'll add the necessary options first. Note that options in Forge are usually _positional_, meaning that it is usually a good idea to have options at the beginning unless you want to vary parameters per `run`.
+<details>
+<summary>Think, then click!</summary>
+
+It's unsatisfiable with the new bound. This is strange: usually when we increase the scope on a `sig`, without using the `exactly` keyword, we only ever make something _satisfiable_ (because we're increasing the possible sizes of instance that Forge checks). 
+
+The problem is that, because **only lasso traces are found**, Forge can only satisfy this model by exploiting integer overflow. At `3 Int`, which supports values between `-4` and `3`, the counter progresses like this: `0`, `1`, `2`, `3`, (overflow to) `-4`, `-3`, `-2`, `-1`, `0` and so on. We have 10 states to work with, which is enough to wrap around back to `0`. 
+
+In contrast, at `4 Int`, the values range from `-8` to `7`. Overflow will happen as normal, but only when moving from `7` to `-8`. The 10 states we have won't be enough to actually loop back around to `0`&mdash;and there _must_ be a loop somewhere in a lasso trace. So Temporal Forge says that the model is unsatisfiable at trace length 10, `for 4 Int`. 
+
+</details>
+
+## Converting to Temporal Forge
+
+Let's convert the mutual-exclusion model into Temporal Forge. We'll add the necessary options first:
 
 ```alloy
 #lang forge/temporal
 
 option max_tracelength 10
 ```
-Be sure to get the underscores right! Misspellings like `maxtracelength` aren't an option for Forge. 
 
-Mixing Temporal Forge with the kind of state-aware model we had before can be tough. In temporal mode, we don't have the ability to talk about specific pre- and post-states, which means we have to change the types of our predicates. For `init`, we have:
+~~~admonish warning title="Option Names"
+Be sure to include the underscore! Misspellings like `maxtracelength` aren't a valid option name.
+~~~
+
+Now we'll update the data definitions. Because both the `flags` and `loc` fields change over time, we'll make both of them `var`:
+
+**TODO: double-check; is `World` new? If so, explain.**
+
+```alloy
+one sig World {
+  var loc: func Thread -> Location,
+  var flags: set Thread
+```
+
+At any moment in time, every thread is in exactly one location. And, at any moment in time, each thread has either raised or lowered its flag. 
+
+Now for the predicates. In Temporal Forge, we don't have the ability to talk about specific pre- and post-states: the language handles the structure of traces for us. This means we have to change the types of our predicates. For `init`, we have:
 
 ```alloy
 -- No argument! Temporal mode is implicitly aware of time
 pred init {
-    all p: Process | World.loc[p] = Disinterested
+    all p: Process | World.loc[p] = Uninterested
     no World.flags 
 }
 ```
 
-The loss of a `State` `sig` is perhaps disorienting. How does Forge evaluate `init` without knowing which state we're looking at? **In temporal mode, every constraint is evaluated not just about an instance, but also in the context of some _moment in time_**. You don't need to explicitly mention the moment. So `no World.flags` is true if, at the current time, there's no flags raised. 
+The loss of a `State` `sig` is perhaps disorienting. How does Forge evaluate `init` without knowing which state we're looking at? **In Temporal Forge, every constraint is evaluated not just in an instance, but in that instance at some _moment in time_**. You don't need to explicitly mention the moment. So the formula `no World.flags` is true exactly when, at the current time, there's no flags raised. Using `init` is like saying "are we in an initial state _right now_?"
 
 Similarly, we'll need to change our transition predicates:
 
 ```alloy
 -- Only one argument; same reason as above
 pred raise[p: Process] {
-    // pre.loc[p] = Disinterested
+    // pre.loc[p] = Uninterested
     // post.loc[p] = Waiting
     // post.flags = pre.flags + p
     // all p2: Process - p | post.loc[p2] = pre.loc[p2]
-    World.loc[p] = Disinterested
+
+    // GUARD
+    World.loc[p] = Uninterested
+    // ACTION
     World.loc'[p] = Waiting
     World.flags' = World.flags + p
     all p2: Process - p | World.loc'[p2] = World.loc[p2]
 }
 ```
 
-I've left the old version commented out, so you can contrast the two. Again, the predicate is true subject to an implicit moment in time. **The priming (') operator means "this expression in the next state"**; so if `raise` holds at some point in time, it means there is a specific relationship between the current and next moments.
+I've left the old version commented out so you can contrast the two. Again, the predicate is true subject to an implicit moment in time. **The priming (') operator means "this expression in the next state"**; so if `raise` holds at some point in time, it means there is a specific relationship between the current and next moments.
 
 We'll convert the other predicates similarly, and then run the model:
 
@@ -99,31 +126,37 @@ run {
     -- start in an initial state
     init
     -- in every state of the lasso, the next state is defined by the transition predicate
-    always delta
+    always {some t: Thread | raise[t] or enter[t] or leave[t]}
 }
 ```
 
-There are some threats to success here (like deadlocks!) but we'll return to those on Friday. Likewise, there are some issues with the model remaining that we haven't yet dealt with.
+This is the general shape of things! There are still some potential problems remaining, but we'll get to them shortly. First, we need to talk about how to view a Temporal Forge instance.
 
 ## Running A Temporal Model
 
-When we run, we get this:
+When we run, we get something that looks like this:
 
 ![](https://i.imgur.com/LsN0gfB.png)
 
 ### New Buttons!
 
-In temporal mode, Sterling has 2 "next" buttons, rather than just one. The "Next Trace" button will hold all non-`var` relations constant, but ask for a new trace that varies the `var` relations. The "Next Config" button forces the non-`var` relations to differ. These are useful, since otherwise Forge is free to change the value of any relation, even if it's not what you want changed. 
+In temporal mode, Sterling has 2 "next" buttons, rather than just one. 
+* The "Next Trace" button will hold all non-`var` relations constant, but ask for a new trace that varies the `var` relations. 
+* The "Next Config" button forces the non-`var` relations to differ. 
+Having different buttons for these two ideas is useful, since otherwise Forge is free to change the value of any relation, even if it's not what you want changed. 
 
 ### Trace Minimap
 
-In temporal mode, Sterling shows a "mini-map" of the trace in the "Time" tab. You can see the number of states in the trace, as well as where the lasso loops back. 
+In Temporal Forge, Sterling shows a "mini-map" of the trace in the "Time" tab. You can see the number of states in the trace, as well as where the lasso loops back. 
 
-**It will always be a lasso, because temporal mode never finds anything but lassos.**
+**It will always be a lasso, because Temporal Forge never finds anything but lassos.**
 
 You can use the navigation arrows, or click on specific states to move the visualization to that state: 
 
 ![](https://i.imgur.com/KnLqfJm.png)
 
-Theming works as normal. For the moment, custom visualizer scripts need to visualize a single state at at time.
+Theming works as normal, as do custom visualizers (although read the documentation if you're writing your own visualizer; there are some small changes like using `instances` instead of `instance` to access data). 
 
+### So what's missing?
+
+_Do not_ try to use `example` in temporal mode. The `example` and `inst` constructs define bounds for _all states at once_ in Temporal forge. While `inst` can still be very useful for optimization, `example` will prevent anything it binds from ever changing in the trace, which isn't very useful for test cases. Instead, use constraints.

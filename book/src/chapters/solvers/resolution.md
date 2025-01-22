@@ -332,7 +332,7 @@ For the tree to prove that the input is unsatisfiable, you'd need to check:
     
 </details>
 
-## Pre-Registration!
+<!-- ## Pre-Registration!
 
 Pre-registration is upon us soon! Some related courses include the following. I'll restrict myself to those about, or closely related to logic, formal methods, or programming languages, and which can count for the CSCI concentration as of the present version of the [Handbook](https://cs.brown.edu/degrees/undergrad/concentrating-in-cs/concentration-handbook/).
 
@@ -345,4 +345,4 @@ Pre-registration is upon us soon! Some related courses include the following. I'
 * PHIL 1855 (modal logic)
 
 There are many other great courses---some of which I might argue should also count as upper-level courses for the CSCI concentration, or which are only taught in the Spring semester. For instance, PHIL 1885 covers incompleteness and would be an interesting counterpoint to a more CSCI-focused course on computability.
-
+ -->

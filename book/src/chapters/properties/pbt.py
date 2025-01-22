@@ -8,16 +8,7 @@
 #     (3) every step in output is an edge in input and 
 # ... and so on ... 
 
-
-
-
-
-
-
-
-
-
-
+# Now let's do something more concrete, for `median`, in Hypothesis:
 
 ################################################
 
@@ -26,16 +17,28 @@ from hypothesis.strategies import integers, lists
 from statistics import median
 
 # Tell Hypothesis: inputs for the following function are non-empty lists of integers
-@given(lists(integers(), min_size=1)) 
+# @given(lists(integers(), min_size=1)) 
+@given(lists(integers(min_value=-1000,max_value=1000), min_size=1))
 # Tell Hypothesis: run up to 500 random inputs
-@settings(max_examples=500)
-def test_python_median(input_list):    
-    output_median = median(input_list) # call the implementation under test
-    print(f'{input_list} -> {output_median}') # for debugging our property function
+@settings(max_examples=50000)
+#@settings(max_examples=500)
+
+# Last version, given in the book/notes
+
+def test_python_median(input_list):
+    output_median = median(input_list)
+    print(f'{input_list} -> {output_median}')
     if len(input_list) % 2 == 1:
-        assert output_median in input_list 
-    # The above checks a conditional property. But what if the list length isn't even?
-    #   (and can we write a stronger property, regardless?)
+        assert output_median in input_list
+    
+    # Question 1: Python's `median` function fails this test! What's going on? 
+    lower_or_eq =  [val for val in input_list if val <= output_median]
+    higher_or_eq = [val for val in input_list if val >= output_median]
+    assert len(lower_or_eq) >= len(input_list) // 2    # // ~ floor
+    assert len(higher_or_eq) >= len(input_list) // 2   # // ~ floor
+    
+    # Question 2: Is this enough? Can we stop here? :-)
+
 
 
 # Because of how Python's imports work, this if statement is needed to prevent 
