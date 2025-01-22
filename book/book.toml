@@ -3,7 +3,7 @@ authors = ["Tim Nelson"]
 language = "en"
 multilingual = false
 src = "src"
-title = "Logic for Systems"
+title = "Logic for Systems: Lightweight Formal Methods for Everybody"
 
 [preprocessor]
 
@@ -34,11 +34,20 @@ inline-delimiter = { left = "$", right = "$" }
 
 [output.html]
 site-url = "/book/"
-additional-css = ["././mdbook-admonish.css", "./mdbook-admonish.css"]
+# default-theme = "navy"
+additional-css = ["././mdbook-admonish.css", "./mdbook-admonish.css", "./custom.css"]
+smart-punctuation = true
+no-section-label = true
 
 [output.html.fold]
 enable = true
+level = 0
 
 [output.html.playground]
 editable = true
 runnable = true
+copyable = true
+
+[output.html.code.hidelines]
+python = "~"
+forge = "~" 
