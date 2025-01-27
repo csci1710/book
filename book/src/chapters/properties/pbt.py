@@ -27,7 +27,7 @@ from statistics import median
 
 def test_python_median(input_list):
     output_median = median(input_list)
-    print(f'{input_list} -> {output_median}')
+    #print(f'{input_list} -> {output_median}')
     if len(input_list) % 2 == 1:
         assert output_median in input_list
     

@@ -61,6 +61,8 @@ When we're first writing a model, we'll start with **5 steps**. For each step, I
 - What **domain predicates** are there? Well-formedness defines conditions that are needed for an instantiation to not be "garbage". But whatever we're modeling surely has domain-specific concepts of its own, which may or may not hold. 
   - For tic-tac-toe, we care a great deal if the board is a winning board or not. Similarly, we might care if it looks like someone has cheated.
   - For a binary search tree, we care if the tree is balanced, or if it satisfies the BST invariant. 
+
+These steps will get us to a point we can begin to iterate: working to **validate and/or refine** the model as we go. It's rare that a model will do everything you need (and do so correctly) on the first try.
 ~~~
 
 ~~~admonish warning title="Well-formedness vs. domain predicates"

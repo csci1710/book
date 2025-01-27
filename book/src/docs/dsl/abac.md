@@ -19,8 +19,8 @@ policy original
   // Files being audited can't be changed by customers
   deny   if: a is write, r is file, r is under-audit.
   // Customers have full access to files they own
-  permit if: s is customer, a is read, s is owner-of r.
-  permit if: s is customer, a is write, s is owner-of r.
+  permit if: s is customer, a is read, r is owned-by s.
+  permit if: s is customer, a is write, r is owned-by s.
 end;
 ~~~
 ```
