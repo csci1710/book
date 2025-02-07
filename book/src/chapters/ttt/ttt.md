@@ -442,4 +442,19 @@ Notice that, because we said `exactly 2 Board` here, Forge _must_ find instances
 
 <!-- You also have `implies` and `iff` (if and only if), although you can still do something like comparing two predicates without `iff` (try, e.g., asking for instances where `A and not B` holds).  -->
 
-We'll come back to tic-tac-toe soon; for now, let's cover another static example.
+We'll come back to tic-tac-toe [soon](./ttt_games.md). The [next section](../bst/bst.md) will cover a second static example let's cover another static example.
+
+## Testing with assertions 
+
+Before we move on, I want to quickly note that `example` isn't the only way you can write tests in Forge. The `example` construct is powerful if you want to write "pointwise" tests in terms of single instances, but can quickly become verbose. If you know what properties you're interested in testing for, you can encode that into an `assert` in Forge. For example: 
+
+```
+// I want to check that this predicate is satisfiable for some set of arguments, 
+// but I don't care about the specific instance(s) that satisfy it.
+assert {some b: Board | XTurn[b]} is sat
+
+// I want to confirm that OTurn and XTurn are mutually exclusive
+// assert {} TODO ADD
+```
+
+

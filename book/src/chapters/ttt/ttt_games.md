@@ -544,8 +544,6 @@ No, for at least two reasons:
 
 ## Proving Preservation Inductively
 
-**TODO: should this be a separate section?**
-
 Let's turn to a _programming_ problem. Suppose that we've just been asked to write the `add` method for a linked list class in Java. The code involves a `start` reference to the first node in the list, and every node has a `next` reference (which may be null). 
 
 Here's what we hope is a _property of linked lists_: **the last node of a non-empty list always has `null` as its value for `next`**. 

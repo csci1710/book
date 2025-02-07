@@ -64,7 +64,7 @@ In Tic-Tac-Toe, we let property $P$ be "cheating states can't be reached with le
 I think that showing a system preserves an invariant might be a far more relatable and immediately useful example of the induction principle than summation. That's not to dismiss mathematical induction! I quite like it (and it's useful for establishing some useful results related to Forge). But multiple perspectives enrich life.
 ~~~
 
-**Exercise: Try it!** Open up the binary search model starter. You should see a pair of tests labeled `initStep` and `inductiveStep` under a comment that says "Exercise 1". Fill these in using the logic above, and run them. Do they both pass? Does one fail?
+**Exercise: Try it!** Open up the binary search [model starter template](./binarysearch_template.frg). You should see a pair of tests labeled `initStep` and `inductiveStep` under a comment that says "Exercise 1". Fill these in using the logic above, and run them. Do they both pass? Does one fail?
 
 ### What if Forge finds a counterexample?
 
@@ -149,10 +149,8 @@ This is a problem you might first hear about in a logic or philosophy textbook. 
 At the very least, we'd better test that the left-hand-side of the implication can be satisfied. This isn't a guarantee of trustworthiness, but it's a start. And it's easy to check with Forge that some state can be `initial` or some transition can be executed:
 
 ```forge
-test expect {
-  {some s: State | initial[s]} is sat
-  {some pre, post: State | transition[pre, post]} is sat
-}
+assert {some s: State | initial[s]} is sat
+assert {some pre, post: State | transition[pre, post]} is sat
 ```
 
 Make sure you're always testing vacuity. Errors like this are more common than you might think. 
