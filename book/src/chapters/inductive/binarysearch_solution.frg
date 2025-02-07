@@ -1,6 +1,7 @@
-#lang forge/bsl 
+#lang forge/froglet
 
 /*
+
   Rough model of binary search on an array of integers.  
 
   ONE POSSIBLE SOLUTION
@@ -155,28 +156,32 @@ pred safeArraySize[arr: IntArray] {
     arr.lastIndex >= 0
 }
 
+-------------------------------------------------------------------------------------
 -- Some "is satisfiable" tests. These test for consistency, possibility, non-vacuity.
-test expect {
-    -- It's possible to narrow on the first transition (this is the common case)
-    narrowFirstPossible: {
-        some s1,s2: SearchState | { 
-            init[s1]
-            safeArraySize[s1.arr]        
-            stepNarrow[s1, s2]
-        }
-    } for exactly 1 IntArray, exactly 2 SearchState 
-    is sat
+-------------------------------------------------------------------------------------
 
-    -- If the first state has the target exactly in the middle, we can succeed immediately
-    doneSucceedFirstPossible: {
-        some s1,s2: SearchState | { 
-            init[s1]
-            safeArraySize[s1.arr]        
-            stepDoneSucceed[s1, s2]
-        }
-    } for exactly 1 IntArray, exactly 2 SearchState
-    is sat
+-- It's possible to narrow on the first transition (this is the common case)
+pred narrowFirstPossible {
+    some s1,s2: SearchState | { 
+        init[s1]
+        safeArraySize[s1.arr]        
+        stepNarrow[s1, s2]
+    }
 }
+assert narrowFirstPossible is sat 
+  for exactly 1 IntArray, exactly 2 SearchState 
+
+-- If the first state has the target exactly in the middle, we can succeed immediately
+pred doneSucceedFirstPossible {
+    some s1,s2: SearchState | { 
+        init[s1]
+        safeArraySize[s1.arr]        
+        stepDoneSucceed[s1, s2]
+    }
+} 
+assert doneSucceedFirstPossible is sat 
+  for exactly 1 IntArray, exactly 2 SearchState
+    
 
 -- Some assertions: these check that counterexamples don't exist. 
 pred unsafeOrNotInit[s: SearchState] { 
