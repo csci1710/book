@@ -74,14 +74,13 @@ option max_tracelength 10
 Be sure to include the underscore! Misspellings like `maxtracelength` aren't a valid option name.
 ~~~
 
-Now we'll update the data definitions. Because both the `flags` and `loc` fields change over time, we'll make both of them `var`:
-
-**TODO: double-check; is `World` new? If so, explain.**
+Now we'll update the data definitions. We no longer have a `State` sig. Or rather, we do, but we would only have one of them and let its fields vary with time. Because both the `flags` and `loc` fields change over time, we'll make both of them `var`, and we'll change the name of `State` to avoid confusion:
 
 ```alloy
 one sig World {
   var loc: func Thread -> Location,
   var flags: set Thread
+}
 ```
 
 At any moment in time, every thread is in exactly one location. And, at any moment in time, each thread has either raised or lowered its flag. 
