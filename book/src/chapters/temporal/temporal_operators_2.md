@@ -220,7 +220,16 @@ always {
 }
 ```
 
-And we'd also better create those 3 `enabled` predicates, too. (**TODO: link code**) But then, finally, we can write a check looking for deadlocks:
+And we'd also better create those 3 `enabled` predicates, too. E.g., we might write:
+```
+pred raiseEnabled[t: Thread] {
+    World.loc[t] = Uninterested 
+}
+```
+which we would then use in the `raise` transition predicate.
+
+
+Finally, we can write a check looking for deadlocks:
 
 ```alloy
 test expect {
