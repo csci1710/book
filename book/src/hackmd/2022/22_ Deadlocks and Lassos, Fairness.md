@@ -68,7 +68,7 @@ test expect {
                 enabledEnter[p] or
                 enabledLeave[p] 
         }
-    } is theorem
+    } is checked
 }
 ```
 
@@ -196,7 +196,7 @@ noStarvation: {
                 eventually World.loc[p] = InCS
             }
         }}
-    } is theorem
+    } is checked
 ```
 
 This passes. Yay!

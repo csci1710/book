@@ -384,14 +384,14 @@ And then we'll use it in a test. It's vital that we have a high-enough bitwidth,
 So far, we've only seen `example`s and `assert`ions. Both of these are built using Forge's basic satisfiability checking. We can access this directly using the `test expect` feature. You can write that a run:
 * should have instances (i.e., be satisfiable): `is sat`;
 * should not have instances (i.e., be unsatisfiable, within the bounds given): `is unsat`; or
-* should have no counterexample instances (within the bounds given): `is theorem`.
+* should have no counterexample instances (within the bounds given): `is checked`.
 ~~~
 
 ```forge
 -- Ask Forge to check the satisfiability of something...
 test expect {  
   -- Is it _always_ true, up to these bounds, that `req_adderCorrect` always holds?
-  r_adderCorrect: {req_adderCorrect} for 6 FullAdder, 1 RCA, 8 Int is theorem
+  r_adderCorrect: {req_adderCorrect} for 6 FullAdder, 1 RCA, 8 Int is checked
 }
 ```
 
@@ -491,7 +491,7 @@ Adding constraints will affect the later steps, but we'd love to give hints to t
 
 ```forge
 test expect {  
-  r_adderCorrect: {req_adderCorrect} for 6 FullAdder, 1 RCA, 8 Int for {nextAdder is plinear} is theorem
+  r_adderCorrect: {req_adderCorrect} for 6 FullAdder, 1 RCA, 8 Int for {nextAdder is plinear} is checked
 }
 ```
 

@@ -82,7 +82,7 @@ noStarvation: {
             }
         }
     }
-} is theorem
+} is checked
 ```
 
 This passes. Yay!

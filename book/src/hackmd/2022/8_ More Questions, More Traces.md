@@ -51,7 +51,7 @@ test expect {
         all s: State, e: StackElement | 
            reachable[e, s, next, top] iff 
            (reachable[e, s.top, next] or e = s.top)
-    } is theorem
+    } is checked
 }
 ```
 

@@ -107,7 +107,7 @@ test expect {
         friends.followers = 
         {p1, p2: Person | some x: Person | p1->x in friends and 
                                            x->p2 in followers}
-    } for 10 Person is theorem
+    } for 10 Person is checked
 }
 ```
 
