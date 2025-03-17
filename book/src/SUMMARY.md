@@ -1,3 +1,7 @@
+
+
+<!-- find . -name '*.txt' -print0 | xargs -0 sed -i "" "s/is theorem/is checked/g" -- >
+
 <!-- This will be ignored by the mdbook parser -->
 <!-- # Logic for Systems: Lightweight Formal Methods for the Practical Engineer -->
 # Summary 

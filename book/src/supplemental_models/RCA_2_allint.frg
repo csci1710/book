@@ -194,7 +194,7 @@ inst optimizer {
 } 
     
 test expect {
-  r_adderCorrect: {req_adderCorrect} for 6 FA, 1 RCA, 8 Int for optimizer is theorem
+  r_adderCorrect: {req_adderCorrect} for 6 FA, 1 RCA, 8 Int for optimizer is checked
 }
 
 /////////////////////////////////////////////////////////////////////

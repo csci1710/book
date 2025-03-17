@@ -184,7 +184,7 @@ test expect {
   -- Test with a bitwidth of 9, letting us count between [-256, 255].
   -- The maximum value we expect with *6* full adders is 111111 = 63, plus 
   -- a carry bit, giving us 1111111 = 127. We aren't using the negatives. 
-  r_adderCorrect: {req_adderCorrect} for 6 FA, 1 RCA, 8 Int is theorem
+  r_adderCorrect: {req_adderCorrect} for 6 FA, 1 RCA, 8 Int is checked
 }
 
 -- NOTE: very high #clauses: 645459; ~86 seconds to solve (quick translation)

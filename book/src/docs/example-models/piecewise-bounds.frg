@@ -36,9 +36,9 @@ test expect {
     complete_example: {
         #Person = 3 
         some p: Person | some disj c1, c2: Course | some p.gradeIn[c1] and some p.gradeIn[c2]
-    } for all_at_once is theorem
+    } for all_at_once is checked
     piecewise_example: {
         #Person = 3
         some p: Person | some disj c1, c2: Course | some p.gradeIn[c1] and some p.gradeIn[c2]
-    } for per_person is theorem
+    } for per_person is checked
 }
