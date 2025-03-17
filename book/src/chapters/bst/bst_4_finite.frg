@@ -162,6 +162,6 @@ pred lasso_v1 {
   binary_search_tree_v1 -- use first invariant version
   searchTrace           -- generate any arbitrary search trace
 }
---assert lasso_v1 is sufficient for bs_correct for 5 Node
+assert lasso_v1 is sufficient for bs_correct for 5 Node
 
 -- Great! The check passed (at least, up to 5 nodes)
