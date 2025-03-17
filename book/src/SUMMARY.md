@@ -21,8 +21,8 @@
 - [Transitions, Traces, and Verification](./chapters/ttt/ttt_games.md)
 - [Counterexamples to Induction](./chapters/inductive/bsearch.md)
 - [BSTs: Recursive Descent](./chapters/bst/descent.md)
-- [Validating Models (in progress)](./chapters/validation/validating_events.md) 
-- [Q&A: Event Systems (in progress)](./chapters/qna/events.md) 
+- [Validating Models](./chapters/validation/validating_events.md) 
+- [Q&A: Event Systems](./chapters/qna/events.md) 
 
 # Modeling Relationships 
 - [Relational Forge, Modeling Logic](./chapters/relations/modeling-booleans-1.md)
@@ -39,6 +39,7 @@
 - [Linear Temporal Logic](./chapters/temporal/temporal_operators_2.md)
 - [Obligations and the Past](./chapters/temporal/obligations_past.md)
 - [Mutual Exclusion, Revisited](./chapters/temporal/fixing_lock_temporal.md)
+- [Testing Temporally](./chapters/temporal/testing_temporal.md)
 <!-- - [Q&A: Temporal Logic (FILL; any not covered before?)]()  -->
 
 <!--  
