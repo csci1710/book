@@ -1,12 +1,4 @@
-# 2023: Satisfiability Solving 
-
-Welcome back! We'll spend this week on algorithms and data structures for solving boolean constraint problems. (Sometimes we'll call this "SAT"---short for "satisfiability".)
-
-## Logistics: Homework
-
-Friday's homework will involve writing your own solver! 
-
-## Solving SAT
+# Satisfiability Solving 
 
 Suppose I asked you to solve a boolean constraint problem. Maybe it comes from Forge, and maybe it doesn't. Here's an example, in "Java syntax":
 
@@ -43,21 +35,25 @@ We've found a solution! But we needed to build the entire set of possibilities t
 
 ## Can We Do Better?
 
-If you take 1010, you'll learn that we don't actually know (at time of writing) whether it's possible to solve boolean satisfiability for arbitrary inputs without taking time exponential in the size of the input. This is one of the biggest unsolved questions, and certainly one of the most famous, in computer science.
+We **don't actually know** (at time of writing) whether it's possible to solve boolean satisfiability for arbitrary inputs without worst-case time exponential in the size of the input. This is one of the biggest unsolved questions, and certainly one of the most famous, in computer science. But we shouldn't let that discourage us. Plenty of problems are _worst_ case exponential (or even more difficult) and we still solve them all the time.
 
-But we shouldn't let that discourage us. Plenty of problems are _worst_ case exponential (or even more difficult) and we solve them all the time.
+~~~admonish note title="Why so famous?"
+It turns out that if you can solve boolean SAT in polynomial worst-case time, you can also solve many other important problems in worst-case polynomial time. There are many such problems (e.g., graph coloring, longest simple path, bin packing, ...) but SAT is the most well-known. 
+
+If you take 1010, you'll learn more about the specifics.
+~~~
 
 ## Let's Try Anyway
 
 Maybe we can do better _sometimes_. Let's just start, and see where we get to. 
 
 ~~~admonish warning title="Pseudocode"
-The "code" in today's notes is _pseudocode_---it shouldn't be viewed as complete---rather, the goal is to motivate the core ideas coming up. You'll get a more complete stencil as part of your homework, including types.
+The "code" in today's notes is _pseudocode_. The goal is to motivate the core ideas coming up, although you could certainly add a bit of extra detail to get runnable code. 
 ~~~
 
 ### A First Try
 
-Here's a solution that recursively tries all combinations---sort of like building the truth table:
+Here's a solution that recursively tries all combinations. It's kind of like building the truth table, except that instead of creating the table (which always uses exponential _space_) it just explores all possibilities (always using exponential _time_ but not exponential space). 
 
 ```python
 def solve(formula: BooleanFormula) -> bool:
@@ -71,17 +67,18 @@ def solve(formula: BooleanFormula) -> bool:
         return true_result || false_result                        # true if and only if _some_ guess worked
 ```
 
-The function relies on two helpers:
+The function relies on three helpers, which we've left out for brevity:
 * `simplify`, which evaluates a formula with no variables. E.g., it turns `True and False` to just `True`.
 * `substitute`, which replaces a variable with a concrete boolean value. E.g., calling `substitute(x1 and x2, x1, True)` would produce `True and x2`.
+* `variables_in`, which returns the set of variables used in a formula.
 
-Note, though, that this program doesn't actually build the _entire_ table at any one time. It explores the entire set of possible instances, and so takes time worst-case exponential in the number of variables. But it doesn't need that much _space_, which is already an improvement.
+Again, this program doesn't actually build the _entire_ table at any one time. It explores the entire set of possible instances, and so takes time worst-case exponential in the number of variables. But it doesn't need that much _space_, which is already an improvement. 
 
-However, its _best_ case time is also exponential, which is a bit disappointing. 
+However, its _best_ case time is also exponential, which is rather disappointing. Surely we can do a lot better.
 
 ### Maybe Luck Is With Us
 
-The issue with the last solution is that it _always_ explores, even if it doesn't need to. Instead, how about we only check one value at a time---if we find a `True` result for one specific substitution, we're done!
+The issue with the last solution is that it _always_ explores, even if it doesn't need to. Instead, how about we only check one value at a time. If we find a `True` result for one specific substitution, we're done!
 
 ```python
 def solve(formula: BooleanFormula) -> bool:
@@ -120,9 +117,9 @@ First, three definitions:
 
 A _literal_ is a variable or its negation. E.g., `x1` and `!x1` are both literals, but `!!x1` and `x1 or x2` are not.
 
-A _clause_ is a set of literals combined with "or"; you may sometimes hear this called a _disjunction_ of literals. 
+A _clause_ is a set of literals combined with "or"; you may sometimes hear this called a _disjunction_ of literals. Because we can always rewrite an "or" as implication (and vice versa) in classical boolean logic, a clause can be viewed as a number of different potential implications. 
 
-A formula is said to be in _conjunctive normal form_ (CNF) if it comprises a set of clauses that is combined with "and". We call it this because "conjunction" is just another name for "and"; a "normal form" is just a way of saying that a formula's shape follows a certain (often useful) structure.
+A formula is said to be in _conjunctive normal form_ (CNF) if it comprises a set of clauses that are implicitly combined with "and". We call it this because "conjunction" is just another name for "and"; a "normal form" is just a way of saying that a formula's shape follows a certain (often useful) structure.
 
 If the input to our solver is in CNF, as the example formula `x1 and (x1 implies x2)` is (or rather, it would be if we'd wrote it equivalently as `x1 and (!x1 or x2)`), we can spot these opportunities to propagate knowledge quite quickly, just by searching for clauses of only one element. 
 
@@ -140,17 +137,20 @@ A clause is a big "or", and an "or" gives a set of ways the formula could evalua
 
 **From now on, we'll assume that we always have input in CNF.** There's a trick to accomplish this, so let's keep focused on the solving, not on the conversion for now. 
 
-### Using CNF: Unit Propagation
+### A Powerful Idea: Unit Propagation
 
-If our input was `x1 and (!x1 or x2)`, and we'd stored it as a set, that would be `{x1, (!x1 or x2)}`. We can check for unit clauses in time linear in the number of clauses. And if there is one, we can see whether there are opportunities to propagate that knowledge. This idea is called _unit propagation_.
+If our input was `x1 and (!x1 or x2)`, and we'd stored it as a set, that would be `{x1, (!x1 or x2)}`. We can check for unit clauses in time linear in the number of clauses. And if there is a unit clause, we can see whether there are opportunities to propagate that knowledge. This idea is called _unit propagation_.
 
-But how does that actually _work_?
+But how does that actually _work_? Suppose we've identified a unit clause, in this case `x1`. Then, for every other clause `C` in the set, we can check whether:
+* the clause `C` contains the same literal as the unit clause; 
+* the clause contains the opposite literal as in the unit clause; or 
+* neither of the above.
+
+In the third case, we probably can't do any propagation, because there's no connection between the clauses. But what do you think we can do in either of the first two cases?
 
 <details>
 <summary>Think, then click!</summary>
-    
-Suppose we've identified a unit clause, in this case `x1`. Then, for every other clause `C` in the set, we can check:
-    
+
 * Does the clause `C` contain the same literal as the unit clause?
     * If so, then `C` is _subsumed_ by the unit clause: `C` must be satisfied given `x1` holds! Delete the entire clause `C`.
 * Does the clause contain the opposite literal as in the unit clause?
@@ -229,6 +229,10 @@ In prior versions, we substituted `True` or `False` into the formula. Now, we're
 ~~~
 
 This idea---a recursive, backtracking search paired with unit propagation---is the foundation of one of the most famous boolean solver algorithms: **DPLL** (named after the authors: Davis, Putnam, Logemann, and Loveland). DPLL still forms the core of how most modern SAT-solvers work (although there are more ideas and optimizations not yet incorporated, such as learning from failure and deciding which variable to branch on).
+
+~~~admonish note title="Pure-literal elimination"
+DPLL technically has one more feature: pure-literal elimination. I'm glossing over that here. It's technically interesting, but not central to where we are right now. The idea is: if a variable appears in only one "polarity" (that is, only positive or negative throughout all clauses) then if the clause set is satisfiable at all, it must be satisfiable by some instance that agrees with the polarity of that variable. So if we just want to find _a_ satisfying instance, why not just set that variable's value right away? 
+~~~
 
 ### Returning more than a boolean
 

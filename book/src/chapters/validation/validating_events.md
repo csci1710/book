@@ -49,7 +49,7 @@ assert {searchTrace} is sat for 5 Node
 
 </details>
 
-## Principle 2: Inclusion vs. Exclusion 
+## Principle 2: Test both Inclusion and Exclusion 
 
 Predicates are akin to boolean-valued functions. If I write a test like this:
 

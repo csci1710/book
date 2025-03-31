@@ -112,14 +112,10 @@
 - tips and tricks
 - modeling pitfalls (a la Jackson) – higher-order quant, bounds, etc.  
  -->
+## Solvers and algorithms
+  - [Boolean SAT (DPLL)](./chapters/solvers/dpll.md)
 
-
-
-
-<!-- ## Solvers and algorithms
-
-  - Boolean SAT (DPLL)
-
+<!-- 
   - Propositional Resolution
     - Model (likely can’t model full SAT runs, but can model steps)
 
