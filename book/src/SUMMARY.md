@@ -112,8 +112,10 @@
 - tips and tricks
 - modeling pitfalls (a la Jackson) – higher-order quant, bounds, etc.  
  -->
-## Solvers and algorithms
+# Boolean Solver Algorithms
   - [Boolean SAT (DPLL)](./chapters/solvers/dpll.md)
+  - [Witnessing Unsat: Propositional resolution]()
+<!-- (./chapters/solvers/resolution.md) -->
 
 <!-- 
   - Propositional Resolution
@@ -128,12 +130,9 @@
 
   - Decidability, completeness, and incompleteness -->
 
-# Algorithmics and Beyond SAT
-- [Solving SAT: DPLL]()
-<!-- (./chapters/solvers/dpll.md) -->
-- [Witnessing Unsat: Propositional resolution]()
-<!-- (./chapters/solvers/resolution.md) -->
-- [Beyond SAT: Satisfiability Modulo Theories (SMT)]()
+# Beyond SAT
+
+- [Satisfiability Modulo Theories (SMT)]()
 <!-- (./chapters/solvers/smt.md)  -->
 - [Learning with Solvers: CEGIS]()
 <!-- (./chapters/solvers/cegis.md)  -->
