@@ -1,12 +1,10 @@
 # Resolution Proofs
 
-This document contains a two-class sequence on resolution proofs and how they relate to boolean solvers. **This material will be directly useful in your 2nd SAT homework.**
-
 ## Context: Proofs vs. Instances
 
-Almost all of our work in 1710 so far has focused on _satisfiability_: given constraints, how can they be satisfied? Our conversations have a character that puts instances first---how are they related, how can they be changed, how can a partial instance be completed, etc. In the field of logic, this is called a _model-theoretic_ view.
+Almost all of our work in this book so far has focused on _satisfiability_. We've put instances first: the things that either satisfy or dissatisfy a set of constraints. 
 
-But there's a second perspective, one that focuses on necessity, deduction, and contradiction---on justifying unsatisfiability with _proof_. Today we'll start exploring the proof-theoretic side of 1710. But we'll do so in a way that's immediately applicable to what we already know. In particular, by the time we're done with this week, you'll understand a basic version of how a modern SAT solver can return a _proof_ of unsatisfiability. This proof can be processed to produce cores like those Forge exposes via experimental `solver`, `core_minimization`, etc. options.
+But there's a second perspective, one that focuses on necessity, deduction, and contradiction&mdash;on justifying unsatisfiability with _proof_. This chapter is about exploring proofs in a way that's immediately applicable to what we already know. We'll cover a form of proof called _resolution_, and show how a basic version of a modern SAT solver can return a _proof_ of unsatisfiability. This proof can then be processed to understand _why_ a set of constraints is unsatisfiable. 
 
 We'll start simple, from CNF and unit propagation, and move on from there.
 
@@ -22,7 +20,7 @@ I might write this more mathematically as the set of known facts: $\{r, r \impli
 Because the vast majority of the materials you might find on this topic are written using mathematical notation, I'm using $\implies$ for `implies` and $\neg$ for `not`. If you go reading elsewhere, you might also see $\wedge$ for `and` and $\vee$ for `or`. 
 ~~~
 
-Given this knowledge base, can we infer anything new? Yes! We know that if it's raining, we can't hold class outside. But we know it's raining, and therefore we can conclude class needs to be indoors. This intuition is embodied formally as a logical _rule of inference_ called _modus ponens_:
+Given this knowledge base, can we infer anything new? Yes! We know that if it's raining, we can't hold class outside. But we know it's raining, and therefore we can conclude that class needs to be indoors. This intuition is embodied formally as a logical _rule of inference_ called _modus ponens_:
 
 <center>
 <p>
@@ -49,7 +47,7 @@ I like to think of rules of inference as little enzymes that operate on formula 
 In any world where both $A$ and $A \implies B$ are true, $B$ must be true.
 
 ~~~admonish warning title="Remember that `implies` and `or` are related!"
-In classical logic (our setting for most of 1710), $A \implies B$ is equivalent to $\neg A \vee B$. Either $A$ is false (and thus no obligation is incurred), _or_ $B$ is true (satisfying the obligation whether or not it exists). This will be very important soon.
+In classical logic (our setting for most of 1710), $A \implies B$ is equivalent to $\neg A \vee B$. Either $A$ is false (and thus no obligation is incurred), _or_ $B$ is true (satisfying the obligation whether or not it exists).
 ~~~
 
 ### Beyond Modus Ponens
@@ -133,8 +131,6 @@ $\frac{(l^1_1 \vee l^1_2 \vee ... \vee l^1_n), (\neg l_1 \vee l^2_1 \vee ... \ve
 </p>                
 </center>
 
-This rule is a very powerful one. In particular, since unit propagation is a basic version of resolution (**think about why!**) we'll be able to use this idea in our SAT solvers to _prove_ why an input CNF is unsatisfiable.
-
 ### Resolution Proofs
 
 What is a proof? For our purposes today, it's a tree where:
@@ -200,7 +196,7 @@ You might wonder: what about the other aspect of unit propagation---the removal 
 <details>
 <summary>Think, then click!</summary>
     
-This is a fair question! Resolution doesn't account for subsumption because proof is free to disregard clauses it doesn't need to use. So, while subsumption will be used in any solver, it's an optimization.
+This is a fair question! Resolution doesn't account for subsumption because a proof is free to disregard clauses it doesn't need to use. So, while subsumption will be used in any practical solver, it's an _optimization_, not a critical component for guaranteeing refutation-completeness.
     
 </details>
 
@@ -218,7 +214,7 @@ It might initially appear that these are a good candidate for resolution. Howeve
 (3, 4)
 ```
 
-which is _not_ a consequence of the input! In fact, we've mis-applied the resolution rule. The rule says that if we have $(A \vee B)$ and we have $(\neg A \vee C)$ we can deduce $(B \vee C)$. These letters can correspond to any formula---but they have to match! If we pick (say) $1 \vee 2$ for $A$, then we need a clause that contains $\neg A $, which is $\neg (1 \vee 2)$, but that's not possible to see in clause; a clause has to be a big "or" of literals only. So we simply cannot run resolution in this way. 
+which is _not_ a consequence of the input! In fact, we've mis-applied the resolution rule. The rule says that if we have $(A \vee B)$ and we have $(\neg A \vee C)$ we can deduce $(B \vee C)$. These letters can correspond to any formula---but they have to match! If we pick (say) $1 \vee 2$ for $A$, then we need a clause that contains $\neg A $, which is $\neg (1 \vee 2)$, which is equivalent to $(\neg 1 \wedge \neg 2)$. That's not possible to see in clause; a clause has to be a big "or" of literals only. So we simply cannot run resolution in this way. 
 
 Following the rule correctly, if we only resolve on one variable, we'd get something like this:
 
@@ -243,7 +239,11 @@ Let's return to that CNF from before:
 (-5, -3)
 ```
 
-Instead of trying to build a _proof_, let's look at what your DPLL implementations might do when given this input. I'm going to try to sketch that here. Your own implementation may be slightly different. (That doesn't necessarily make it wrong!) If you've started the SAT1 assignment, then open up your implementation as you read, and follow along. If not, note down this example.
+Instead of trying to build a _proof_, let's look at what a DPLL implementation might do when given this input.
+
+~~~admonish tip title="Do you have a DPLL implementation?" 
+Depending on the context in which you're reading this book, you may be working on an assignment that implements DPLL. If that's the case, you should follow along in your own code as we proceed with this example. Your own implementation may be slightly different, of course.
+~~~
 
 * Called on: `[(-1, 2, 3), (1), (-2, 4), (-3, 5), (-4, -2), (-5, -3)]`
 * Unit-propagate `(1)` into `(-1, 2, 3)` to get `(2, 3)`
@@ -257,9 +257,13 @@ Instead of trying to build a _proof_, let's look at what your DPLL implementatio
 
 Upon deriving the empty clause, we've found a contradiction. _Some part_ of the assumptions we've made so far (here, only that `2` is `True`) contradicts the input CNF.
 
-If we wanted to, we could learn a new clause that applies `or` to ("disjoins") all the assumptions made to reach this point. But there might be many assumptions in general, so it would be good to do some sort of fast blame analysis: learning a new clause with 5 literals is a lot better than learning a new clause with 20 literals!
+Because the assumptions we made to reach a contradiction are not a productive path, we could learn a new clause that applies `or` to the negation of each assumption made: one of those variables must be set differently in order to find a satisfying instance. 
 
-Here's the idea: we're going to use the unit-propagation steps we recorded to derive a resolution proof that the input CNF _plus any current assumptions_ lead to the empty clause. We'll then reduce that proof into a "conflict clause". This is one of the key ideas behind a modern improvement to DPLL: CDCL, or Conflict Driven Clause Learning. We won't talk about all the tricks that CDCL uses here, nor will you have to implement them. If you're curious for more, consider shopping CSCI 2951-O. For now, it suffices to be aware that **reasoning about _why_ a conflict has been reached can be useful for performance.**
+But there might be many assumptions in general, so it would be good to do some sort of fast blame analysis: learning a new clause with 5 literals is a lot better than learning a new clause with 20 literals!
+
+Here's the idea, in two steps: 
+* We're going to record the unit-propagation steps the solver makes, and use those to derive a resolution proof that the input CNF _plus some of the current assumptions_ lead to the empty clause. 
+* We'll then reduce that proof into a "conflict clause". This is one of the key ideas behind a modern improvement to DPLL: CDCL, or Conflict Driven Clause Learning. We won't talk about all the tricks that CDCL uses here, nor will you have to implement them. If you're curious for more, consider shopping CSCI 2951-O. For now, it suffices to be aware that **reasoning about _why_ a conflict has been reached can be useful for improving performance, too.**
 
 In the above case, what did we actually use to derive the empty clause? Let's work _backwards_. We'll try to produce a linear proof where the leaves are input clauses or assumptions, and the internal nodes are unit-propagation steps (remember that these are just a restricted kind of resolution). We ended with:
 
@@ -285,26 +289,13 @@ Using only those two input clauses, we know that assuming `(2)` won't be product
 
 This is promising: we have a _piece_ of the overall proof of unsatisfiability that we want. But we can't use it alone as a proof that the _input_ is unsatisfiable: the proof currently has an assumption `(2)` in it. We'd like to convert this proof into one that derives `(-2)`---the negation of the assumption responsible---from *just* the input. 
 
-Let's rewrite the (contingent, because it relies on an assumption the solver tried) proof we generated before. We'll *remove* assumptions from the tree and recompute the result of every resolution step, resulting in a proof of something weaker that isn't contingent on any assumptions. To do this, we'll recursively walk the tree, treating inputs as the base case and resolution steps as the recursive case. In the end, we should get something like this:
+Let's rewrite the proof we generated before. We'll *remove* assumptions from the tree and recompute the result of every resolution step, resulting in a proof of something weaker that isn't contingent on any assumptions. To do this, we'll recursively walk the tree, treating inputs as the base case and resolution steps as the recursive case. In the end, we should get something like this:
 
 ![](https://i.imgur.com/oAjYL8V.png)
 
 Notice that we need to re-run resolution _after processing each node's children_ to produce the new result for that node. This suggests some of the structure we'll need:
 * If one child is an assiumption, then "promote" the other child and use that value, without re-running resolution. (**Think: Why is this safe to this? It has to do with the way DPLL makes guesses.**) 
 * Otherwise, recur on children first, then re-run resolution on the new child nodes, then return a new node with the new value. 
-
-~~~admonish title="Implementation Advice"
-
-Break down these operations into small helper functions, and write test cases for each of them. Really! It's easy for something to go wrong somewhere in the pipeline, and if your visibility into behavior is only at the top level of DPLL, you'll find it *much* harder to debug issues. 
-
-Remember that you can use PBT on these helpers as well. The assignment doesn't strictly require it, but it can be quite helpful. Use the testing tools that are available to you; they'll help find bugs during development.  
-~~~
-
-#### Takeaway
-
-This should illustrate **the power of being able to treat proofs as just another data structure**. Resolution proofs are just trees. Because they are trees, we can manipulate them programatically. We just transformed a proof of the empty clause via assumptions into a proof of something else, without assumptions.
-
-This is what you'll do for your homework. 
 
 ### Combining sub-proofs
 
@@ -316,7 +307,12 @@ Suppose you ran DPLL on the false branch (assuming `(-2)`) next. Since the overa
 Just combine them with a resolution step! If you have a tree rooted in `(2)` and another tree rooted in `(-2)`, you'd produce a new resolution step node with those trees as its children, deriving the empty clause.
 </details>
 
-### Property-Based Testing (the unsatisfiable case)
+### Takeaway
+
+This should illustrate **the power of being able to treat proofs as just another data structure**. Resolution proofs are just trees. Because they are trees, we can manipulate them programatically. We just transformed a proof of the empty clause via assumptions into a proof of something else, without assumptions.
+
+
+## Property-Based Testing (the unsatisfiable case)
 
 Given one of these resolution proofs of unsatisfiability for an input CNF, you can now apply PBT to your solver's `False` results, because they are no longer _just_ `False`.
 

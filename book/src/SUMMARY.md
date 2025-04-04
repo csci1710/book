@@ -66,18 +66,6 @@
   - Validation (part 3): temporal pitfalls
   -->
 
-# Case Studies and Further Reading
-- [Modeling Raft in Anger (in progress)]()
-<!-- (./chapters/raft/raft.md) -->
-- [Forge: Comparing Prim's and Dijkstra's Algorithms]()
-- [Model-Based ("Stateful") Testing]()
-- [Industry: Concolic Execution (DEMO: KLEE)]() 
-- [Forge+Industry: Policy and Network Analysis (e.g., Margrave, Zelkova)]()
-- [Forge+Industry: Crypto Protocol Analysis (crypto lang, CPSA)]()
-- [Program Synthesis (SSA synth, Sygus)]() 
-- [Further Reading]()
-<!-- (./further_reading.md) -->
-
 <!-- ## Case Studies: Applications and Demos
 
   - Policy / firewall analysis, control
@@ -114,15 +102,9 @@
  -->
 # Boolean Solver Algorithms
   - [Boolean SAT (DPLL)](./chapters/solvers/dpll.md)
-  - [Witnessing Unsat: Propositional resolution]()
-<!-- (./chapters/solvers/resolution.md) -->
+  - [Witnessing Unsat: Propositional resolution](./chapters/solvers/resolution.md)
 
 <!-- 
-  - Propositional Resolution
-    - Model (likely can’t model full SAT runs, but can model steps)
-
-  - Tracking learned clauses in SAT
-
   - SMT: eager vs. lazy, boolean skeletons
   - SMT: example theory solver: integer inequalities
 
@@ -137,6 +119,17 @@
 - [Learning with Solvers: CEGIS]()
 <!-- (./chapters/solvers/cegis.md)  -->
 
+# Case Studies and Further Reading
+- [Modeling Raft in Anger]()
+<!-- (./chapters/raft/raft.md) -->
+- [Forge: Comparing Prim's and Dijkstra's Algorithms]()
+<!-- - [Model-Based ("Stateful") Testing]() -->
+<!-- - [Industry: Concolic Execution (DEMO: KLEE)]()  -->
+<!-- - [Forge+Industry: Policy and Network Analysis (e.g., Margrave, Zelkova)]() -->
+<!-- - [Forge+Industry: Crypto Protocol Analysis (crypto lang, CPSA)]() -->
+<!-- - [Program Synthesis (SSA synth, Sygus)]()  -->
+<!-- - [Further Reading]() -->
+<!-- (./further_reading.md) -->
 
 
 <!-- ## Exercises
