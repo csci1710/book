@@ -397,3 +397,7 @@ Together, these constraints are _equisatisfiable_ with the original formula.
 Moreover, they're something more than equisatisfiable. Just like we wanted, there's a useful relationship between the original variables and the new variables. We can always read off the values of `x1`, `x2`, `x3`, and `x4` in a solution to the new constraints and get a solution to the original constraints. The values of the newly added variables express values for the intermediate nodes of the boolean circuit.
 
 And that's how Forge's translation layer works.
+
+## Example of a "real" solver
+
+You can see example code solving the N-queens problem via SAT [here](./sat_demo/nqueens-glucose.py). I'm using the [parallel Glucose solver](https://github.com/audemard/glucose/releases/tag/4.2.1), but you can plug in any solver you want; this Python script just builds a [DIMACS standard](https://www21.in.tum.de/~lammich/2015_SS_Seminar_SAT/resources/dimacs-cnf.pdf) CNF file.
