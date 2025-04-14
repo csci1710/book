@@ -273,14 +273,6 @@ if __name__ == "__main__":
     nQueens(4)
 ```
 
-## Wednesday
-
-Today we'll talk about how SMT solvers work. We'll sketch:
-* the _boolean skeleton_ of an SMT problem;
-* the intuition behind the congruence closure argument;
-* the Goldbach conjecture as an example; and 
-* undecidability.
-
 ## What's Going On In The Solver?
 
 Modern SMT-solvers tend to be _lazy_ (a technical term): they use a base boolean solver, and call out to domain-specific algorithms ("theory solvers") when needed. This is how Z3 manages to be so fast at algebraic reasoning.
