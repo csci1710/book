@@ -113,9 +113,7 @@
   - Decidability, completeness, and incompleteness -->
 
 # Beyond SAT
-
-- [Satisfiability Modulo Theories (SMT)]()
-<!-- (./chapters/solvers/smt.md)  -->
+- [Satisfiability Modulo Theories (SMT)](./chapters/solvers/smt.md) 
 - [Learning with Solvers: CEGIS]()
 <!-- (./chapters/solvers/cegis.md)  -->
 

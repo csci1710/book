@@ -2,45 +2,45 @@
 
 [Livecode link](./z3demo.py)
 
-Boolean solvers are powerful, but not very expressive. If you want to use them to solve a problem involving (e.g.)  arithmetic, you need to encode that idea with booleans. Forge does this with a technique called "bit-blasting": one boolean variable per bit in a fixed bitwidth, along with formulas that build boolean adders, multipliers, etc. as needed. This works well for small examples, but can quickly run into performance issues---and if you need actual mathematical integers (to say nothing of real numbers!) you're out of luck.
+Boolean solvers are powerful, but not very expressive. If you want to use them to solve a problem involving (e.g.)  arithmetic, you need to encode that idea with booleans. Forge does this with a technique called "bit-blasting": one boolean variable per bit in a fixed bitwidth, along with formulas that build boolean adders, multipliers, etc. as needed. This works well for small examples, but can quickly run into performance issues&mdash;and if you need actual mathematical integers (to say nothing of real numbers!) you're out of luck.
 
-An SMT solver is a SAT solver that can handle various domain-specific concepts beyond boolean logic. Hence "modulo theories": it's satisfiability, but with the addition of (say) the "theory" of linear integer arithmetic.
-From a certain point of view, Forge is an "SMT" solver, because it includes concepts like relations and bit-vector integers. But this isn't usually how people understand the term these days.
+An SMT solver is a SAT solver that can handle various domain-specific concepts beyond boolean logic. Hence "modulo theories", where "modulo" means "with respect to". SMT solvers solve satisfiability, but with the addition of (say) the theory of linear integer arithmetic or the theory of strings.
+
+From a certain point of view, Forge is an "SMT" solver, because it includes concepts like relations and bit-vector integers. But this isn't usually how people understand the term these days. 
+
+SMT solvers can be either "eager" or "lazy". An eager solver translates all the domain-specific constraints to boolean logic and then uses a boolean solver engine. That is Forge's approach. In contrast, a lazy solver actually implements domain-specific algorithms and integrates those with a purely-boolean solver core. Most modern SMT solvers tend to be lazy, and so they can benefit from clever domain algorithms. 
 
 ~~~admonish note title="Theories"
 In the logic community, _theory_ is just another word for set of constraints. So when we say "the theory of linear integer arithmetic" we mean the axioms that define the domain of linear integer arithmetic.
 ~~~
 
-The reason is that SMT solvers can be either "eager" or "lazy". An eager solver translates all the domain-specific constraints to boolean logic and then uses a boolean solver engine---this is Forge's approach. In contrast, a lazy solver actually implements domain-specific algorithms and integrates those with a purely-boolean solver core. Most modern SMT solvers tend to be lazy, and so they can benefit from clever domain algorithms. 
-
 Here are some common domains that SMT solvers tend to support:
 * uninterpreted functions with equality;
 * integer arithmetic (linear nearly always, non-linear sometimes);
 * real arithmetic;
+* lists and algebraic datatypes;
+* strings;
 * bit vectors;
 * arrays; and
 * datatypes.
 
-Some slightly less common domains include:
-* relations; 
-* lists; and
-* strings.
+Of course, there are many others implemented in various solvers. The solver we'll use this week supports many of these, but not all.
 
-And of course there are many others. The solver we'll use this week supports many of these, but not all.
+### A Key Difference: Universal Quantifiers
 
-### A Key Difference
+Most modern SMT solvers don't have "bounds" in the same way Forge does. You can declare a datatype that's bounded in size, but the engine doesn't process that in the same way that Forge does. And the addition of domains like mathematical integers or lists means that the set of possible objects is infinite. This complicates universal (`all`) quantification.
 
-Most SMT solvers don't have "bounds" in the same way Forge does. You can declare a datatype that's bounded in size, but the addition of domains like mathematical integers or lists means that unless you're working in a very restricted space, the set of possible objects is infinite. This can cause some confusion versus what we're used to.
-
-What does it mean to say "For all $x$ of type $A$, $P(x)$ is true?" In Forge, $A$ always has an upper bound, and so the quantifier can always be converted to a big, but finite, "`and`" constraint. But suppose the type is actual mathematical _integers_? There are infinitely many integers, which means the solver can't convert the quantifier to a (finite) boolean constraint. This is such an important factor in designing SMT solvers that SMT literature often refers to universal quantification as just "quantification". 
+What does it mean to say "For all $x$ of type $A$, $P(x)$ is true?" In Forge, $A$ always has an upper bound, and so the quantifier can always be converted to a big, but finite, "`and`" constraint. But suppose the type is actual _mathematical integers_? There are infinitely many integers, which means the solver can't convert the quantifier to a (finite) boolean constraint. This is such an important factor in designing SMT solvers that SMT literature often refers to universal quantification as just "quantification". 
 
 ~~~admonish warning title="Universal quantification"
-Try to avoid universal quantification ("`all`") in SMT if you can. You can't always avoid it, but make sure you really need it to express your goals.
+**For now**, try to avoid universal quantification in SMT if you can. You can't always avoid it, but make sure you really need it to express your goals.
 ~~~
 
-Even without universal quantifiction, a problem might not necessarily be solvable. We'll talk more about why on Wednesday; for now, just be aware that the solver might return a third result in addition to sat and unsat: _unknown_ (the solver gave up or ran out of time).
+Universal quantifiction isn't the only issue. Even without it, the domain-specific algorithms the solver uses might not be guaranteed to terminate. (This is a consequence of the fact that some of the problems SMT solvers can express are _undecidable_, which means it is impossible to produce an always-correct, always-terminating algorithm to solve the general problem.) Because of this, the solver is always working under a timeout. If the solver times out, it will give a new result type, other than "sat" and "unsat": "_unknown_".
 
 ## The Z3 Solver
+
+Let's first step through some of the new things we can express with an SMT solver.
 
 ### Setup
 
@@ -68,7 +68,7 @@ def demoBool():
         
         s.add(Or(p, q))
         if s.check() == sat:        
-            print(s.model()) # "model" ~= "instance" here :/
+            print(s.model()) # remember, "model" ~= "instance" here 
         
         # (Think: how would we get a different instance?)
 
@@ -76,45 +76,63 @@ def demoBool():
         print(s.model().evaluate(p)) # can pass a formula              
 ```
 
+When we run this, we get:
+```
+[p = True, q = False]
+True
+```
+
 ~~~admonish warning title="Terminology: model" 
-Different communities use different terminology. We use the word _model_ to describe the definitions and constraints you use to model a system, just like an automotive engineer might build a computer model of a car. This is generally what the software-engineering community means by the word. The logic community, on the other hand, uses _model_ to mean the same thing that we call an _instance_ in Forge: the valuation that either satisfies or dissatisfies a set of constraints.  There are good historical reasons for this, but for now, just be aware that Z3 will use the word "model" like a logician, not a software engineer.
+Different communities use different terminology. In this book, we use the word _model_ to describe the definitions and constraints you use to model a system, just like an automotive engineer might build a computer model of a car. This is generally what the software-engineering community means by the word. 
+
+The logic community, on the other hand, uses _model_ to mean the same thing that we call an _instance_ in Forge: the valuation that either satisfies or dissatisfies a set of constraints.  There are good historical reasons for this, but for now, just be aware that Z3 will use the word "model" like a logician, not a software engineer.
 ~~~
 
 ### Uninterpreted Functions And Integer Inequalities
 
 If a symbol (function, relation, constant, ...) is _interpreted_, then its meaning is encoded via constraints built into the solver. In Forge, we'd say that:
 * `add` is an interpreted function, since Forge assigns it a meaning innately; but
-* relations you add as sig fields are uninterpreted, since absent constraints you add yourself, Forge treats their values as arbitrary.
+* relations you add as sig fields are uninterpreted, since without constraints you add yourself, Forge treats their values as arbitrary.
 
-**Functions, not relations:** With some exceptions, SMT solvers usually focus on functions, not relations. This is another reason for Froglet to be about functions: they're more useful as a foundation in other tools!
+~~~admonish warning title=Functions, not relations" 
+With some exceptions, SMT solvers usually focus on functions, not relations. This is another reason for Froglet to be about functions: they're more useful as a foundation in other tools!
+~~~
 
 Here is a Z3 function that demonstrates the difference between interpreted and uninterpreted functions:
 
 ```python
 def demoUninterpreted():
     s = Solver()
-    # ; Ints, UNINTERPRETED Functions (think of as like relations in Alloy)        
+    # Solver variables: Ints and an uninterpreted functions 
     a, b = Ints('a b')  
     f = Function('f', IntSort(), IntSort())
+
     s.add(And(b > a, f(b) < f(a)))        
     if s.check() == sat:        
         print(s.model()) 
-    print(s.model().evaluate(f(a)))
-    print(s.model().evaluate(f(b)))
-    print(s.model().evaluate(f(1000000)))
+        print(s.model().evaluate(f(a)))
+        print(s.model().evaluate(f(b)))
+        print(s.model().evaluate(f(1000000)))
 ```
 
-## Arithmetic
+When we run this, we get:
+```
+[b = 1, a = 0, f = [0 -> 0, else -> -1]]
+0
+-1
+-1
+```
 
-Let's try something that involves arithmetic, and also explore how the solver handles real numbers vs. integers.
+Notice how the solver is reporting the function. It's not a table like it would be in Forge, but something much more like an if-then-else.
 
-We'll use a universal quantifier here, because in this case they are exceptionally useful. Notice that how we frame the problem can drastically affect how Z3 performs---in cases like this, it can often automatically handle the quantifier. But not always.
+### Numbers: Integers vs. Reals
+
+Let's try something that involves arithmetic, and also explore how the solver handles real numbers vs. integers. Here's a small example of how numbers work in Z3:
 
 ```python
- # Real numbers
 def demoReals():
     s = Solver()
-    x = Real('x') # contrast to: Int('x')  
+    x = Real('x') 
     s.add(x*x > 4)
     s.add(x*x < 9)
     result = s.check()
@@ -122,8 +140,18 @@ def demoReals():
         print(s.model())    
     else: 
         print(result)
+```
 
-def demoFactoringInt():
+When we run this, we get an answer. But if we change the `Real` to `Int`, we won't because there is no integer between 2 and 3. 
+
+### Factoring
+
+Here's another example: factoring polynomials. 
+
+We could use a universal quantifier here, but perhaps we don't need one. How we frame the problem can drastically affect how Z3 performs&mdash;in cases like this, the solver can often automatically handle the quantifier. But not always.
+
+```python
+def demoFactoringIntWithUniversal():
     s = Solver()
 
     # (x - 2)(x + 2) = x^2 - 4
@@ -168,39 +196,36 @@ def demoFactoringReals():
         print(s.model())    
     else: 
         print(result)
+```
 
+### Unsatisfiable Cores
+
+Let's try the same problem, but with a polynomial without any real roots. We should expect unsat (and indeed that's what we get). But can we get more than "unsat" out of the solver?
+
+```python
 def demoFactoringRealsUnsat():
+    s = Solver()
+
     # Here's how to start using cores in Z3 if you want, but
     # see the docs -- it's a bit more annoying because you need to create 
     # new boolean variables etc.
 
-    #s.set(unsat_core=True) # there are so many options, at many different levels
-    # use s.assert_and_track; need to give a boolean 
-    # see: https://z3prover.github.io/api/html/classz3py_1_1_solver.html#ad1255f8f9ba8926bb04e1e2ab38c8c15 
+    s.set(unsat_core=True) # there are so many options, at many different levels
 
-    # Now, for the demo!
+    x, r1, r2 = Reals('x root1 root2') # real number vars
 
     # Note e.g., x^2 - 2x + 5 has no real roots (b^2 - 4ac negative)
-    s.add(ForAll(x, (x + r1) * (x + r2) 
-                     == (x * x) - (2 * x) + 5))
+    # To enable core extraction, we need to name every top-level constraint we want to blame
+    s.assert_and_track(ForAll(x, (x + r1) * (x + r2) 
+                             == (x * x) - (2 * x) + 5), 'constr1')
 
     result = s.check() 
     if result == sat:
         print(s.model())    
     else: 
-        print(result)            
-
-def coefficients():
-    s = Solver()
-    x, r1, r2, c1, c2 = Reals('x root1 root2 c1 c2') # real number vars        
-    s.add(ForAll(x, ((c1*x) + r1) * ((c2*x) + r2) == (2 * x * x)))
-    result = s.check()
-    if result == sat:
-        print(s.model())    
-    else: 
-        print(result)  
-
-
+        print(result)
+        # Note: it's a method of the solver, not the result. 
+        print(s.unsat_core())         
 ```
 
 

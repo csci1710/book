@@ -21,9 +21,9 @@ def demoUninterpreted():
     s.add(And(b > a, f(b) < f(a)))        
     if s.check() == sat:        
         print(s.model()) 
-    print(s.model().evaluate(f(a)))
-    print(s.model().evaluate(f(b)))
-    print(s.model().evaluate(f(1000000)))
+        print(s.model().evaluate(f(a)))
+        print(s.model().evaluate(f(b)))
+        print(s.model().evaluate(f(1000000)))
 
  # Real numbers
 def demoReals():
@@ -37,7 +37,7 @@ def demoReals():
     else: 
         print(result)
 
-def demoFactoringInt():
+def demoFactoringIntWithUniversal():
     s = Solver()
 
     # (x - 2)(x + 2) = x^2 - 4
@@ -47,7 +47,7 @@ def demoFactoringInt():
 
     xi, r1i, r2i = Ints('x root1 root2') # int vars
 
-    # Note: don't use xi ** 2 -- gives unsat?
+    # Note: don't try to use xi ** 2; this isn't translated properly as of 2024.
     s.add(ForAll(xi, (xi + r1i) * (xi + r2i) == (xi * xi) - 4  ))
     result = s.check()
     if result == sat:
@@ -67,6 +67,7 @@ def demoFactoringInt():
     else: 
         print(result)
     # Note how fast, even with numbers up to almost 40k. Power of theory solver.
+
 
 def demoFactoringReals():
     s = Solver()
@@ -90,34 +91,23 @@ def demoFactoringRealsUnsat():
     # see the docs -- it's a bit more annoying because you need to create 
     # new boolean variables etc.
 
-    #s.set(unsat_core=True) # there are so many options, at many different levels
-    # use s.assert_and_track; need to give a boolean 
-    # see: https://z3prover.github.io/api/html/classz3py_1_1_solver.html#ad1255f8f9ba8926bb04e1e2ab38c8c15 
-
-    # Now, for the demo!
+    s.set(unsat_core=True) # there are so many options, at many different levels
 
     x, r1, r2 = Reals('x root1 root2') # real number vars
 
     # Note e.g., x^2 - 2x + 5 has no real roots (b^2 - 4ac negative)
-    s.add(ForAll(x, (x + r1) * (x + r2) 
-                     == (x * x) - (2 * x) + 5))
+    # To enable core extraction, we need to name every top-level constraint we want to blame
+    s.assert_and_track(ForAll(x, (x + r1) * (x + r2) 
+                             == (x * x) - (2 * x) + 5), 'constr1')
 
     result = s.check() 
     if result == sat:
         print(s.model())    
     else: 
-        print(result)            
-
-def coefficients():
-    s = Solver()
-    x, r1, r2, c1, c2 = Reals('x root1 root2 c1 c2') # real number vars        
-    s.add(ForAll(x, ((c1*x) + r1) * ((c2*x) + r2) == (2 * x * x)))
-    result = s.check()
-    if result == sat:
-        print(s.model())    
-    else: 
-        print(result)  
-
+        print(result)
+        # Note: it's a method of the solver, not the result. 
+        print(s.unsat_core())
+        
 
 def nQueens(numQ):
     s = Solver()
@@ -159,11 +149,14 @@ def nQueens(numQ):
 
 if __name__ == "__main__":
     # demoBool()
-    # demoFactoringInt()
-    #demoFactoringReals()
-    #demoFactoringRealsUnsat()
     # demoUninterpreted()
     # demoReals()
+    
+    # demoFactoringIntWithUniversal()
+    # demoFactoringInt()
+    # demoFactoringReals()
+    # demoFactoringRealsUnsat()
+    
     nQueens(8)
 
 
