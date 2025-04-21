@@ -50,6 +50,6 @@ test expect {
 //   reachable[a,b,spouse,parent1,parent2]
 -- This fails!
 
-
+run {}
 
 

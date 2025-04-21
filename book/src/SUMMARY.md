@@ -114,8 +114,7 @@
 
 # Beyond SAT
 - [Satisfiability Modulo Theories (SMT)](./chapters/solvers/smt.md) 
-- [Learning with Solvers: CEGIS]()
-<!-- (./chapters/solvers/cegis.md)  -->
+- [Learning with Solvers: CEGIS](./chapters/solvers/cegis.md)
 
 # Case Studies and Further Reading
 - [Modeling Raft in Anger]()

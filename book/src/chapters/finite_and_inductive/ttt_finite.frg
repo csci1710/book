@@ -265,7 +265,7 @@ pred emptySingleBoard {
 --  emptySingleBoard => someXTurn 
 assert emptySingleBoard is sufficient for someXTurn 
 -- same thing
-assert someXturn is necessary for emptySingleBoard
+assert someXTurn is necessary for emptySingleBoard
 
 -- Assertion (with variables):
 pred emptyBoard[b: Board] { all r, c: Int | no b.board[r][c] }
@@ -292,7 +292,7 @@ assert all b: Board |
 
 -- Step 2: any legal transitions from a balanced board to an unbalanced board?
 pred moveFromBalanced[pre: Board, row, col: Int, 
-       p: Player, post: board] {
+       p: Player, post: Board] {
   balanced[pre]
   move[pre, row, col, p, post]
 }
@@ -303,5 +303,3 @@ assert all pre, post: Board, row, col: Int, p: Player |
 -- Note: we are able to get away with MUCH lower bounds using this technique. We don't need 
 -- Forge to generate whole game traces; rather, we are reasoning abstractly about whether 
 -- a single transition preserves balance. 
-
-*/
